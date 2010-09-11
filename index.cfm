@@ -1,6 +1,27 @@
+<!---
+  * Copyright 2010 Affinitiz, Inc.
+  * Title: Facebook Coldfusion SDK home
+  * Author: Benoit Hediard (hediard@affinitiz.com)
+  * Date created:	01/08/10
+  * Last update date: 12/09/10
+  * Version: V2.1.1 beta1
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License"); you may
+  * not use this file except in compliance with the License. You may obtain
+  * a copy of the License at
+  * 
+  *  http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  * License for the specific language governing permissions and limitations
+  * under the License.
+  *
+--->
 <html>
 	<head>
-		<title>Facebook ColdFusion SDK - Welcome!</title>
+		<title>Facebook ColdFusion SDK</title>
 		<link rel="stylesheet" type="text/css" href="examples/website/website.css" />
 	</head>
 	<body>
@@ -17,10 +38,10 @@
 		</div>
 		<div class="header">
 			<div class="content">
-				<h1>Facebook ColdFusion SDK - Welcome!</h1>
+				<h1>Facebook ColdFusion SDK</h1>
 			</div>
 		</div>
-		<div class="body washbody documentation">
+		<div class="body washbody example">
 			<div class="content">
 				<h2>Introduction</h2>
 				<p>
@@ -45,7 +66,7 @@
 				<hr />
 				<h2>Downloads</h2>
 				<p>
-					To download the latest version of the SDK, please use the project <a href="http://github.com/benorama/facebook-cf-sdk/issues">Downloads</a> section on <b>GitHub</b>.
+					To download the latest version of the SDK, please use the project <a href="http://github.com/benorama/facebook-cf-sdk/downloads">Downloads</a> section on <b>GitHub</b>.
 				</p>
 				<hr />
 				<h2>Bugs</h2>
