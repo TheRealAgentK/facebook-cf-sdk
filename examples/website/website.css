@@ -1,0 +1,150 @@
+body {font-family:"Lucida Grande", Tahoma, Verdana, Arial, sans-serif;font-size:11px;color:#333;margin:0;min-width:1024px;font-size:11px}
+a{color:#3b5998;text-decoration:none}
+a:hover{text-decoration:underline}
+img{border:0}
+table{border:0;margin:0;border-collapse:collapse;border-spacing:0}
+table td,
+table th{border:0;padding:0;text-align:left;vertical-align:top}
+table th{font-weight:bold}
+h1,
+h2,
+h3,
+h4{margin:0;padding:0;border:0}
+.menu .content {max-width: 930px;padding-left: 30px;}
+.menu{background:#882D2E;font-weight:bold;}
+.menu,
+.menu a{color:#fff}
+.menu a.logo{padding-top:4px;margin-right:25px;line-height:0}
+.menu a.logo img{width:166px;height:17px}
+.menu a.logo,
+.menu a.l{display:block;float:left}
+.menu a.l{line-height:30px;padding-left:11px;padding-right:11px;padding-top: 20px;}
+.menu a.l:hover{background-color:#670718;text-decoration:none}
+.menu .logo{float:right;}
+.menu .logo img {margin-left: 20px;}
+.menu .logo span {color: #DBC4A9;line-height: 50px;font-size: 16px;font-weight: normal;}
+.clear{clear:both}
+.header{background:#f3f3f3;padding-top:20px;padding-bottom:95px;border-bottom:1px solid #d2d2d2}
+.header h1{margin:0;font-size:28px;font-weight:normal;}
+.header h1 a{color:#333;text-decoration:none}
+.header .breadcrumbs{margin-top:4px}
+.content{max-width:900px;margin:auto} 
+.washbody{margin-top:-75px}
+.body .content{border:1px solid #eaeaea;background:white;padding:25px}
+.header,
+.body,
+.body p,
+.body ul,
+.body ol,
+.body li,
+.body th,
+.body th,
+.body td{font-size:13px}
+.body pre,
+.body p,
+.body li,
+.body dt,
+.body dd,
+.refindex .page,
+.body textarea,
+.body td{line-height:18px}
+.body ol,
+.body ul{list-style-type:disc;padding-left:3em}
+.body ol{list-style-type:decimal}
+.body strong{font-weight:bold}
+.body em,
+.body i{font-style:italic}
+.body h1{font-size:28px;font-weight:normal;margin:0;margin-bottom:8px}
+.body h2{font-size:16px;margin-bottom:8px;margin-top:25px}
+.body h3{font-size:13px;margin-top:0;margin-bottom:2px}
+dl,
+dt,
+dd{margin:0}
+.body dl,
+.body table,
+.body pre,
+.body ul,
+.body ol,
+.body p{margin:0;margin-bottom:1em}
+dd,
+.refindex .page{margin-bottom:10px}
+dd p,
+.refindex .page .snippet p{margin:0}
+dt,
+.refindex .page .title{font-weight:bold}
+.bodyMenu li a.private.selected{background-image:url(/rsrc.php/zAB4O/hash/csx9ipwg.png),
+	url(/rsrc.php/z1YVZ/hash/2s0onelb.png);background-position:160px center, left center;background-repeat:no-repeat, no-repeat}
+dt a.private,
+.refindex .page .title a.private,
+.bodyMenu li a.private{background:url(/rsrc.php/z1YVZ/hash/2s0onelb.png) no-repeat left center;padding-left:13px}
+.bodyMenu li a.private{margin-left:5px}
+.refindex .page .thumbnail{float:left}
+.refindex .page .thumbnail img{width:100px;height:75px;border:1px solid #d3dae5}
+.refindex .page.withthumbnail .title,
+.refindex .page.withthumbnail .snippet{margin-left:113px}
+.body pre,
+.body code,
+.body table.params td.name{font-family:monospace;color:#006000;font-size:13px}
+.body h2 code{font-size:inherit}
+.body pre,
+.body .pre{background:#f2f2f2;border:1px solid #d8dfea;border-left-width:3px;margin:18px;padding-top:7px;padding-bottom:7px;padding-left:10px;overflow:auto}
+.footer{color:#777;margin-bottom:25px}
+.footer .content{max-width:925px;padding:10px}
+.footer .copyright{float:left}
+.footer .links{text-align:right}
+.footer .links a{margin-left:15px}
+.header .admin{float:right;font-size:11px;z-index:1;position:relative}
+.header .admin a{margin-left:12px}
+.header .admin a.gatekeeper{background:url(/rsrc.php/z1YVZ/hash/2s0onelb.png) no-repeat left center;padding-left:12px;font-weight:bold}
+.body table{margin-bottom:1em}
+.body table td,
+.body table th{text-align:left;border:1px solid #d2d2d2;padding:6px;padding-top:4px;padding-bottom:4px;padding-right:10px;vertical-align:top}
+.body table.uiGrid td{border:0;vertical-align:middle}
+.body.documentation .content{padding-left:245px;max-width:680px}
+.body.documentation p img{margin:auto;display:block}
+.body.documentation hr{margin-left:-220px;border:0;background-color:#d2d2d2;height:1px;width:900px;margin-top:40px;margin-bottom:25px}
+.body.documentation h2{font-weight:normal;color:#666;font-size:21px;float:left;margin:0;margin-left:-220px;width:190px}
+.metanotice{background:#fff9d7;border:1px solid #e2c822;padding:1em;margin:1em}
+.diff{font-family:monospace}
+.diff .add{background:#dfd}
+.diff .rem{background:#fdd}
+.body.reference hr{border:0;background-color:#d2d2d2;height:1px;margin:0;margin-top:40px}
+.body.reference h2{font-weight:normal;color:#666;font-size:16px;margin-bottom:16px}
+.body table td p:last-child{margin-bottom:0}
+.body div.deprecated{font-weight:bold;background:#ffebe8;border:1px solid #dd3c10;margin-bottom:1em;padding:7px}
+.body div.fql_example{margin-bottom:1em}
+.bodyMenu{float:left;width:175px;overflow:hidden}
+.bodyMenu .title{color:#666;font-size:24px;font-weight:normal;line-height:28px;margin:0;padding:0}
+.bodyMenu ul{list-style-type:none;padding:0;margin:0;margin-bottom:25px}
+.bodyMenu li{border-bottom:1px solid #e5e5e5;margin:0}
+.bodyMenu h4,
+.bodyMenu li a{padding:5px;padding-left:5px}
+.bodyMenu h4{font-size:16px;font-weight:normal;color:#666;padding-top:0;padding-bottom:0;margin-bottom:8px}
+.bodyMenu li a{width:165px;display:block}
+.bodyMenu li a.selected{color:#333;font-weight:bold;background:url(/rsrc.php/zAB4O/hash/csx9ipwg.png) no-repeat right center}
+.bodyText{margin-left:220px}
+div.search{width:200px;padding-right:21px}
+div.search .LTypeahead th{vertical-align:bottom}
+div.search .LTypeahead button{background:url(/rsrc.php/z7VU4/hash/66ad7upf.png) no-repeat 0 -1px;border:0;border-left:1px solid #e5e5e5;cursor:pointer;height:16px;margin-top:4px;position:absolute;width:22px}
+div.search .LTypeahead .LTypeaheadHardpoint{width:203px}
+div.search .LTypeahead .LTypeaheadHardpoint input{width:219px}
+.LTypeaheadResults{width:224px}
+.LTypeaheadResults a{color:#222}
+.body table.uiInfoTable{width:auto}
+.body table.uiInfoTable td,
+.body table.uiInfoTable th{border:0;padding:6px;width:auto;height:auto;vertical-align:middle}
+.body table.uiInfoTable th{width:auto}
+textarea,
+.inputtext,
+.inputpassword{border:1px solid #bdc7d8;font-family:"lucida grande",tahoma,verdana,arial,sans-serif;font-size:11px;padding:3px}
+textarea{resize:none}
+.localename{font-size:10px}
+.inputtext,
+.inputpassword{margin:0;*margin:-1px 0}
+.inputradio{padding:0;margin:0 5px 0 0;vertical-align:middle}
+.inputcheckbox{border:0;vertical-align:middle}
+div.LJSDialog{z-index:1000}
+.clearfix:after{clear:both;content:".";display:block;font-size:0;height:0;line-height:0;visibility:hidden}
+.clearfix{display:block;zoom:1}
+img.left {float:left; margin-right:20px !important}
+img.right {float:right; margin-left:20px !important}

@@ -1,0 +1,2115 @@
+<html>
+<head>
+<title>Component FacebookApp</title>
+<style>
+body  {
+	font-family: verdana, arial, helvetica, sans-serif;
+	background-color: #FFFFFF;
+	font-size: 12px;
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+table	{
+	font-size: 11px;
+	font-family: Verdana, arial, helvetica, sans-serif;
+	width: 90%;
+}
+
+th {
+	padding: 6px;
+	font-size: 12px;
+	background-color: #cccccc;
+}
+
+td {
+	padding: 6px;
+	background-color: #eeeeee;
+	vertical-align : top;
+}
+
+code {
+	color: #000099 ;
+}
+</style>
+
+</head>
+<body style="padding-bottom : 800px;">
+
+
+
+
+
+
+
+<font size="-2">FacebookApp</font><br>
+<font size="+1"><b>Component FacebookApp
+(Facebook App)
+</b></font>
+
+
+
+
+
+<br><br><br>
+<table>
+
+
+<tr><td>hierarchy:</td><td>
+	
+
+		<a href="/CFIDE/componentutils/cfcexplorer.cfc?method=getcfcinhtml&name=WEB-INF.cftags.component">WEB-INF.cftags.component</a><br>
+		
+
+	
+
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FacebookApp<br>
+		
+
+	
+
+
+</td></tr>
+
+
+<tr><td>path:</td>
+	<td>/Applications/ColdFusion9/wwwroot/FacebookApp.cfc</td>
+</tr>
+
+<tr><td>serializable:</td>
+	<td>Yes
+			</td>
+</tr>
+
+
+
+
+
+
+
+<p>Facebook App SDK for ColdFusion, ported from Facebook PHP official SDK</p>
+
+<tr><td>properties:</td>
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<br>
+	<td> <a href="#property_appId">appId</a>, <a href="#property_appUrl">appUrl</a>, <a href="#property_secretKey">secretKey</a>, <a href="#property_siteUrl">siteUrl</a></td>
+</tr>
+
+<tr><td>methods:</td>
+
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	<td> <a href="#method_base64UrlDecode">base64UrlDecode</a>*, <a href="#method_createSessionFromSignedRequestParameters">createSessionFromSignedRequestParameters</a>*, <a href="#method_dumpParameters">dumpParameters</a>, <a href="#method_generateParametersSignature">generateParametersSignature</a>*, <a href="#method_getAccessToken">getAccessToken</a>, <a href="#method_GETAPPID">GETAPPID</a>, <a href="#method_getApplicationAccessToken">getApplicationAccessToken</a>, <a href="#method_GETAPPURL">GETAPPURL</a>, <a href="#method_getCurrentUrl">getCurrentUrl</a>*, <a href="#method_getLoginStatusUrl">getLoginStatusUrl</a>, <a href="#method_getLoginUrl">getLoginUrl</a>, <a href="#method_getLogoutUrl">getLogoutUrl</a>, <a href="#method_getProfileId">getProfileId</a>, <a href="#method_GETSECRETKEY">GETSECRETKEY</a>, <a href="#method_getSessionCookieName">getSessionCookieName</a>*, <a href="#method_GETSITEURL">GETSITEURL</a>, <a href="#method_getUrl">getUrl</a>*, <a href="#method_getUserAccessToken">getUserAccessToken</a>, <a href="#method_getUserId">getUserId</a>, <a href="#method_getUserSession">getUserSession</a>, <a href="#method_hashHmacSHA256">hashHmacSHA256</a>*, <a href="#method_init">init</a>, <a href="#method_isInProfileTab">isInProfileTab</a>, <a href="#method_logParameters">logParameters</a>, <a href="#method_parseQueryStringParameters">parseQueryStringParameters</a>*, <a href="#method_parseSignedRequestParameters">parseSignedRequestParameters</a>*, <a href="#method_SETAPPID">SETAPPID</a>, <a href="#method_SETAPPURL">SETAPPURL</a>, <a href="#method_SETSECRETKEY">SETSECRETKEY</a>, <a href="#method_SETSITEURL">SETSITEURL</a>, <a href="#method_validateUserSession">validateUserSession</a>*</td>
+</tr>
+
+
+
+
+
+</table>
+<font size="-2">* - private method</font>
+
+
+
+
+
+<br><br><table>
+<tr>
+	<th>Property</th>
+	<th>Hint</th>
+	<th>Type</th>
+	<th>Req.</th>
+	<th>Implemented In</th>
+	<th>Default Value</th>
+    <th>Serializable</th>
+</tr>
+
+	
+	
+	<tr>
+		<td><a name="property_appId"><b>appId</b></a>
+			</td>
+		<td>yes</td>
+		<td>
+				String
+			</td>
+		<td></td>
+		<td>FacebookApp
+		</td>
+		<td>
+				-
+			</td>
+            <td>Yes
+			</td>
+		</tr>
+
+	
+	
+	<tr>
+		<td><a name="property_appUrl"><b>appUrl</b></a>
+			</td>
+		<td>Ex.: http://apps.facebook.com/your-app</td>
+		<td>
+				String
+			</td>
+		<td></td>
+		<td>FacebookApp
+		</td>
+		<td>
+				-
+			</td>
+            <td>Yes
+			</td>
+		</tr>
+
+	
+	
+	<tr>
+		<td><a name="property_secretKey"><b>secretKey</b></a>
+			</td>
+		<td>yes</td>
+		<td>
+				String
+			</td>
+		<td></td>
+		<td>FacebookApp
+		</td>
+		<td>
+				-
+			</td>
+            <td>Yes
+			</td>
+		</tr>
+
+	
+	
+	<tr>
+		<td><a name="property_siteUrl"><b>siteUrl</b></a>
+			</td>
+		<td>Ex.: http://youserver.com/yourapp</td>
+		<td>
+				String
+			</td>
+		<td></td>
+		<td>FacebookApp
+		</td>
+		<td>
+				-
+			</td>
+            <td>Yes
+			</td>
+		</tr>
+
+</table>
+
+
+
+
+
+
+
+
+
+<br><br><table>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_base64UrlDecode">base64UrlDecode</a>*
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>private</i>
+	
+	
+		<i>String</i>
+	
+	<b>base64UrlDecode</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		String
+		</i>
+		base64UrlValue
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>base64UrlValue:</b>
+			String,
+			required,
+			base64UrlValue
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_createSessionFromSignedRequestParameters">createSessionFromSignedRequestParameters</a>*
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>private</i>
+	
+	
+		<i>Struct</i>
+	
+	<b>createSessionFromSignedRequestParameters</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		Struct
+		</i>
+		parameters
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>parameters:</b>
+			Struct,
+			required,
+			parameters
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_dumpParameters">dumpParameters</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>void</i>
+	
+	<b>dumpParameters</b>
+	
+	(
+ 	
+		
+		<i>
+		
+		String
+		</i>
+		eventName=""
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>eventName:</b>
+			String,
+			optional,
+			eventName
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_generateParametersSignature">generateParametersSignature</a>*
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>private</i>
+	
+	
+		<i>String</i>
+	
+	<b>generateParametersSignature</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		Struct
+		</i>
+		parameters,
+	
+		
+		<i>
+		required
+		String
+		</i>
+		secretKey
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>parameters:</b>
+			Struct,
+			required,
+			parameters
+			
+			<br>
+		
+			
+			&nbsp;&nbsp; <b>secretKey:</b>
+			String,
+			required,
+			secretKey
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getAccessToken">getAccessToken</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>String</i>
+	
+	<b>getAccessToken</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_GETAPPID">GETAPPID</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>String</i>
+	
+	<b>GETAPPID</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getApplicationAccessToken">getApplicationAccessToken</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>String</i>
+	
+	<b>getApplicationAccessToken</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_GETAPPURL">GETAPPURL</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>String</i>
+	
+	<b>GETAPPURL</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getCurrentUrl">getCurrentUrl</a>*
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>private</i>
+	
+	
+		<i>String</i>
+	
+	<b>getCurrentUrl</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getLoginStatusUrl">getLoginStatusUrl</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>String</i>
+	
+	<b>getLoginStatusUrl</b>
+	
+	(
+ 	
+		
+		<i>
+		
+		Struct
+		</i>
+		parameters="[runtime expression]"
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>parameters:</b>
+			Struct,
+			optional,
+			parameters
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getLoginUrl">getLoginUrl</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>String</i>
+	
+	<b>getLoginUrl</b>
+	
+	(
+ 	
+		
+		<i>
+		
+		Struct
+		</i>
+		parameters="[runtime expression]"
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>parameters:</b>
+			Struct,
+			optional,
+			parameters
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getLogoutUrl">getLogoutUrl</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>String</i>
+	
+	<b>getLogoutUrl</b>
+	
+	(
+ 	
+		
+		<i>
+		
+		Struct
+		</i>
+		parameters="[runtime expression]"
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>parameters:</b>
+			Struct,
+			optional,
+			parameters
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getProfileId">getProfileId</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>Numeric</i>
+	
+	<b>getProfileId</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_GETSECRETKEY">GETSECRETKEY</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>String</i>
+	
+	<b>GETSECRETKEY</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getSessionCookieName">getSessionCookieName</a>*
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>private</i>
+	
+	
+		<i>String</i>
+	
+	<b>getSessionCookieName</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_GETSITEURL">GETSITEURL</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>String</i>
+	
+	<b>GETSITEURL</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getUrl">getUrl</a>*
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>private</i>
+	
+	
+		<i>String</i>
+	
+	<b>getUrl</b>
+	
+	(
+ 	
+		
+		<i>
+		
+		String
+		</i>
+		path="",
+	
+		
+		<i>
+		
+		Struct
+		</i>
+		parameters="[runtime expression]"
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>path:</b>
+			String,
+			optional,
+			path
+			
+			<br>
+		
+			
+			&nbsp;&nbsp; <b>parameters:</b>
+			Struct,
+			optional,
+			parameters
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getUserAccessToken">getUserAccessToken</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>String</i>
+	
+	<b>getUserAccessToken</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getUserId">getUserId</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>Numeric</i>
+	
+	<b>getUserId</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_getUserSession">getUserSession</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>Struct</i>
+	
+	<b>getUserSession</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_hashHmacSHA256">hashHmacSHA256</a>*
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>private</i>
+	
+	
+		<i>String</i>
+	
+	<b>hashHmacSHA256</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		String
+		</i>
+		value,
+	
+		
+		<i>
+		required
+		String
+		</i>
+		secretKey
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>value:</b>
+			String,
+			required,
+			value
+			
+			<br>
+		
+			
+			&nbsp;&nbsp; <b>secretKey:</b>
+			String,
+			required,
+			secretKey
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_init">init</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>FacebookApp</i>
+	
+	<b>init</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		String
+		</i>
+		appId,
+	
+		
+		<i>
+		required
+		String
+		</i>
+		secretKey,
+	
+		
+		<i>
+		
+		String
+		</i>
+		appUrl="",
+	
+		
+		<i>
+		
+		String
+		</i>
+		siteUrl=""
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>appId:</b>
+			String,
+			required,
+			appId
+			
+			<br>
+		
+			
+			&nbsp;&nbsp; <b>secretKey:</b>
+			String,
+			required,
+			secretKey
+			
+			<br>
+		
+			
+			&nbsp;&nbsp; <b>appUrl:</b>
+			String,
+			optional,
+			appUrl
+			
+			<br>
+		
+			
+			&nbsp;&nbsp; <b>siteUrl:</b>
+			String,
+			optional,
+			siteUrl
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_isInProfileTab">isInProfileTab</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>Boolean</i>
+	
+	<b>isInProfileTab</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_logParameters">logParameters</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>void</i>
+	
+	<b>logParameters</b>
+	
+	(
+ 	
+		
+		<i>
+		
+		String
+		</i>
+		eventName=""
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>eventName:</b>
+			String,
+			optional,
+			eventName
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_parseQueryStringParameters">parseQueryStringParameters</a>*
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>private</i>
+	
+	
+		<i>Struct</i>
+	
+	<b>parseQueryStringParameters</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		String
+		</i>
+		queryString
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>queryString:</b>
+			String,
+			required,
+			queryString
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_parseSignedRequestParameters">parseSignedRequestParameters</a>*
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>private</i>
+	
+	
+		<i>Struct</i>
+	
+	<b>parseSignedRequestParameters</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		String
+		</i>
+		signedRequest
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>signedRequest:</b>
+			String,
+			required,
+			signedRequest
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_SETAPPID">SETAPPID</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>void</i>
+	
+	<b>SETAPPID</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		String
+		</i>
+		appId
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>appId:</b>
+			String,
+			required,
+			appId
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_SETAPPURL">SETAPPURL</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>void</i>
+	
+	<b>SETAPPURL</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		String
+		</i>
+		appUrl
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>appUrl:</b>
+			String,
+			required,
+			appUrl
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_SETSECRETKEY">SETSECRETKEY</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>void</i>
+	
+	<b>SETSECRETKEY</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		String
+		</i>
+		secretKey
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>secretKey:</b>
+			String,
+			required,
+			secretKey
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_SETSITEURL">SETSITEURL</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>void</i>
+	
+	<b>SETSITEURL</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		String
+		</i>
+		siteUrl
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>siteUrl:</b>
+			String,
+			required,
+			siteUrl
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_validateUserSession">validateUserSession</a>*
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>private</i>
+	
+	
+		<i>Boolean</i>
+	
+	<b>validateUserSession</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		Struct
+		</i>
+		userSession
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>userSession:</b>
+			Struct,
+			required,
+			userSession
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+</table>
+
+
+
+</body></html>
+
+
+
+
+		
+		
+	

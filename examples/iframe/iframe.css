@@ -1,0 +1,82 @@
+body {font-family:"Lucida Grande", Tahoma, Verdana, Arial, sans-serif;font-size:11px;color:#333;margin:0;font-size:11px}
+a{color:#3b5998;text-decoration:none}
+a:hover{text-decoration:underline}
+img{border:0}
+table{border:0;margin:0;border-collapse:collapse;border-spacing:0}
+table td,
+table th{border:0;padding:0;text-align:left;vertical-align:top}
+table th{font-weight:bold}
+h1,
+h2,
+h3,
+h4{margin:0;padding:0;border:0}
+.clear{clear:both}
+.header{background:#f3f3f3;padding:20px;border:1px solid #d2d2d2}
+.header h1{margin:0;font-size:28px;font-weight:normal;}
+.header h1 a{color:#333;text-decoration:none}
+.header .breadcrumbs{margin-top:4px}
+.body .content{border:1px solid #eaeaea;background:white;padding:25px;max-width:720px;}
+.header,
+.body,
+.body p,
+.body ul,
+.body ol,
+.body li,
+.body th,
+.body th,
+.body td{font-size:13px}
+.body pre,
+.body p,
+.body li,
+.body dt,
+.body dd,
+.body textarea,
+.body td{line-height:18px}
+.body ol,
+.body ul{list-style-type:disc;padding-left:3em}
+.body ol{list-style-type:decimal}
+.body strong{font-weight:bold}
+.body em,
+.body i{font-style:italic}
+.body h1{font-size:28px;font-weight:normal;margin:0;margin-bottom:8px}
+.body h2{font-size:16px;margin-bottom:8px;margin-top:25px}
+.body h3{font-size:13px;margin-top:0;margin-bottom:2px}
+dl,
+dt,
+dd{margin:0}
+.body dl,
+.body table,
+.body pre,
+.body ul,
+.body ol,
+.body p{margin:0;margin-bottom:1em}
+.body pre,
+.body code,
+.body h2 code{font-size:inherit}
+.body pre,
+.body .pre{background:#f2f2f2;border:1px solid #d8dfea;border-left-width:3px;margin:18px;padding-top:7px;padding-bottom:7px;padding-left:10px;overflow:auto}
+.footer{color:#777;margin-bottom:25px}
+.footer .content{padding:10px}
+.footer .copyright{float:left}
+.footer .links{text-align:right}
+.footer .links a{margin-left:15px}
+.body table{margin-bottom:1em}
+.body table td,
+.body table th{text-align:left;border:1px solid #d2d2d2;padding:6px;padding-top:4px;padding-bottom:4px;padding-right:10px;vertical-align:top}
+.body table.uiGrid td{border:0;vertical-align:middle}
+.body.example .content{padding-left:245px;}
+.body.example p img{margin:auto;display:block}
+.body.example hr{margin-left:-220px;border:0;background-color:#d2d2d2;height:1px;margin-top:40px;margin-bottom:25px}
+.body.example h2{font-weight:normal;color:#666;font-size:21px;float:left;margin:0;margin-left:-220px;width:190px}
+.body table td p:last-child{margin-bottom:0}
+textarea,
+.inputtext,
+.inputpassword{border:1px solid #bdc7d8;font-family:"lucida grande",tahoma,verdana,arial,sans-serif;font-size:11px;padding:3px}
+textarea{resize:none}
+.localename{font-size:10px}
+.inputtext,
+.inputpassword{margin:0;*margin:-1px 0}
+.inputradio{padding:0;margin:0 5px 0 0;vertical-align:middle}
+.inputcheckbox{border:0;vertical-align:middle}
+.clearfix:after{clear:both;content:".";display:block;font-size:0;height:0;line-height:0;visibility:hidden}
+.clearfix{display:block}
