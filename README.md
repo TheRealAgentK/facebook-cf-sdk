@@ -1,5 +1,5 @@
-Welcome to the **Facebook ColdFusion SDK** Wiki documentation.
-=============================================================
+Facebook ColdFusion SDK
+=======================
 
 # Introduction
 
