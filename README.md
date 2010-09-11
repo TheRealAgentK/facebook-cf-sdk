@@ -1,6 +1,5 @@
-**[[Home]]** | [[Installation]] | [[Usage]] | [[Examples]]
-
 Welcome to the **Facebook ColdFusion SDK** Wiki documentation.
+=============================================================
 
 # Introduction
 
