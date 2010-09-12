@@ -1,3 +1,33 @@
+
+
+
+
+
+
+
+
+
+	
+		
+		
+		
+					
+		
+
+	
+
+
+
+
+
+
+
+		
+		
+			
+			
+
+
 <html>
 <head>
 <title>Component FacebookApp</title>
@@ -42,7 +72,7 @@ code {
 
 
 
-<font size="-2">FacebookApp</font><br>
+<font size="-2">facebook.sdk.FacebookApp</font><br>
 <font size="+1"><b>Component FacebookApp
 (Facebook App)
 </b></font>
@@ -63,18 +93,13 @@ code {
 
 	
 
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FacebookApp<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;facebook.sdk.FacebookApp<br>
 		
 
 	
 
 
 </td></tr>
-
-
-<tr><td>path:</td>
-	<td>/Applications/ColdFusion9/wwwroot/FacebookApp.cfc</td>
-</tr>
 
 <tr><td>serializable:</td>
 	<td>Yes
@@ -87,7 +112,7 @@ code {
 
 
 
-<p>Facebook App SDK for ColdFusion, ported from Facebook PHP official SDK</p>
+<p>A library to build iFrame/FBML apps for Facebook.com and social websites with Facebook Connect</p>
 
 <tr><td>properties:</td>
 
@@ -245,34 +270,12 @@ code {
 	
 	
 	
-		
-	
 	
 	
 	
 	
 	
 		
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -283,7 +286,34 @@ code {
 	
 	
 	
-	<td> <a href="#method_base64UrlDecode">base64UrlDecode</a>*, <a href="#method_createSessionFromSignedRequestParameters">createSessionFromSignedRequestParameters</a>*, <a href="#method_dumpParameters">dumpParameters</a>, <a href="#method_generateParametersSignature">generateParametersSignature</a>*, <a href="#method_getAccessToken">getAccessToken</a>, <a href="#method_GETAPPID">GETAPPID</a>, <a href="#method_getApplicationAccessToken">getApplicationAccessToken</a>, <a href="#method_GETAPPURL">GETAPPURL</a>, <a href="#method_getCurrentUrl">getCurrentUrl</a>*, <a href="#method_getLoginStatusUrl">getLoginStatusUrl</a>, <a href="#method_getLoginUrl">getLoginUrl</a>, <a href="#method_getLogoutUrl">getLogoutUrl</a>, <a href="#method_getProfileId">getProfileId</a>, <a href="#method_GETSECRETKEY">GETSECRETKEY</a>, <a href="#method_getSessionCookieName">getSessionCookieName</a>*, <a href="#method_GETSITEURL">GETSITEURL</a>, <a href="#method_getUrl">getUrl</a>*, <a href="#method_getUserAccessToken">getUserAccessToken</a>, <a href="#method_getUserId">getUserId</a>, <a href="#method_getUserSession">getUserSession</a>, <a href="#method_hashHmacSHA256">hashHmacSHA256</a>*, <a href="#method_init">init</a>, <a href="#method_isInProfileTab">isInProfileTab</a>, <a href="#method_logParameters">logParameters</a>, <a href="#method_parseQueryStringParameters">parseQueryStringParameters</a>*, <a href="#method_parseSignedRequestParameters">parseSignedRequestParameters</a>*, <a href="#method_SETAPPID">SETAPPID</a>, <a href="#method_SETAPPURL">SETAPPURL</a>, <a href="#method_SETSECRETKEY">SETSECRETKEY</a>, <a href="#method_SETSITEURL">SETSITEURL</a>, <a href="#method_validateUserSession">validateUserSession</a>*</td>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+	<td> <a href="#method_base64UrlDecode">base64UrlDecode</a>*, <a href="#method_createSessionFromSignedRequestParameters">createSessionFromSignedRequestParameters</a>*, <a href="#method_dumpParameters">dumpParameters</a>, <a href="#method_generateParametersSignature">generateParametersSignature</a>*, <a href="#method_getAccessToken">getAccessToken</a>, <a href="#method_GETAPPID">GETAPPID</a>, <a href="#method_getApplicationAccessToken">getApplicationAccessToken</a>, <a href="#method_GETAPPURL">GETAPPURL</a>, <a href="#method_getCurrentUrl">getCurrentUrl</a>*, <a href="#method_getLoginStatusUrl">getLoginStatusUrl</a>, <a href="#method_getLoginUrl">getLoginUrl</a>, <a href="#method_getLogoutUrl">getLogoutUrl</a>, <a href="#method_getProfileId">getProfileId</a>, <a href="#method_GETSECRETKEY">GETSECRETKEY</a>, <a href="#method_getSessionCookieName">getSessionCookieName</a>*, <a href="#method_GETSITEURL">GETSITEURL</a>, <a href="#method_getUrl">getUrl</a>*, <a href="#method_getUserAccessToken">getUserAccessToken</a>, <a href="#method_getUserId">getUserId</a>, <a href="#method_getUserSession">getUserSession</a>, <a href="#method_hashHmacSHA256">hashHmacSHA256</a>*, <a href="#method_init">init</a>, <a href="#method_isInFacebook">isInFacebook</a>, <a href="#method_isInFacebookProfileTab">isInFacebookProfileTab</a>, <a href="#method_logParameters">logParameters</a>, <a href="#method_parseQueryStringParameters">parseQueryStringParameters</a>*, <a href="#method_parseSignedRequestParameters">parseSignedRequestParameters</a>*, <a href="#method_SETAPPID">SETAPPID</a>, <a href="#method_SETAPPURL">SETAPPURL</a>, <a href="#method_SETSECRETKEY">SETSECRETKEY</a>, <a href="#method_SETSITEURL">SETSITEURL</a>, <a href="#method_validateUserSession">validateUserSession</a>*</td>
 </tr>
 
 
@@ -313,7 +343,7 @@ code {
 	<tr>
 		<td><a name="property_appId"><b>appId</b></a>
 			</td>
-		<td>yes</td>
+		<td> Facebook application Id</td>
 		<td>
 				String
 			</td>
@@ -351,7 +381,7 @@ code {
 	<tr>
 		<td><a name="property_secretKey"><b>secretKey</b></a>
 			</td>
-		<td>yes</td>
+		<td>Facebook application secret key</td>
 		<td>
 				String
 			</td>
@@ -698,11 +728,13 @@ code {
 
 	
 
-	<tr><th align="left" colspan="1">
-		<a name="method_GETAPPID">GETAPPID</a>
+	<tr>
+	  <th align="left" colspan="1">
+		<a name="method_GETAPPID">getAppId</a>
 		
 		</th></tr>
-	<tr><td>
+	<tr>
+	  <td>
 
 	
 
@@ -713,7 +745,7 @@ code {
 	
 		<i>String</i>
 	
-	<b>GETAPPID</b>
+	<b>getAppId</b>
 	
 	(
  	
@@ -780,11 +812,13 @@ code {
 
 	
 
-	<tr><th align="left" colspan="1">
-		<a name="method_GETAPPURL">GETAPPURL</a>
+	<tr>
+	  <th align="left" colspan="1">
+		<a name="method_GETAPPURL">getAppUrl</a>
 		
 		</th></tr>
-	<tr><td>
+	<tr>
+	  <td>
 
 	
 
@@ -795,7 +829,7 @@ code {
 	
 		<i>String</i>
 	
-	<b>GETAPPURL</b>
+	<b>getAppUrl</b>
 	
 	(
  	
@@ -1083,11 +1117,13 @@ code {
 
 	
 
-	<tr><th align="left" colspan="1">
-		<a name="method_GETSECRETKEY">GETSECRETKEY</a>
+	<tr>
+	  <th align="left" colspan="1">
+		<a name="method_GETSECRETKEY">getSecretKey</a>
 		
 		</th></tr>
-	<tr><td>
+	<tr>
+	  <td>
 
 	
 
@@ -1098,7 +1134,7 @@ code {
 	
 		<i>String</i>
 	
-	<b>GETSECRETKEY</b>
+	<b>getSecretKey</b>
 	
 	(
  	
@@ -1165,11 +1201,13 @@ code {
 
 	
 
-	<tr><th align="left" colspan="1">
-		<a name="method_GETSITEURL">GETSITEURL</a>
+	<tr>
+	  <th align="left" colspan="1">
+		<a name="method_GETSITEURL">getSiteUrl</a>
 		
 		</th></tr>
-	<tr><td>
+	<tr>
+	  <td>
 
 	
 
@@ -1180,7 +1218,7 @@ code {
 	
 		<i>String</i>
 	
-	<b>GETSITEURL</b>
+	<b>getSiteUrl</b>
 	
 	(
  	
@@ -1585,7 +1623,7 @@ code {
 	
 
 	<tr><th align="left" colspan="1">
-		<a name="method_isInProfileTab">isInProfileTab</a>
+		<a name="method_isInFacebook">isInFacebook</a>
 		
 		</th></tr>
 	<tr><td>
@@ -1599,7 +1637,48 @@ code {
 	
 		<i>Boolean</i>
 	
-	<b>isInProfileTab</b>
+	<b>isInFacebook</b>
+	
+	(
+ 	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_isInFacebookProfileTab">isInFacebookProfileTab</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>Boolean</i>
+	
+	<b>isInFacebookProfileTab</b>
 	
 	(
  	
@@ -1805,11 +1884,13 @@ code {
 
 	
 
-	<tr><th align="left" colspan="1">
-		<a name="method_SETAPPID">SETAPPID</a>
+	<tr>
+	  <th align="left" colspan="1">
+		<a name="method_SETAPPID">setAppId</a>
 		
 		</th></tr>
-	<tr><td>
+	<tr>
+	  <td>
 
 	
 
@@ -1820,7 +1901,7 @@ code {
 	
 		<i>void</i>
 	
-	<b>SETAPPID</b>
+	<b>setAppId</b>
 	
 	(
  	
@@ -1865,11 +1946,13 @@ code {
 
 	
 
-	<tr><th align="left" colspan="1">
-		<a name="method_SETAPPURL">SETAPPURL</a>
+	<tr>
+	  <th align="left" colspan="1">
+		<a name="method_SETAPPURL">setAppUrl</a>
 		
 		</th></tr>
-	<tr><td>
+	<tr>
+	  <td>
 
 	
 
@@ -1880,7 +1963,7 @@ code {
 	
 		<i>void</i>
 	
-	<b>SETAPPURL</b>
+	<b>setAppUrl</b>
 	
 	(
  	
@@ -1925,11 +2008,13 @@ code {
 
 	
 
-	<tr><th align="left" colspan="1">
-		<a name="method_SETSECRETKEY">SETSECRETKEY</a>
+	<tr>
+	  <th align="left" colspan="1">
+		<a name="method_SETSECRETKEY">setSecretKey</a>
 		
 		</th></tr>
-	<tr><td>
+	<tr>
+	  <td>
 
 	
 
@@ -1940,7 +2025,7 @@ code {
 	
 		<i>void</i>
 	
-	<b>SETSECRETKEY</b>
+	<b>setSecretKey</b>
 	
 	(
  	
@@ -1985,11 +2070,13 @@ code {
 
 	
 
-	<tr><th align="left" colspan="1">
-		<a name="method_SETSITEURL">SETSITEURL</a>
+	<tr>
+	  <th align="left" colspan="1">
+		<a name="method_SETSITEURL">setSiteUrl</a>
 		
 		</th></tr>
-	<tr><td>
+	<tr>
+	  <td>
 
 	
 
@@ -2000,7 +2087,7 @@ code {
 	
 		<i>void</i>
 	
-	<b>SETSITEURL</b>
+	<b>setSiteUrl</b>
 	
 	(
  	

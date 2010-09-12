@@ -1,3 +1,26 @@
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+		
+		
+			
+			
+
+
 <html>
 <head>
 <title>Component FacebookRestAPI</title>
@@ -42,7 +65,7 @@ code {
 
 
 
-<font size="-2">FacebookRestAPI</font><br>
+<font size="-2">facebook.sdk.FacebookRestAPI</font><br>
 <font size="+1"><b>Component FacebookRestAPI
 (Facebook Rest API)
 </b></font>
@@ -63,18 +86,13 @@ code {
 
 	
 
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FacebookRestAPI<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;facebook.sdk.FacebookRestAPI<br>
 		
 
 	
 
 
 </td></tr>
-
-
-<tr><td>path:</td>
-	<td>/Applications/ColdFusion9/wwwroot/FacebookRestAPI.cfc</td>
-</tr>
 
 <tr><td>serializable:</td>
 	<td>Yes
@@ -87,7 +105,7 @@ code {
 
 
 
-<p>Facebook Rest API wrapper for ColdFusion</p>
+<p>A client wrapper to call the old Facebook Rest API</p>
 
 <tr><td>properties:</td>
 
@@ -113,6 +131,16 @@ code {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 		
 	
 	
@@ -127,7 +155,7 @@ code {
 	
 	
 	
-	<td> <a href="#method_call">call</a>, <a href="#method_init">init</a>, <a href="#method_makeRequest">makeRequest</a>*, <a href="#method_publishAlbum">publishAlbum</a>, <a href="#method_publishPhoto">publishPhoto</a></td>
+	<td> <a href="#method_call">call</a>, <a href="#method_executeMultipleQuery">executeMultipleQuery</a>, <a href="#method_executeQuery">executeQuery</a>, <a href="#method_init">init</a>, <a href="#method_makeRequest">makeRequest</a>*, <a href="#method_publishAlbum">publishAlbum</a>, <a href="#method_publishPhoto">publishPhoto</a></td>
 </tr>
 
 
@@ -179,7 +207,14 @@ code {
 		required
 		String
 		</i>
-		method
+		method,
+	
+		
+		<i>
+		
+		String
+		</i>
+		returnFormat="json"
 	
 	)
 	</i>
@@ -201,6 +236,164 @@ code {
 			String,
 			required,
 			method
+			
+			<br>
+		
+			
+			&nbsp;&nbsp; <b>returnFormat:</b>
+			String,
+			optional,
+			returnFormat
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_executeMultipleQuery">executeMultipleQuery</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>Struct</i>
+	
+	<b>executeMultipleQuery</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		Array
+		</i>
+		queries,
+	
+		
+		<i>
+		
+		String
+		</i>
+		returnFormat="json"
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>queries:</b>
+			Array,
+			required,
+			queries
+			
+			<br>
+		
+			
+			&nbsp;&nbsp; <b>returnFormat:</b>
+			String,
+			optional,
+			returnFormat
+			
+			<br>
+		
+
+	
+	<br>
+	</td></tr>
+
+
+
+	
+
+	
+
+	<tr><th align="left" colspan="1">
+		<a name="method_executeQuery">executeQuery</a>
+		
+		</th></tr>
+	<tr><td>
+
+	
+
+	<code>
+	
+		<i>public</i>
+	
+	
+		<i>Array</i>
+	
+	<b>executeQuery</b>
+	
+	(
+ 	
+		
+		<i>
+		required
+		String
+		</i>
+		query,
+	
+		
+		<i>
+		
+		String
+		</i>
+		returnFormat="json"
+	
+	)
+	</i>
+	</code>
+	<br><br>
+	
+
+	
+	
+
+	Output:   <br>
+
+	
+	
+		Parameters:<br>
+		
+			
+			&nbsp;&nbsp; <b>query:</b>
+			String,
+			required,
+			query
+			
+			<br>
+		
+			
+			&nbsp;&nbsp; <b>returnFormat:</b>
+			String,
+			optional,
+			returnFormat
 			
 			<br>
 		
@@ -297,7 +490,7 @@ code {
 		
 		<i>
 		required
-		<a href="/CFIDE/componentutils/cfcexplorer.cfc?method=getcfcinhtml&name=Http">Http</a>
+		<a href="/CFIDE/componentutils/cfcexplorer.cfc?method=getcfcinhtml&name=facebook-cf-sdk.src.facebook.sdk.Http">Http</a>
 		</i>
 		httpService
 	
@@ -318,7 +511,7 @@ code {
 		
 			
 			&nbsp;&nbsp; <b>httpService:</b>
-			<a href="/CFIDE/componentutils/cfcexplorer.cfc?method=getcfcinhtml&name=Http">Http</a>,
+			<a href="/CFIDE/componentutils/cfcexplorer.cfc?method=getcfcinhtml&name=facebook-cf-sdk.src.facebook.sdk.Http">Http</a>,
 			required,
 			httpService
 			
