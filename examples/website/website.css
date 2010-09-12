@@ -91,5 +91,5 @@ textarea{resize:none}
 .inputcheckbox{border:0;vertical-align:middle}
 .clearfix:after{clear:both;content:".";display:block;font-size:0;height:0;line-height:0;visibility:hidden}
 .clearfix{display:block;zoom:1}
-img.left {float:left; margin-right:20px !important}
-img.right {float:right; margin-left:20px !important}
+.left {float:left; margin-right:20px !important}
+.right {float:right; margin-left:20px !important}

@@ -19,10 +19,20 @@
   * under the License.
   *
 --->
-<html>
+<html xmlns:og="http://opengraphprotocol.org/schema/">
 	<head>
 		<title>Facebook ColdFusion SDK</title>
-		<link rel="stylesheet" type="text/css" href="examples/website/website.css" />
+		<meta name="title" content="Facebook ColdFusion SDK" />
+		<meta name="description" content="Open source Facebook ColdFusion SDK that allows you to integrate the Facebook Platform on a website powered by a ColdFusion application server." />
+		<meta name="keywords" content="facebook, coldFusion, sdk, open source, graph api, open graph protocol, affinitiz" />
+		<meta property="og:title" content="Facebook ColdFusion SDK"/>
+	    <meta property="og:type" content="website"/>
+	    <meta property="og:url" content="http://affinitiz.com/facebook-cf-sdk/"/>
+	    <meta property="og:image" content="http://affinitiz.com/facebook-cf-sdk/images/coldfusion-sdk-320x320.png"/>
+		<meta property="og:site_name" content="affinitiz"/>
+	    <meta property="fb:admins" content="594317994"/>
+	    <meta property="fb:app_id" content="149805085052762"/>
+	    <link rel="stylesheet" type="text/css" href="examples/website/website.css" />
 	</head>
 	<body>
 		<div class="menu">
@@ -30,7 +40,7 @@
 				<a href="##" class="l">Accueil</a>
 				<a href="examples/website" class="l">Example</a>
 				<div class="logo">
-					<img src="images/revolution-50x50.png" height="50" width="50" style="float:right" />
+					<img src="images/coldfusion-sdk-50x50.png" height="50" width="50" style="float:right" />
 					<span>Facebook ColdFusion SDK</span>
 				</div>
 				<div class="clear"></div>
@@ -43,21 +53,24 @@
 		</div>
 		<div class="body washbody example">
 			<div class="content">
-				<h2>Introduction</h2>
-				<p>
-					<img src="images/facebook-platform-logo.jpg" class="left" height="100" width="100" />
-					The <a href="http://developers.facebook.com/">Facebook Platform</a> is a set of APIs that make your application more social. Read more about <a href="http://developers.facebook.com/docs/guides/web">integrating Facebook with your web site</a> on the Facebook developer site.<br />
-					<br />
-					This project contains the open source <b>Facebook ColdFusion SDK</b> that allows you to integrate the <a href="http://developers.facebook.com/">Facebook Platform</a> on your website powered by a <a href="http://www.adobe.com/products/coldfusion/">ColdFusion application server</a>.
-				</p>
-				<p>
-					<b>Facebook ColdFusion SDK</b> provides 3 components :
-					<ul>
-						<li><b>FacebookApp.cfc</b> - A library to build iFrame/FBML apps for Facebook.com and social websites with Facebook Connect (the library is a complete port to ColdFusion of Facebook PHP SDK V2.1.1).</li>
-						<li><b>FacebookGraphAPI.cfc</b> - A client wrapper to call Facebook Graph API (the wrapper is inspired from the latest official .NET and Python SDKs graph clients).</li>
-						<li><b>FacebookRestAPI.cfc</b> - A client wrapper to call the old Facebook Rest API.</li>
-					</ul>
-				</p>
+				<iframe class="right" style="height:590px" src="http://www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fapps%2Fapplication.php%3Fid%3D149805085052762&amp;width=292&amp;connections=10&amp;stream=true&amp;header=true&amp;height=587" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:587px;" allowTransparency="true"></iframe>
+				<div style="min-height:560px;">
+					<h2>Introduction</h2>
+					<p>
+						<img src="images/facebook-platform-logo.jpg" class="left" height="100" width="100" />
+						The <a href="http://developers.facebook.com/">Facebook Platform</a> is a set of APIs that make your application more social. Read more about <a href="http://developers.facebook.com/docs/guides/web">integrating Facebook with your web site</a> on the Facebook developer site.<br />
+						<br />
+						This project contains the open source <b>Facebook ColdFusion SDK</b> that allows you to integrate the <a href="http://developers.facebook.com/">Facebook Platform</a> on a website powered by a <a href="http://www.adobe.com/products/coldfusion/">ColdFusion application server</a>.
+					</p>
+					<p>
+						<b>Facebook ColdFusion SDK</b> provides 3 components :
+						<ul>
+							<li><b>FacebookApp.cfc</b> - A library to build iFrame/FBML apps for Facebook.com and social websites with Facebook Connect (the library is a complete port to ColdFusion of Facebook PHP SDK V2.1.1).</li>
+							<li><b>FacebookGraphAPI.cfc</b> - A client wrapper to call Facebook Graph API (the wrapper is inspired from the latest official .NET and Python SDKs graph clients).</li>
+							<li><b>FacebookRestAPI.cfc</b> - A client wrapper to call the old Facebook Rest API.</li>
+						</ul>
+					</p>
+				</div>
 				<hr />
 				<h2>Documentation</h2>
 				<p>

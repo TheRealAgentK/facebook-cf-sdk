@@ -81,7 +81,7 @@ naitik = facebookGraphAPI.getObject(id='naitik');
 			<a href="../../." class="l">Accueil</a>
 			<a href="##" class="l">Example</a>
 			<div class="logo">
-				<img src="../../images/revolution-50x50.png" height="50" width="50" style="float:right" />
+				<img src="../../images/coldfusion-sdk-50x50.png" height="50" width="50" style="float:right" />
 				<span>Facebook ColdFusion SDK</span>
 			</div>
 			<div class="clear"></div>

@@ -7,7 +7,7 @@ The [Facebook Platform](http://developers.facebook.com/) is a set of APIs that m
 
 This project contains the open source **Facebook ColdFusion SDK** that allows you to integrate the [Facebook Platform](http://developers.facebook.com/) on your website powered by a [ColdFusion application server](http://www.adobe.com/products/coldfusion).
 
-Facebook ColdFusion SDK provides 3 components :
+**Facebook ColdFusion SDK** provides 3 components :
 
 * **FacebookApp.cfc** - A library to build iFrame/FBML [apps on Facebook.com](http://developers.facebook.com/docs/guides/canvas/) and [websites with the Facebook Platform](http://developers.facebook.com/docs/guides/web) (the library is a complete port to ColdFusion of the [Facebook PHP SDK V2.1.1](http://github.com/facebook/php-sdk)).
 * **FacebookGraphAPI.cfc** - A client wrapper to call Facebook Graph API (the wrapper is inspired from the latest official .NET and Python SDKs graph clients).
