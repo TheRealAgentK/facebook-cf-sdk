@@ -65,7 +65,7 @@
 					<p>
 						<b>Facebook ColdFusion SDK</b> provides 3 components :
 						<ul>
-							<li><b>FacebookApp.cfc</b> - A library to build iFrame/FBML apps for Facebook.com and social websites with Facebook Connect (the library is a complete port to ColdFusion of Facebook PHP SDK V2.1.1).</li>
+							<li><b>FacebookApp.cfc</b> - A library to build iFrame/FBML apps for Facebook.com and social websites with Facebook Connect (the library is a complete port to ColdFusion of Facebook PHP SDK V2.1.2).</li>
 							<li><b>FacebookGraphAPI.cfc</b> - A client wrapper to call Facebook Graph API (the wrapper is inspired from the latest official .NET and Python SDKs graph clients).</li>
 							<li><b>FacebookRestAPI.cfc</b> - A client wrapper to call the old Facebook Rest API.</li>
 						</ul>
@@ -74,17 +74,17 @@
 				<hr />
 				<h2>Documentation</h2>
 				<p>
-					To view the latest SDK documentation, please use the project <a href="http://github.com/benorama/facebook-cf-sdk/wiki">Wiki</a> section on <b>GitHub</b></a>.
+					To view the latest SDK documentation, please use the project <a href="http://github.com/affinitiz/facebook-cf-sdk/wiki">Wiki</a> section on <b>GitHub</b></a>.
 				</p>
 				<hr />
 				<h2>Downloads</h2>
 				<p>
-					To download the latest version of the SDK, please use the project <a href="http://github.com/benorama/facebook-cf-sdk/downloads">Downloads</a> section on <b>GitHub</b>.
+					To download the latest version of the SDK, please use the project <a href="http://github.com/affinitiz/facebook-cf-sdk/downloads">Downloads</a> section on <b>GitHub</b>.
 				</p>
 				<hr />
 				<h2>Bugs</h2>
 				<p>
-					To report any bug, please use the project <a href="http://github.com/benorama/facebook-cf-sdk/issues">Issues</a> section on <b>GitHub</b>.
+					To report any bug, please use the project <a href="http://github.com/affinitiz/facebook-cf-sdk/issues">Issues</a> section on <b>GitHub</b>.
 				</p>
 				<hr />
 				<h2>Beta status</h2>
@@ -109,7 +109,7 @@
 		</div>
 		<div class="footer">
 			<div class="content">
-				<a href="http://github.com/benorama/facebook-cf-sdk">Facebook ColdFusion SDK</a> - Open source project by <a href="http://poweredby.affinitiz.com">Affinitiz</a> - 
+				<a href="http://github.com/affinitiz/facebook-cf-sdk">Facebook ColdFusion SDK</a> - Open source project by <a href="http://poweredby.affinitiz.com">Affinitiz</a> - 
 				<a href="http://www.apache.org/licenses/LICENSE-2.0">Licensed under the Apache License, Version 2.0</a><br />
 			</div>
 		</div>

@@ -66,80 +66,77 @@ if (!authenticated) {
 naitik = facebookGraphAPI.getObject(id='naitik');
 </cfscript>
 
-<!DOCTYPE html>
-<html>
-	<style>
-	<cfinclude template="fbml.css">
-	</style>
-	<div class="header">
-		<div class="content">
-			<h1>Facebook ColdFusion SDK Example</h1>
-			FBML canvas app on Facebook.com
-		</div>
+<style>
+<cfinclude template="fbml.css">
+</style>
+<div class="header">
+	<div class="content">
+		<h1>Facebook ColdFusion SDK Example</h1>
+		FBML canvas app on Facebook.com
 	</div>
-	<div class="body example">
-		<cfoutput>	
-		<div class="content">
-			<script>
-		    	<cfif not authenticated>
-					function login() {
-			        	Facebook.showPermissionDialog('publish_stream', function(data) {
-							if (data != null) {
-								document.setLocation('#APP_URL#');
-							}
-						});
-					}
-				</cfif>
-		    </script>
-			
-			<cfif not authenticated>
-				<h2>Authentication</h2>
-				<cfif facebookApp.getAppId() is "" or facebookApp.getSecretKey() is "">
-					<div style="color:red">
-						<h4 style="color:red">Incorrect Facebook Application configuration</h4>
-						Your application is not yet configured, you must create an application on <a href="http://www.facebook.com/developers/">Facebook Developers</a>, in order to get your own app ID and a secret key.<br /> 
-						Replace <i>appId</i> and <i>secretKey</i> in <i>examples/iframe/index.cfm</i>.<br />
-						For more info, see SDK <a href="http://github.com/benorama/facebook-cf-sdk/wiki/Usage">Usage</a> documentation.<br />
-					</div>
-					<br />
-				<cfelse>
-					<div>
-				      Using JavaScript: <a href="##" onclick="login()">Install app</a>
-				    </div>
-				</cfif>
-		    	<hr />
+</div>
+<div class="body example">
+	<cfoutput>	
+	<div class="content">
+		<script>
+	    	<cfif not authenticated>
+				function login() {
+		        	Facebook.showPermissionDialog('publish_stream', function(data) {
+						if (data != null) {
+							document.setLocation('#APP_URL#');
+						}
+					});
+				}
 			</cfif>
-			<h2>Your data</h2>
-		    <cfif authenticated>
-		    	<h3>User session</h3>
-				<cfdump var="#userSession#" format="text">
+	    </script>
+		
+		<cfif not authenticated>
+			<h2>Authentication</h2>
+			<cfif facebookApp.getAppId() is "" or facebookApp.getSecretKey() is "">
+				<div style="color:red">
+					<h4 style="color:red">Incorrect Facebook Application configuration</h4>
+					Your application is not yet configured, you must create an application on <a href="http://www.facebook.com/developers/">Facebook Developers</a>, in order to get your own app ID and a secret key.<br /> 
+					Replace <i>appId</i> and <i>secretKey</i> in <i>examples/iframe/index.cfm</i>.<br />
+					For more info, see SDK <a href="http://github.com/affinitiz/facebook-cf-sdk/wiki/Usage">Usage</a> documentation.<br />
+				</div>
 				<br />
-				<h3>Your profile pic + name</h3>
-			    <img src="https://graph.facebook.com/#userSession.uid#/picture">
-			   	#userObject.name#<br />
-				<br />
-				<h3>Your friends</h3>
-				<cfloop array="#userFriends#" index="friend">
-					<img src="https://graph.facebook.com/#friend.id#/picture">
-				</cfloop><br />
-				<br />
-				<h3>Your info</h3>
-			   	<cfdump var="#userObject#" format="text">
-		    <cfelse>
-		    	<strong><em>You have not installed this app.</em></strong>
-		    </cfif>
-			<hr />
-		  	<h2>Naitik data</h2>
-		    <h3>Profile pic + name</h3>
-			<img src="https://graph.facebook.com/naitik/picture">
-		    #naitik.name#
-		</div>
-		</cfoutput>
+			<cfelse>
+				<div>
+			      Using JavaScript: <a href="##" onclick="login()">Install app</a>
+			    </div>
+			</cfif>
+	    	<hr />
+		</cfif>
+		<h2>Your data</h2>
+	    <cfif authenticated>
+	    	<h3>User session</h3>
+			<cfdump var="#userSession#" format="text">
+			<br />
+			<h3>Your profile pic + name</h3>
+		    <img src="https://graph.facebook.com/#userSession.uid#/picture">
+		   	#userObject.name#<br />
+			<br />
+			<h3>Your friends</h3>
+			<cfloop array="#userFriends#" index="friend">
+				<img src="https://graph.facebook.com/#friend.id#/picture">
+			</cfloop><br />
+			<br />
+			<h3>Your info</h3>
+		   	<cfdump var="#userObject#" format="text">
+	    <cfelse>
+	    	<strong><em>You have not installed this app.</em></strong>
+	    </cfif>
+		<hr />
+	  	<h2>Naitik data</h2>
+	    <h3>Profile pic + name</h3>
+		<img src="https://graph.facebook.com/naitik/picture">
+	    #naitik.name#
 	</div>
-	<div class="footer">
-		<div class="content">
-			<a href="http://github.com/benorama/facebook-cf-sdk">Facebook ColdFusion SDK</a> - Open source project by <a href="http://poweredby.affinitiz.com">Affinitiz</a> - 
-			<a href="http://www.apache.org/licenses/LICENSE-2.0">Licensed under the Apache License, Version 2.0</a><br />
-		</div>
+	</cfoutput>
+</div>
+<div class="footer">
+	<div class="content">
+		<a href="http://github.com/affinitiz/facebook-cf-sdk">Facebook ColdFusion SDK</a> - Open source project by <a href="http://poweredby.affinitiz.com">Affinitiz</a> - 
+		<a href="http://www.apache.org/licenses/LICENSE-2.0">Licensed under the Apache License, Version 2.0</a><br />
 	</div>
-</html>
+</div>

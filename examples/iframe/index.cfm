@@ -141,7 +141,7 @@ naitik = facebookGraphAPI.getObject(id='naitik');
 							<h4>Incorrect Facebook Application configuration</h4>
 							Your application is not yet configured, you must create an application on <a href="http://www.facebook.com/developers/">Facebook Developers</a>, in order to get your own app ID and a secret key.<br /> 
 							Replace <i>appId</i> and <i>secretKey</i> in <i>examples/iframe/index.cfm</i>.<br />
-							For more info, see SDK <a href="http://github.com/benorama/facebook-cf-sdk/wiki/Usage">Usage</a> documentation.<br />
+							For more info, see SDK <a href="http://github.com/affinitiz/facebook-cf-sdk/wiki/Usage">Usage</a> documentation.<br />
 						</div>
 						<br />
 					<cfelse>
@@ -183,7 +183,7 @@ naitik = facebookGraphAPI.getObject(id='naitik');
 		</div>
 		<div class="footer">
 			<div class="content">
-				<a href="http://github.com/benorama/facebook-cf-sdk">Facebook ColdFusion SDK</a> - Open source project by <a href="http://poweredby.affinitiz.com">Affinitiz</a> - 
+				<a href="http://github.com/affinitiz/facebook-cf-sdk">Facebook ColdFusion SDK</a> - Open source project by <a href="http://poweredby.affinitiz.com">Affinitiz</a> - 
 				<a href="http://www.apache.org/licenses/LICENSE-2.0">Licensed under the Apache License, Version 2.0</a><br />
 			</div>
 		</div>
