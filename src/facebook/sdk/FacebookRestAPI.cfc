@@ -4,7 +4,7 @@
   * Author: Benoit Hediard (hediard@affinitiz.com)
   * Date created:	01/08/10
   * Last update date: 11/09/10
-  * Version: V2.1.1 beta1
+  * Version: V2.1.2 beta1
   *
   * Licensed under the Apache License, Version 2.0 (the "License"); you may
   * not use this file except in compliance with the License. You may obtain
@@ -105,11 +105,11 @@ component {
 		return result['aid'];
 	}
 	
-	public String function publishPhoto(required String profileId, required String aid, required String sourcePath, String message = "") {
+	public String function publishPhoto(required String profileId, required String albumId, required String sourcePath, String message = "") {
 		var result = structNew();
 		var httpService = new Http(url="https://api.facebook.com/method/photos.upload", method="POST");
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
-		httpService.addParam(type="formField", name="aid", value="#arguments.aid#");
+		httpService.addParam(type="formField", name="aid", value="#arguments.albumId#");
 		httpService.addParam(type="formField", name="uid", value="#arguments.profileId#");
 		httpService.addParam(type="file", name="data", file="#arguments.sourcePath#");
 		httpService.addParam(type="url", name="format", value="json");

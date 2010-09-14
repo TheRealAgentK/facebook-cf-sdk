@@ -1,9 +1,8 @@
 ﻿/**
-  * Copyright 2010 Affinitiz
-  * Title: FacebookApp.cfc
+  * Copyright 2010 Affinitiz, Inc.
   * Author: Benoit Hediard (hediard@affinitiz.com)
   * Date created:	01/08/10
-  * Last update date: 11/09/10
+  * Last update date: 09/09/10
   * Version: V2.1.1 beta1
   *
   * Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -26,43 +25,43 @@
 component {
 	
 	/**
-	     * @description Facebook App URL
-		 * @hint Ex.: http://apps.facebook.com/your-app
-	     */
-		property String appUrl;
-		/**
-	     * @description Facebook App Id
-		 * @hint
-		 * @validate string
-	     */
-		property String appId;
-		/**
-	     * @description Facebook application secret key
-		 * @hint 
-		 * @validate string
-	     */
-		property String secretKey;
-		/**
-	     * @description Canvas or Site URL
-		 * @hint Ex.: http://youserver.com/yourapp
-	     */
-		property String siteUrl;
+     * @description Facebook App URL
+	 * @hint Ex.: http://apps.facebook.com/your-app
+     */
+	property String appUrl;
+	/**
+     * @description Facebook App Id
+	 * @hint
+	 * @validate string
+     */
+	property String appId;
+	/**
+     * @description Facebook application secret key
+	 * @hint 
+	 * @validate string
+     */
+	property String secretKey;
+	/**
+     * @description Canvas or Site URL
+	 * @hint Ex.: http://youserver.com/yourapp
+     */
+	property String siteUrl;
 
-		variables.DROP_QUERY_PARAMS = "session,signed_request";
-		variables.VERSION = '2.1.1';
+	variables.DROP_QUERY_PARAMS = "session,signed_request";
+	variables.VERSION = '2.1.1';
 
-		/*
-		 * @description Facebook App constructor
-		 * @hint Requires an appId and its secretKey
-		 */
-		public FacebookApp function init(required String appId, required String secretKey, String appUrl = "", String siteUrl = "") {
-			setAppUrl(arguments.appUrl);
-			setAppId(arguments.appId);
-			setSecretKey(arguments.secretKey);
-			setSiteUrl(arguments.siteUrl);
-			//variables.accessTokenHttpService = new Http(url="https://graph.facebook.com/oauth/access_token?type=client_cred&client_id=#variables.appId#&client_secret=#variables.secretKey#");
-			return this;
-		}
+	/*
+	 * @description Facebook App constructor
+	 * @hint Requires an appId and its secretKey
+	 */
+	public FacebookApp function init(required String appId, required String secretKey, String appUrl = "", String siteUrl = "") {
+		setAppUrl(arguments.appUrl);
+		setAppId(arguments.appId);
+		setSecretKey(arguments.secretKey);
+		setSiteUrl(arguments.siteUrl);
+		//variables.accessTokenHttpService = new Http(url="https://graph.facebook.com/oauth/access_token?type=client_cred&client_id=#variables.appId#&client_secret=#variables.secretKey#");
+		return this;
+	}
 	
 	/*
 	 * @description Dump parameters for debug purpose. 
@@ -179,15 +178,25 @@ component {
 	public Numeric function getProfileId() {
 		var parameters = structNew();
 		var profileId = 0;
-		if (structKeyExists(url, "signed_request")) {
-			parameters = parseSignedRequestParameters(url.signed_request);
-		} else if (structKeyExists(form, "signed_request")) {
-			parameters = parseSignedRequestParameters(form.signed_request);
-		}
+		parameters = parseSignedRequestParameters(getSignedRequest());
 		if (structKeyExists(parameters, "profile_id")) {
 			profileId = parameters.profile_id;
 		}
 		return profileId;
+	}
+	
+	/*
+	 * @description Get signed request
+	 * @hint 
+	 */
+	public String function getSignedRequest() {
+		var signedRequest = "";
+		if (structKeyExists(url, "signed_request")) {
+			signedRequest = url.signed_request;
+		} else if (structKeyExists(form, "signed_request")) {
+			signedRequest = form.signed_request;
+		}
+		return signedRequest;
 	}
 	
 	/*
@@ -220,14 +229,12 @@ component {
 	 * @description Get the session object. 
    	 * @hint This will automatically look for a signed session sent via the signed_request, Cookie or Query Parameters if needed.
 	 */
-	public Struct function getUserSession() {
+	public Struct function getUserSession(String signedRequest = "") {
 		var parameters = structNew();
 		var userSession = structNew();
 		// Try loading session from url.signed_request or form.signed_request
-		if (structKeyExists(url, "signed_request")) {
-			parameters = parseSignedRequestParameters(url.signed_request);
-		} else if (structKeyExists(form, "signed_request")) {
-			parameters = parseSignedRequestParameters(form.signed_request);
+		if (signedRequest == "") {
+			parameters = parseSignedRequestParameters(getSignedRequest());
 		}
 		if (structCount(parameters)) {
 			userSession = createSessionFromSignedRequestParameters(parameters);
@@ -399,7 +406,7 @@ component {
 		}
 		return parameters;
 	}
-		
+	
 	private Struct function parseSignedRequestParameters(required String signedRequest) {
 	  	var encodedParameters = listLast(trim(arguments.signedRequest), ".");
 		var encodedSignature = listFirst(trim(arguments.signedRequest), ".");
@@ -413,7 +420,7 @@ component {
 		}
 		return parameters;
 	}
-		
+	
 	private Boolean function validateUserSession(required Struct userSession) {
 		var valid = false;
 		if (isStruct(arguments.userSession) 
