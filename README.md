@@ -16,10 +16,10 @@ This project contains the open source **Facebook ColdFusion SDK** that allows yo
 # Getting started
 
 1. You must first [Download](http://github.com/affinitiz/facebook-cf-sdk/downloads) the latest version of the SDK.
-2. [Install the SDK](Installation) on your ColdFusion server.
-3. [Use the components](Usage) in your application.
+2. [Install the SDK](http://github.com/affinitiz/facebook-cf-sdk/wiki/Installation) on your ColdFusion server.
+3. [Use the components](http://github.com/affinitiz/facebook-cf-sdk/wiki/Usage) in your application.
 
-To see the SDK in action, check the [examples).
+To see the SDK in action, check the [examples](http://github.com/affinitiz/facebook-cf-sdk/wiki/Examples).
 
 # Documentation
 
