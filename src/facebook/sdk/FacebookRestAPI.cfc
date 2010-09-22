@@ -2,9 +2,6 @@
   * Copyright 2010 Affinitiz
   * Title: FacebookRestAPI.cfc
   * Author: Benoit Hediard (hediard@affinitiz.com)
-  * Date created:	01/08/10
-  * Last update date: 11/09/10
-  * Version: V2.1.2 beta1
   *
   * Licensed under the Apache License, Version 2.0 (the "License"); you may
   * not use this file except in compliance with the License. You may obtain

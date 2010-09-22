@@ -1,9 +1,6 @@
 ﻿/**
   * Copyright 2010 Affinitiz, Inc.
   * Author: Benoit Hediard (hediard@affinitiz.com)
-  * Date created:	01/08/10
-  * Last update date: 09/09/10
-  * Version: V2.1.1 beta1
   *
   * Licensed under the Apache License, Version 2.0 (the "License"); you may
   * not use this file except in compliance with the License. You may obtain
@@ -176,11 +173,13 @@ component {
 	 * @hint 
 	 */
 	public Numeric function getProfileId() {
-		var parameters = structNew();
 		var profileId = 0;
-		parameters = parseSignedRequestParameters(getSignedRequest());
-		if (structKeyExists(parameters, "profile_id")) {
-			profileId = parameters.profile_id;
+		var signedRequest = getSignedRequest();
+		if (signedRequest != "") {
+			var parameters = parseSignedRequestParameters(signedRequest);
+			if (structKeyExists(parameters, "profile_id")) {
+				profileId = parameters.profile_id;
+			}
 		}
 		return profileId;
 	}
@@ -195,6 +194,8 @@ component {
 			signedRequest = url.signed_request;
 		} else if (structKeyExists(form, "signed_request")) {
 			signedRequest = form.signed_request;
+		} else {
+			signedRequest = createSignedRequestFromSession(getUserSession());	
 		}
 		return signedRequest;
 	}
@@ -230,14 +231,21 @@ component {
    	 * @hint This will automatically look for a signed session sent via the signed_request, Cookie or Query Parameters if needed.
 	 */
 	public Struct function getUserSession(String signedRequest = "") {
-		var parameters = structNew();
 		var userSession = structNew();
-		// Try loading session from url.signed_request or form.signed_request
-		if (signedRequest == "") {
-			parameters = parseSignedRequestParameters(getSignedRequest());
+		arguments.signedRequest = trim(arguments.signedRequest);
+		if (arguments.signedRequest == "") {
+			// Try loading session from url.signed_request or form.signed_request
+			if (structKeyExists(url, "signed_request")) {
+				arguments.signedRequest = trim(url.signed_request);
+			} else if (structKeyExists(form, "signed_request")) {
+				arguments.signedRequest = trim(form.signed_request);
+			}
 		}
-		if (structCount(parameters)) {
-			userSession = createSessionFromSignedRequestParameters(parameters);
+		if (arguments.signedRequest != "") {
+			var parameters = parseSignedRequestParameters(arguments.signedRequest);
+			if (structCount(parameters)) {
+				userSession = createSessionFromSignedRequestParameters(parameters);
+			}
 		}
 		if (!structCount(userSession)) {
 			// Try loading session form url.session or form.session
@@ -315,7 +323,13 @@ component {
 		for (var i=0; i < paddingMissingCount; i++) {
 			base64Value = base64Value & "=";
 		}
-		return toString(toBinary(base64Value));
+		return toString(toBinary(base64Value), "ISO-8859-1");
+	}
+	
+	private String function base64UrlEncode(required String value) {
+		var base64Value = toBase64(arguments.value, "ISO-8859-1");
+		var base64UrlValue = replace(replaceList(base64Value, "+,/", "-,_"), "=", "", "ALL");
+		return base64UrlValue;
 	}
 	
 	private Struct function createSessionFromSignedRequestParameters(required Struct parameters) {
@@ -329,6 +343,18 @@ component {
 		return userSession;
 	}
 	
+	private String function createSignedRequestFromSession(required Struct userSession) {
+		var signedRequest = "";
+		if (structKeyExists(arguments.userSession, "access_token")) {
+			var jsonParameters = '{"algorithm":"HMAC-SHA256","expires":#userSession["expires"]#,"oauth_token":"#userSession["access_token"]#","user_id":"#userSession["uid"]#"}';
+			var encodedParameters = base64UrlEncode(jsonParameters);
+			var signature = hashHmacSHA256(encodedParameters, getSecretKey());
+			var encodedSignature = base64UrlEncode(signature);
+			signedRequest = encodedSignature & "." & encodedParameters;
+		}
+		return signedRequest;
+	}
+		
 	private String function generateParametersSignature(required Struct parameters, required String secretKey) {
 		var buffer = createObject("java","java.lang.StringBuffer").init("");
 		var key = "";
@@ -392,7 +418,7 @@ component {
 		var secretKeySpec = createObject('java', 'javax.crypto.spec.SecretKeySpec' ).init(arguments.secretKey.getBytes(), 'HmacSHA256');
 		var mac = createObject('java', "javax.crypto.Mac").getInstance("HmacSHA256");
 		mac.init(secretKeySpec);
-		return toString(mac.doFinal(value.getBytes()));
+		return toString(mac.doFinal(value.getBytes()), "ISO-8859-1");
 	}
 	
 	private Struct function parseQueryStringParameters(required String queryString) {
@@ -407,14 +433,14 @@ component {
 		return parameters;
 	}
 	
-	private Struct function parseSignedRequestParameters(required String signedRequest) {
+	public Struct function parseSignedRequestParameters(required String signedRequest) {
 	  	var encodedParameters = listLast(trim(arguments.signedRequest), ".");
 		var encodedSignature = listFirst(trim(arguments.signedRequest), ".");
-		var expectedSignature = hashHmacSHA256(encodedParameters, variables.secretKey);
+		var expectedSignature = hashHmacSHA256(encodedParameters, getSecretKey());
 		var parameters = structNew();
 		var signature = base64UrlDecode(encodedSignature);
 		if (signature != expectedSignature) {
-			throw(errorcode="Invalid signature", message="Invalid signature in url parameters", type="Facebook Application Security");
+			throw(errorcode="Invalid signature", message="Invalid signed request", type="Facebook Application Security");
 		} else {
 			parameters = deserializeJSON(base64UrlDecode(encodedParameters));
 		}
