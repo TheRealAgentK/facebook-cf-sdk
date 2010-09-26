@@ -1,4 +1,4 @@
-﻿/**
+﻿﻿/**
   * Copyright 2010 Affinitiz
   * Title: FacebookRestAPI.cfc
   * Author: Benoit Hediard (hediard@affinitiz.com)
@@ -97,6 +97,7 @@ component {
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		httpService.addParam(type="url", name="name", value="#arguments.name#");
 		httpService.addParam(type="url", name="description", value="#arguments.description#");
+		httpService.addParam(type="url", name="uid", value="#arguments.profileId#");
 		httpService.addParam(type="url", name="format", value="json");
 		result = makeRequest(httpService);
 		return result['aid'];
@@ -106,8 +107,8 @@ component {
 		var result = structNew();
 		var httpService = new Http(url="https://api.facebook.com/method/photos.upload", method="POST");
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
-		httpService.addParam(type="formField", name="aid", value="#arguments.albumId#");
-		httpService.addParam(type="formField", name="uid", value="#arguments.profileId#");
+		httpService.addParam(type="url", name="aid", value="#arguments.albumId#");
+		httpService.addParam(type="url", name="uid", value="#arguments.profileId#");
 		httpService.addParam(type="file", name="data", file="#arguments.sourcePath#");
 		httpService.addParam(type="url", name="format", value="json");
 		if (trim(arguments.message) != "") httpService.addParam(type="formField", name="message", value="#arguments.message#");

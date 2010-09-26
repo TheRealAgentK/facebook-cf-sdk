@@ -1,6 +1,5 @@
 ﻿/**
-  * Copyright 2010 Affinitiz
-  * Title: FacebookGraphAPI.cfc
+  * Copyright 2010 Affinitiz, Inc.
   * Author: Benoit Hediard (hediard@affinitiz.com)
   *
   * Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -102,11 +101,12 @@ component {
 	public Struct function getObjects(required String ids, String fields = "", Numeric metadata = 0) {
 		var httpService = new Http(url="https://graph.facebook.com");
 		var result = structNew();
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		if (listLen(arguments.fields)) httpService.addParam(type="url", name="fields", value="#arguments.fields#");
 		if (arguments.metadata == 1) httpService.addParam(type="url", name="metadata", value="1");
-		httpService.addParam(type="url", name="ids", value="arguments.ids");
+		httpService.addParam(type="url", name="ids", value="#arguments.ids#");
 		result = makeRequest(httpService);
-		return results;
+		return result;
 	}
 	
 	/*
@@ -205,7 +205,7 @@ component {
 	 */
 	public Boolean function publishPost(required String profileId, String caption = "", String description = "",  String link = "", String message = "", String picture = "", String name = "", String source = "") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/feed", method="POST");
-		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		httpService.addParam(type="formField", name="access_token", value="#variables.ACCESS_TOKEN#");
 		if (trim(arguments.caption) != "") httpService.addParam(type="formField", name="caption", value="#arguments.caption#");
 		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
 		if (trim(arguments.link) != "") httpService.addParam(type="formField", name="link", value="#arguments.link#");
@@ -239,6 +239,7 @@ component {
 		var httpService = new Http(url="https://graph.facebook.com/search");
 		var result = structNew();
 		var results = arrayNew(1);
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		if (trim(arguments.text) != "") httpService.addParam(type="url", name="q", value="#URLEncodedFormat(trim(arguments.text))#");
 		if (trim(arguments.type) != "") httpService.addParam(type="url", name="type", value="#arguments.type#");
 		if (arguments.limit > 0) httpService.addParam(type="url", name="limit", value="#arguments.limit#");
