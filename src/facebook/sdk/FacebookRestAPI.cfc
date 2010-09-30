@@ -25,7 +25,7 @@ component {
 	 * @description Facebook Rest API constructor
 	 * @hint Requires an application or user accessToken
 	 */
-	public FacebookRestAPI function init(String accessToken="") {
+	public FacebookRestAPI function init(String accessToken = "") {
 		variables.ACCESS_TOKEN = arguments.accessToken;
 		return this;
 	}
@@ -70,26 +70,6 @@ component {
 		}
 		return queryResult;
 	}
-	
-	/*public Any function addTag(required String profileId, required String photoId) {
-		var httpService = new Http(url="https://api.facebook.com/method/photos.addTag");
-		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
-		httpService.addParam(type="url", name="tag_uid", value="#arguments.profileId#");
-		httpService.addParam(type="url", name="x", value="10");
-		httpService.addParam(type="url", name="y", value="10");
-		httpService.addParam(type="url", name="pid", value="#arguments.photoId#");
-		httpService.addParam(type="url", name="format", value="json");
-		return makeRequest(httpService);
-	}
-	
-	public Any function isFan(required String pageId) {
-		var result = structNew();
-		var httpService = new Http(url="https://api.facebook.com/method/pages.isFan");
-		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
-		httpService.addParam(type="url", name="page_id", value="#arguments.pageId#");
-		httpService.addParam(type="url", name="format", value="json");
-		return makeRequest(httpService);
-	}*/
 	
 	public String function publishAlbum(required String profileId, required String name, required String description) {
 		var result = structNew();
