@@ -1,4 +1,5 @@
 settings.xml
 .project
 .settings/org.eclipse.core.resources.prefs
+.DS_Store
 .DS_Store/settings.xml
