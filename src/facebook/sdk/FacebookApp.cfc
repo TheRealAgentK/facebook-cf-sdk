@@ -19,7 +19,7 @@
   * @hint A library to build iFrame/FBML apps for Facebook.com and social websites with Facebook Connect
   * 
   */
-component {
+component accessors="true" {
 	
 	/**
      * @description Facebook App URL
