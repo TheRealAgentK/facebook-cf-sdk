@@ -35,6 +35,7 @@ component {
 	 */
 	public Boolean function deleteObject(required String id) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.id#", method="DELETE");
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		makeRequest(httpService);
 		return true;
 	}
@@ -45,6 +46,7 @@ component {
 	 */
 	public Boolean function deletePostLike(required String postId) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.postId#/likes", method="DELETE");
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		makeRequest(httpService);
 		return true;
 	}
@@ -100,13 +102,13 @@ component {
 	 */
 	public Struct function getObjects(required String ids, String fields = "", Numeric metadata = 0) {
 		var httpService = new Http(url="https://graph.facebook.com");
-		var result = structNew();
+		var results = structNew();
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		if (listLen(arguments.fields)) httpService.addParam(type="url", name="fields", value="#arguments.fields#");
 		if (arguments.metadata == 1) httpService.addParam(type="url", name="metadata", value="1");
 		httpService.addParam(type="url", name="ids", value="#arguments.ids#");
-		result = makeRequest(httpService);
-		return result;
+		results = makeRequest(httpService);
+		return results;
 	}
 	
 	/*

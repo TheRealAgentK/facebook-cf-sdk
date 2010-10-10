@@ -14,7 +14,6 @@
   * License for the specific language governing permissions and limitations
   * under the License.
   *
-  * @accessors true
   * @displayname Facebook App
   * @hint A library to build iFrame/FBML apps for Facebook.com and social websites with Facebook Connect
   * 
