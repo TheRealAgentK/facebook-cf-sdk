@@ -28,21 +28,24 @@ component accessors="true" {
 	/**
      * @description Facebook App Id
 	 * @hint
-	 * @validate string
-     */
+	 */
 	property String appId;
+	/**
+     * @description Facebook App required permissions
+	 * @hint Ex.: 
+     */
+	property String permissions;
 	/**
      * @description Facebook application secret key
 	 * @hint 
-	 * @validate string
-     */
+	 */
 	property String secretKey;
 	/**
      * @description Canvas or Site URL
 	 * @hint Ex.: http://youserver.com/yourapp
      */
 	property String siteUrl;
-
+	
 	variables.DROP_QUERY_PARAMS = "session,signed_request";
 	variables.VERSION = '2.1.1';
 
@@ -50,13 +53,22 @@ component accessors="true" {
 	 * @description Facebook App constructor
 	 * @hint Requires an appId and its secretKey
 	 */
-	public FacebookApp function init(required String appId, required String secretKey, String appUrl = "", String siteUrl = "") {
+	public FacebookApp function init(required String appId, required String secretKey, String appUrl = "", String permissions = "", String siteUrl = "") {
 		setAppUrl(arguments.appUrl);
 		setAppId(arguments.appId);
+		setPermissions(arguments.permissions);
 		setSecretKey(arguments.secretKey);
 		setSiteUrl(arguments.siteUrl);
 		//variables.accessTokenHttpService = new Http(url="https://graph.facebook.com/oauth/access_token?type=client_cred&client_id=#variables.appId#&client_secret=#variables.secretKey#");
 		return this;
+	}
+	
+	/*
+	 * @description Delete user session cookie. 
+   	 * @hint Only useful to external website (with Facebook Connect)
+	 */
+	public void function deleteUserSessionCookie() {
+		structDelete(cookie, getSessionCookieName());
 	}
 	
 	/*
@@ -266,6 +278,14 @@ component accessors="true" {
 	}
 	
 	/*
+	 * @description Check if Facebook App is initialized correctly. 
+   	 * @hint 
+	 */
+	public Boolean function isEnabled() {
+		return (getAppId() != "" && getSecretKey() != "");
+	}
+	
+	/*
 	 * @description Check if the application is accessed from a Facebook canvas
 	 * @hint 
 	 */
@@ -390,7 +410,7 @@ component accessors="true" {
 	}
 	
 	private String function getSessionCookieName() {
-		return 'fbs_' & getAppId();
+		return "fbs_" & getAppId();
 	}
 	
 	private String function getUrl(String path = "", Struct parameters = structNew()) {
@@ -433,7 +453,7 @@ component accessors="true" {
 	}
 	
 	public Struct function parseSignedRequestParameters(required String signedRequest) {
-	  	var encodedParameters = listLast(trim(arguments.signedRequest), ".");
+		var encodedParameters = listLast(trim(arguments.signedRequest), ".");
 		var encodedSignature = listFirst(trim(arguments.signedRequest), ".");
 		var expectedSignature = hashHmacSHA256(encodedParameters, getSecretKey());
 		var parameters = structNew();
@@ -447,21 +467,21 @@ component accessors="true" {
 	}
 	
 	private Boolean function validateUserSession(required Struct userSession) {
-		var valid = false;
-		if (isStruct(arguments.userSession) 
-			&& structKeyExists(arguments.userSession, "uid")
-			&& structKeyExists(arguments.userSession, "access_token")
-			&& structKeyExists(arguments.userSession, "sig")) {
-			var userSessionWithoutSignature = duplicate(arguments.userSession);
-			structDelete(userSessionWithoutSignature, "sig");
-			var expectedSignature = generateParametersSignature(userSessionWithoutSignature, getSecretKey());
-			if (arguments.userSession["sig"] == expectedSignature) {
-				valid = true;
-			} else {
-				throw(errorcode="Invalid signature", message="Invalid session signature in url/form session parameter", type="Facebook Application Security");
+			var valid = false;
+			if (isStruct(arguments.userSession) 
+				&& structKeyExists(arguments.userSession, "uid")
+				&& structKeyExists(arguments.userSession, "access_token")
+				&& structKeyExists(arguments.userSession, "sig")) {
+				var userSessionWithoutSignature = duplicate(arguments.userSession);
+				structDelete(userSessionWithoutSignature, "sig");
+				var expectedSignature = generateParametersSignature(userSessionWithoutSignature, getSecretKey());
+				if (arguments.userSession["sig"] == expectedSignature) {
+					valid = true;
+				} else {
+					throw(errorcode="Invalid signature", message="Invalid session signature in url/form session parameter", type="Facebook Application Security");
+				}
 			}
+			return valid;
 		}
-		return valid;
+
 	}
-	
-}
