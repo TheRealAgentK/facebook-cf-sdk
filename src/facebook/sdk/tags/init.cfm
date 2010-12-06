@@ -1,5 +1,8 @@
 ﻿<cfsilent>
 <cfparam name="attributes.facebookApp" />
+<cfparam name="attributes.cookieEnabled" default="true" />
+<cfparam name="attributes.statusEnabled" default="true" />
+<cfparam name="attributes.xfbmlEnabled" default="true" />
 <cfset userSession = attributes.facebookApp.getUserSession() />
 </cfsilent>
 <cfoutput>
@@ -9,9 +12,9 @@
 	        FB.init({
 	          appId   : '#attributes.facebookApp.getAppId()#',
 	          <cfif structKeyExists(userSession, "uid") and userSession.uid is not "">session : #serializeJson(userSession)#,</cfif> // don't refetch the session when Server already has it
-	          status  : false, // check login status
-	          cookie  : true, // enable cookies to allow the server to access the session
-	          xfbml   : <cfif attributes.facebookApp.isXfbmlEnabled()>true<cfelse>false</cfif> // parse XFBML
+	          status  : <cfif attributes.statusEnabled>true<cfelse>false</cfif>, // check login status
+	          cookie  : <cfif attributes.cookieEnabled>true<cfelse>false</cfif>, // enable cookies to allow the server to access the session
+	          xfbml   : <cfif attributes.xfbmlEnabled>true<cfelse>false</cfif> // parse XFBML
 	        });
 		
 			// whenever the user logs in or logs out, we refresh the page

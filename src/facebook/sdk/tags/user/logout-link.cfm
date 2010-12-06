@@ -1,7 +1,7 @@
 <cfsilent>
 	<cfparam name="attributes.class" default="facebook user logout link" />
 	<cfparam name="attributes.returnUrl" default="" />
-	<cfset facebookPath = replaceNoCase( expandPath( "/facebook" ), expandPath( "/" ), "/" ) />
+	<cfset facebookPath = replaceNoCase(expandPath("/facebook"), expandPath("/"), "/") />
 </cfsilent>
 <cfoutput>
 	<script>

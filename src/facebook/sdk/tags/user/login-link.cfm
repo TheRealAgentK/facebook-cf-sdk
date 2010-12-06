@@ -3,7 +3,7 @@
 	<cfparam name="attributes.permissions" default="" />
 	<cfparam name="attributes.returnUrl" default="#cgi.HTTP_REFERER#" />
 	<cfparam name="attributes.cancelUrl" default="#attributes.returnUrl#" />
-	<cfset facebookPath = replaceNoCase( expandPath( "/facebook" ), expandPath( "/" ), "/" ) />
+	<cfset facebookPath = replaceNoCase(expandPath("/facebook" ), expandPath("/"), "/") />
 </cfsilent>
 <cfoutput>
 	<script>
@@ -11,12 +11,12 @@
         	FB.login(function(response) {
 				if (response.session) {
 			    	// user successfully authenticated in
-					window.location.href = '#attributes.returnUrl#';
+					window.location.href = "#attributes.returnUrl#";
 			  	} else {
 			   		// user cancelled login
-					window.location.href = '#attributes.cancelUrl#';
+					window.location.href = "#attributes.cancelUrl#";
 			  	}
-			}, {perms:'#attributes.permissions#'});
+			}, {perms:"#attributes.permissions#"});
 		}
 	</script>
 
