@@ -18,7 +18,7 @@
   * @hint A client wrapper to call the old Facebook Rest API
   * 
   */
-component {
+component accessors="true" {
 	
 	/*
 	 * @description Facebook Rest API constructor
