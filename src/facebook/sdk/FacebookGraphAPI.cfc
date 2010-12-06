@@ -24,9 +24,35 @@ component {
 	 * @description Facebook Graph API constructor
 	 * @hint Requires an application or user accessToken
 	 */
-	public FacebookGraphAPI function init(String accessToken="") {
+	public FacebookGraphAPI function init(String accessToken = "") {
 		variables.ACCESS_TOKEN = arguments.accessToken;
 		return this;
+	}
+	
+	/*
+	 * @description Create a test user
+	 * @hint Requires an application accessToken
+	 */
+	public Struct function createTestUser(required String appId, Boolean installed = false, String permissions = "") {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/accounts/test-users", method="POST");
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		httpService.addParam(type="url", name="installed", value="#arguments.installed#");
+		httpService.addParam(type="url", name="permissions", value="#arguments.permissions#");
+		result = makeRequest(httpService);
+		return result;
+	}
+	
+	/*
+	 * @description Create a test user friend connection
+	 * @hint Requires user1 accessToken
+	 */
+	public Boolean function createTestUserFriendConnection(required String userId1, required String userId2) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.userId1#/friends/#arguments.userId2#", method="POST");
+		var result = false;
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		result = makeRequest(httpService);
+		return result;
 	}
 	
 	/*
@@ -35,9 +61,10 @@ component {
 	 */
 	public Boolean function deleteObject(required String id) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.id#", method="DELETE");
+		var result = false;
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
-		makeRequest(httpService);
-		return true;
+		result = makeRequest(httpService);
+		return result;
 	}
 	
 	/*
@@ -63,11 +90,11 @@ component {
 	 *		Supported connections type for page : albums, events, feed, groups, links, notes, photos, picture, posts, statuses, tagged, videos
 	 *		Supported connections type for photo : comments
 	 *		Supported connections type for post : comments
-	 *		Supported connections type for user : albums, activities, books, checkins, events, feed, friends, groups, interests, home, links, likes, music, movies, notes, photos, picture, posts, statuses, tagged, television, updates, videos
+	  *		Supported connections type for user : albums, activities, books, checkins, events, feed, friends, groups, interests, home, links, likes, music, movies, notes, photos, picture, posts, statuses, tagged, television, thread, updates, videos
 	 *		Supported connections type for video : comments
 	 */
 	public Array function getConnections(required String id, required String type, Numeric limit=-1, Numeric offset=-1, Date since, Date until) {
-		var connections = arrayNew(1);
+		var connections = [];
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.id#/#arguments.type#");
 		var result = "";
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
@@ -88,7 +115,7 @@ component {
 	 */
 	public Struct function getObject(required String id, String fields = "", Numeric metadata = 0) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.id#");
-		var result = structNew();
+		var result = {};
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		if (listLen(arguments.fields)) httpService.addParam(type="url", name="fields", value="#arguments.fields#");
 		if (arguments.metadata == 1) httpService.addParam(type="url", name="metadata", value="1");
@@ -102,13 +129,31 @@ component {
 	 */
 	public Struct function getObjects(required String ids, String fields = "", Numeric metadata = 0) {
 		var httpService = new Http(url="https://graph.facebook.com");
-		var results = structNew();
+		var results = {};
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		if (listLen(arguments.fields)) httpService.addParam(type="url", name="fields", value="#arguments.fields#");
 		if (arguments.metadata == 1) httpService.addParam(type="url", name="metadata", value="1");
 		httpService.addParam(type="url", name="ids", value="#arguments.ids#");
 		results = makeRequest(httpService);
 		return results;
+	}
+	
+	/*
+	 * @description Get test users
+	 * @hint Requires an application accessToken
+	 */
+	public Array function getTestUsers(required String appId) {
+		var users = [];
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/accounts/test-users");
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		httpService.addParam(type="url", name="installed", value="#arguments.installed#");
+		httpService.addParam(type="url", name="permissions", value="#arguments.permissions#");
+		result = makeRequest(httpService);
+		if (structKeyExists(result, "data")) {
+			users = result.data;
+		}
+		return users;
 	}
 	
 	/*
@@ -205,14 +250,16 @@ component {
 	 * @description Add an entry to a profile's feed.
 	 * @hint Requires the publish_stream permission.
 	 */
-	public Boolean function publishPost(required String profileId, String caption = "", String description = "",  String link = "", String message = "", String picture = "", String name = "", String source = "") {
+	public Boolean function publishPost(required String profileId, String actions = "", String caption = "", String description = "",  String link = "", String message = "", String picture = "", String privacy = "", String name = "", String source = "") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/feed", method="POST");
 		httpService.addParam(type="formField", name="access_token", value="#variables.ACCESS_TOKEN#");
+		if (trim(arguments.actions) != "") httpService.addParam(type="formField", name="actions", value="#arguments.actions#");
 		if (trim(arguments.caption) != "") httpService.addParam(type="formField", name="caption", value="#arguments.caption#");
 		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
 		if (trim(arguments.link) != "") httpService.addParam(type="formField", name="link", value="#arguments.link#");
 		if (trim(arguments.message) != "") httpService.addParam(type="formField", name="message", value="#arguments.message#");
 		if (trim(arguments.picture) != "") httpService.addParam(type="formField", name="picture", value="#arguments.picture#");
+		if (trim(arguments.privacy) != "") httpService.addParam(type="formField", name="privacy", value="#arguments.privacy#");
 		if (trim(arguments.name) != "") httpService.addParam(type="formField", name="name", value="#arguments.name#");
 		if (trim(arguments.source) != "") httpService.addParam(type="formField", name="source", value="#arguments.source#");
 		makeRequest(httpService);
@@ -224,7 +271,7 @@ component {
 	 * @hint Requires the publish_stream permission.
 	 */
 	public String function publishPhoto(required String profileId, required String sourcePath, String message = "") {
-		var result = structNew();
+		var result = {};
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/photos", method="POST");
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		httpService.addParam(type="file", name="source", file="#arguments.sourcePath#");
@@ -239,8 +286,8 @@ component {
 	 */
 	public Array function search(required String text, String type = "", Numeric limit = -1, Numeric offset = -1) {
 		var httpService = new Http(url="https://graph.facebook.com/search");
-		var result = structNew();
-		var results = arrayNew(1);
+		var result = {};
+		var results = [];
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		if (trim(arguments.text) != "") httpService.addParam(type="url", name="q", value="#URLEncodedFormat(trim(arguments.text))#");
 		if (trim(arguments.type) != "") httpService.addParam(type="url", name="type", value="#arguments.type#");
@@ -257,7 +304,7 @@ component {
 	
 	private Any function makeRequest(required Http httpService) {
 		var response = arguments.httpService.send().getPrefix();
-		var result = structNew();
+		var result = {};
 		if (isJSON(response.fileContent)) {
 			result = deserializeJSON(response.fileContent);
 			if (isStruct(result) && structKeyExists(result, "error")) {
