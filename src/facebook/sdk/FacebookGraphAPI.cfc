@@ -308,10 +308,10 @@ component {
 		if (isJSON(response.fileContent)) {
 			result = deserializeJSON(response.fileContent);
 			if (isStruct(result) && structKeyExists(result, "error")) {
-				throw(message="#result.error.message#", type="Facebook #result.error.type#");
+				throw(message="#result.error.type# (#result.error.message#)", type="FacebookAPI");
 			}
 		} else if (response.statusCode != "200 OK") {
-			throw(message="#response.statusCode#", type="Facebook HTTP");
+			throw(message="#response.statusCode#", type="FacebookHTTP");
 		}
 		return result;
 	}

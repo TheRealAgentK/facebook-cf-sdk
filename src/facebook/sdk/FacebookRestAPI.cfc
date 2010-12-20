@@ -103,12 +103,12 @@ component accessors="true" {
 		if (isJSON(response.fileContent)) {
 			result = deserializeJSON(response.fileContent);
 			if (isStruct(result) && structKeyExists(result, "error_code")) {
-				throw(message="#result.error_msg#", type="Facebook API error #result.error_code#");
+				throw(message="Error #result.error_code# (#result.error_msg#)", type="FacebookAPI");
 			}
 		} else {
 			result = response;
 			if (response.statusCode != "200 OK") {
-				throw(message="#response.statusCode#", type="Facebook HTTP");
+				throw(message="#response.statusCode#", type="FacebookHTTP");
 			}
 		}
 		return result;
