@@ -1,4 +1,5 @@
-﻿<cfsilent>
+﻿<cfif thisTag.executionMode is "end"><cfsetting enablecfoutputonly="false">
+<cfsilent>
 <cfparam name="attributes.facebookApp" />
 <cfparam name="attributes.cookieEnabled" default="true" />
 <cfparam name="attributes.statusEnabled" default="true" />
@@ -16,14 +17,8 @@
 	          cookie  : <cfif attributes.cookieEnabled>true<cfelse>false</cfif>, // enable cookies to allow the server to access the session
 	          xfbml   : <cfif attributes.xfbmlEnabled>true<cfelse>false</cfif> // parse XFBML
 	        });
-		
-			// whenever the user logs in or logs out, we refresh the page
-			FB.Event.subscribe('auth.login', function(response) {
-		        window.location.reload();
-		    });
-			FB.Event.subscribe('auth.logout', function(response) {
-		        window.location.reload();
-		    });
+			
+			#thisTag.generatedContent#
 		};
 	
 	    (function() {
@@ -33,5 +28,6 @@
 	        document.getElementById('fb-root').appendChild(e);
 	    }());
 	</script>
+	<cfset thisTag.generatedContent = "" />
 </cfoutput>
-<cfexit method="exittag" />
+</cfif>
