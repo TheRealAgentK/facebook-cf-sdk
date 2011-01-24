@@ -80,24 +80,34 @@ component accessors="true" {
 		var key2 = "";
 		var parameters = parseQueryStringParameters(cgi.QUERY_STRING);
 		if (structCount(parameters)) {
-			writeDump("URL");
-			writeDump(parameters);
+			writeOutput("<h4>URL</h4>");
+			writeDump(var=parameters, format="text");
 			for (key in parameters) {
 				if (key == "signed_request") {
 					parameters = parseSignedRequestParameters(form.signed_request);
-					writeDump(parameters);
+					writeOutput("<br />");
+					writeDump(var=parameters, format="text");
 				}
 			}
 		}
 		if (structCount(form)) {
-			writeDump("FORM");
-			writeDump(form);
+			writeOutput("<hr />");
+			writeOutput("<h4>FORM</h4>");
+			writeDump(var=parameters, format="text");
 			for (key in form) {
 				if (key == "signed_request") {
 					parameters = parseSignedRequestParameters(form.signed_request);
-					writeDump(parameters);
+					writeOutput("<br />");
+					writeDump(var=parameters, format="text");
 				}
 			}
+		}
+		var cookieName = getSessionCookieName();
+		if (structKeyExists(cookie, cookieName)) {
+			writeOutput("<hr />");
+			writeOutput("<h4>COOKIE</h4>");
+			parameters = parseQueryStringParameters(cookie[cookieName]);
+			writeDump(var=parameters, format="text");
 		}
 	}
 	
