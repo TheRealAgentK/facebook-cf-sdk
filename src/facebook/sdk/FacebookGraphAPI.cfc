@@ -30,6 +30,22 @@ component {
 	}
 	
 	/*
+	 * @description Create a subscription for the application
+	 * @hint Requires an application accessToken
+	 */
+	public Any function createSubscription(required String appId, required String callbackUrl, required String fields, required String object, required String verifyToken = "") {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="POST");
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		httpService.addParam(type="formField", name="object", value="#arguments.object#");
+		httpService.addParam(type="formField", name="fields", value="#arguments.fields#");
+		httpService.addParam(type="formField", name="callback_url", value="#arguments.callbackUrl#");
+		httpService.addParam(type="formField", name="verify_token", value="#arguments.verifyToken#");
+		result = makeRequest(httpService);
+		return result;
+	}
+	
+	/*
 	 * @description Create a test user
 	 * @hint Requires an application accessToken
 	 */
@@ -39,6 +55,26 @@ component {
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		httpService.addParam(type="url", name="installed", value="#arguments.installed#");
 		httpService.addParam(type="url", name="permissions", value="#arguments.permissions#");
+		result = makeRequest(httpService);
+		return result;
+	}
+	
+	public Any function testRequest() {
+		var httpService = new Http(url="http://79.125.19.184/flo/affinitiz-sdk/sdk/schedules/callback.cfm", method="POST");
+		var result = {};
+		var updates = structNew();
+		updates["object"] = "user";
+		updates["entry"] = arrayNew(1);
+		updates["entry"][1] = structNew();
+		updates["entry"][1]["uid"] = 1335845740;
+		updates["entry"][1]["changed_fields"] = arrayNew(1);
+		updates["entry"][1]["changed_fields"][1] = "name";
+		updates["entry"][1]["changed_fields"][2] = "picture";
+		updates["entry"][1]["time"] = 232323;
+		
+		//{"object": "user","entry":[{"uid": 1335845740,"changed_fields":["name","picture"],"time": 232323},{"uid": 1234,"changed_fields":["friends"],"time": 232325}]};
+		httpService.addParam(type="header", name="content-type", value="application/json");
+		httpService.addParam(type="body", value="#serializeJson(updates)#");
 		result = makeRequest(httpService);
 		return result;
 	}
@@ -74,6 +110,20 @@ component {
 	public Boolean function deletePostLike(required String postId) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.postId#/likes", method="DELETE");
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		makeRequest(httpService);
+		return true;
+	}
+	
+	/*
+	 * @description Remove a subscription for an application
+	 * @hint Requires the publish_stream permission.
+	 */
+	public Boolean function deleteSubscription(required String appId, String object = "") {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="DELETE");
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		if(len(arguments.object)) {
+			httpService.addParam(type="formField", name="object", value="#arguments.object#");
+		}
 		makeRequest(httpService);
 		return true;
 	}
@@ -136,6 +186,18 @@ component {
 		httpService.addParam(type="url", name="ids", value="#arguments.ids#");
 		results = makeRequest(httpService);
 		return results;
+	}
+	
+	/*
+	 * @description List all application's subscriptions
+	 * @hint Requires an application accessToken
+	 */
+	public Struct function getSubscriptions(required String appId) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="GET");
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		result = makeRequest(httpService);
+		return result;
 	}
 	
 	/*
