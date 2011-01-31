@@ -24,7 +24,7 @@ component {
 	 * @description Facebook Graph API constructor
 	 * @hint Requires an application or user accessToken
 	 */
-	public FacebookGraphAPI function init(String accessToken = "") {
+	public facebook.sdk.FacebookGraphAPI function init(String accessToken = "") {
 		variables.ACCESS_TOKEN = arguments.accessToken;
 		return this;
 	}
