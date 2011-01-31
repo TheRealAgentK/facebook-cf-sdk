@@ -5,6 +5,9 @@
 	<cfparam name="attributes.returnUrl" default="#cgi.HTTP_REFERER#" />
 	<cfparam name="attributes.cancelUrl" default="#attributes.returnUrl#" />
 	<cfset facebookPath = replaceNoCase(expandPath("/facebook" ), expandPath("/"), "/") />
+	<cfif cgi.CONTEXT_PATH is not "/">
+		<cfset facebookPath = cgi.CONTEXT_PATH & facebookPath />
+	</cfif>
 </cfsilent>
 <cfoutput>
 	<script>
