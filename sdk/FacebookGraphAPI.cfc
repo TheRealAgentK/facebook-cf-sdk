@@ -92,6 +92,17 @@ component {
 	}
 	
 	/*
+	 * @description Remove a like from a post.
+	 * @hint Requires the publish_stream permission.
+	 */
+	public Boolean function deleteLike(required String id) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.id#/likes", method="DELETE");
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		makeRequest(httpService);
+		return true;
+	}
+	
+	/*
 	 * @description Delete a graph object.
 	 * @hint 
 	 */
@@ -101,17 +112,6 @@ component {
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		result = makeRequest(httpService);
 		return result;
-	}
-	
-	/*
-	 * @description Remove a like from a post.
-	 * @hint Requires the publish_stream permission.
-	 */
-	public Boolean function deletePostLike(required String postId) {
-		var httpService = new Http(url="https://graph.facebook.com/#arguments.postId#/likes", method="DELETE");
-		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
-		makeRequest(httpService);
-		return true;
 	}
 	
 	/*
@@ -272,8 +272,8 @@ component {
 	 * @description Add a like to a post.
 	 * @hint Requires the publish_stream permission.
 	 */
-	public Boolean function publishLike(required String postId) {
-		var httpService = new Http(url="https://graph.facebook.com/#arguments.postId#/likes", method="POST");
+	public Boolean function publishLike(required String id) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.id#/likes", method="POST");
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		makeRequest(httpService);
 		return true;
