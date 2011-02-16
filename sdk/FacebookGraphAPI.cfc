@@ -126,7 +126,7 @@ component {
 	public Array function getConnections(required String id, required String type, Numeric limit=-1, Numeric offset=-1, Date since, Date until) {
 		var connections = [];
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.id#/#arguments.type#");
-		var result = "";
+		var result = {};
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		if (arguments.limit > 0) httpService.addParam(type="url", name="limit", value="#arguments.limit#");
 		if (arguments.offset > 0) httpService.addParam(type="url", name="offset", value="#arguments.offset#");
@@ -208,19 +208,20 @@ component {
 		httpService.addParam(type="formField", name="name", value="#arguments.name#");
 		httpService.addParam(type="formField", name="description", value="#arguments.description#");
 		result = makeRequest(httpService);
-		return result['id'];
+		return result["id"];
 	}
 	
 	/*
 	 * @description Add a comment to a post
 	 * @hint Requires the publish_stream permission.
 	 */
-	public Boolean function publishComment(required String postId, required String message) {
+	public String function publishComment(required String postId, required String message) {
+		var result = {};
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.postId#/comments", method="POST");
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		httpService.addParam(type="formField", name="message", value="#arguments.message#");
-		makeRequest(httpService);
-		return true;
+		result = makeRequest(httpService);
+		return result["id"];
 	}
 		
 	/*
@@ -263,29 +264,31 @@ component {
 	 * @description Add a link to a profile's feed
 	 * @hint Requires the publish_stream permission.
 	 */
-	public Boolean function publishLink(required String profileId, required String link, String caption = "", String description = "", String message = "", String name = "") {
+	public String function publishLink(required String profileId, required String link, String caption = "", String description = "", String message = "", String name = "") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/links", method="POST");
+		var result = {};
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		httpService.addParam(type="formField", name="link", value="#arguments.link#");
 		if (trim(arguments.caption) != "") httpService.addParam(type="formField", name="caption", value="#arguments.caption#");
 		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
 		if (trim(arguments.message) != "") httpService.addParam(type="formField", name="message", value="#arguments.message#");
 		if (trim(arguments.name) != "") httpService.addParam(type="formField", name="name", value="#arguments.name#");
-		makeRequest(httpService);
-		return true;
+		result = makeRequest(httpService);
+		return result["id"];
 	}
 	
 	/*
 	 * @description Add a note to a profile's feed
 	 * @hint Requires the publish_stream permission.
 	 */
-	public Boolean function publishNote(required String profileId, required String subject, required String message) {
+	public String function publishNote(required String profileId, required String subject, required String message) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/notes", method="POST");
+		var result = {};
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		if (trim(arguments.message) != "") httpService.addParam(type="formField", name="message", value="#arguments.message#");
 		if (trim(arguments.subject) != "") httpService.addParam(type="formField", name="subject", value="#arguments.subject#");
-		makeRequest(httpService);
-		return true;
+		result = makeRequest(httpService);
+		return result["id"];
 	}
 	
 	/*
@@ -294,6 +297,7 @@ component {
 	 */
 	public Boolean function publishPost(required String profileId, String actions = "", String caption = "", String description = "",  String link = "", String message = "", String picture = "", String privacy = "", String name = "", String source = "") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/feed", method="POST");
+		var result = {};
 		httpService.addParam(type="formField", name="access_token", value="#variables.ACCESS_TOKEN#");
 		if (trim(arguments.actions) != "") httpService.addParam(type="formField", name="actions", value="#arguments.actions#");
 		if (trim(arguments.caption) != "") httpService.addParam(type="formField", name="caption", value="#arguments.caption#");
@@ -304,8 +308,8 @@ component {
 		if (trim(arguments.privacy) != "") httpService.addParam(type="formField", name="privacy", value="#arguments.privacy#");
 		if (trim(arguments.name) != "") httpService.addParam(type="formField", name="name", value="#arguments.name#");
 		if (trim(arguments.source) != "") httpService.addParam(type="formField", name="source", value="#arguments.source#");
-		makeRequest(httpService);
-		return true;
+		result = makeRequest(httpService);
+		return result["id"];
 	}
 	
 	/*
@@ -313,13 +317,13 @@ component {
 	 * @hint Requires the publish_stream permission.
 	 */
 	public String function publishPhoto(required String profileId, required String sourcePath, String message = "") {
-		var result = {};
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/photos", method="POST");
+		var result = {};
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		httpService.addParam(type="file", name="source", file="#arguments.sourcePath#");
 		if (trim(arguments.message) != "") httpService.addParam(type="formField", name="message", value="#arguments.message#");
 		result = makeRequest(httpService);
-		return result['id'];
+		return result["id"];
 	}
 	
 	/*
