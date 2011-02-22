@@ -190,20 +190,34 @@ component accessors="true" {
 	}
 	
 	/*
-	 * @description Get profile id
+	 * @description Get page data with id, liked and admin (true or false)
 	 * @hint 
 	 */
-	public Numeric function getProfileId() {
-		var profileId = 0;
+	public Struct function getPage() {
+		var page = {};
 		var signedRequest = getSignedRequest();
 		if (signedRequest != "") {
 			var parameters = parseSignedRequestParameters(signedRequest);
-			if (structKeyExists(parameters, "profile_id")) {
-				profileId = parameters.profile_id;
+			if (structKeyExists(parameters, "page")) {
+				page = parameters.page;
 			}
 		}
-		return profileId;
+		return page;
 	}
+	
+	/*
+	 * @description Get page id
+	 * @hint 
+	 */
+	public Numeric function getPageId() {
+		var pageId = 0;
+		var page = getPage();
+		if (structKeyExists(page, "id")) {
+			pageId = page.id;
+		}
+		return pageId;
+	}
+
 	
 	/*
 	 * @description Get signed request
@@ -296,7 +310,7 @@ component accessors="true" {
 	}
 	
 	/*
-	 * @description Check if the application is accessed from a Facebook canvas
+	 * @description Check if the application is accessed from a Facebook canvas app
 	 * @hint 
 	 */
 	public Boolean function isInFacebook() {
@@ -304,12 +318,38 @@ component accessors="true" {
 	}
 	
 	/*
-	 * @description Check if the application is accessed from a Facebook profile tab
+	 * @description Check if the application is accessed from a Facebook page tab
 	 * @hint 
 	 */
-	public Boolean function isInFacebookProfileTab() {
-		var profileId = getProfileId();
-		return (profileId > 0);
+	public Boolean function isInFacebookPageTab() {
+		var pageId = getPageId();
+		return (pageId > 0);
+	}
+	
+	/*
+	 * @description Check if the current user is an admin of the current page (only available if the app is accessed through a Facebook page tab)
+	 * @hint 
+	 */
+	public Boolean function isPageAdmin() {
+		var pageAdmin = false;
+		var page = getPage();
+		if (structKeyExists(page, "admin")) {
+			pageAdmin = page.liked;
+		}
+		return pageAdmin;	
+	}
+	
+	/*
+	 * @description Check if the current page is liked by current user (only available if the app is accessed through a Facebook page tab)
+	 * @hint 
+	 */
+	public Boolean function isPageLiked() {
+		var pageLiked = false;
+		var page = getPage();
+		if (structKeyExists(page, "liked")) {
+			pageLiked = page.liked;
+		}
+		return pageLiked;	
 	}
 	
 	/*
