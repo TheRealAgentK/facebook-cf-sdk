@@ -1,5 +1,6 @@
 ﻿<cfif thisTag.executionMode is "end"><cfsetting enablecfoutputonly="false">
 <cfsilent>
+<cfparam name="attributes.autoResizeEnabled" default="false" />
 <cfparam name="attributes.facebookApp" />
 <cfparam name="attributes.cookieEnabled" default="true" />
 <cfparam name="attributes.localeCode" default="en_US" />
@@ -29,6 +30,12 @@
 	          cookie  : <cfif attributes.cookieEnabled>true<cfelse>false</cfif>, // enable cookies to allow the server to access the session
 	          xfbml   : <cfif attributes.xfbmlEnabled>true<cfelse>false</cfif> // parse XFBML
 	        });
+			
+			<cfif attributes.autoResizeEnabled>
+				FB.Canvas.setAutoResize();
+			<cfelse>
+				FB.Canvas.setSize();
+			</cfif>
 			
 			#thisTag.generatedContent#
 		};
