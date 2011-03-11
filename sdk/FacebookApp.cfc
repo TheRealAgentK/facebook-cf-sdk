@@ -64,10 +64,10 @@ component accessors="true" {
 	}
 	
 	/*
-	 * @description Delete user session cookie. 
+	 * @description Delete session cookie. 
    	 * @hint Only useful to external website (with Facebook Connect)
 	 */
-	public void function deleteUserSessionCookie() {
+	public void function deleteSessionCookie() {
 		structDelete(cookie, getSessionCookieName());
 	}
 	
@@ -302,6 +302,14 @@ component accessors="true" {
 	}
 	
 	/*
+	 * @description Check if session cookie exists. 
+   	 * @hint
+	 */
+	public Boolean function hasSessionCookie() {
+		return structKeyExists(cookie, getSessionCookieName());
+	}
+	
+	/*
 	 * @description Check if Facebook App is initialized correctly. 
    	 * @hint 
 	 */
@@ -380,6 +388,16 @@ component accessors="true" {
 		}	
 	}
 	
+	public Boolean function setSessionCookie(required Struct userSession) {
+		//var parameters = deserializeFromQueryString(arguments.queryString);
+		if (structKeyExists(userSession, "expires")) {
+			var expirationDate = dateAdd("s", userSession["expires"] + getTimeZoneInfo().UTCTotalOffset , "01/01/1970");
+			// Set cookie (use PageContext method in order to keep lower case name and add expires date)
+			getPageContext().getResponse().setHeader("Set-Cookie", getSessionCookieName() & "=" & serializeQueryString(arguments.userSession, false) & ";Expires=#dateFormat(expirationDate, 'ddd, dd-mmm-yyyy')# #timeFormat(expirationDate, 'HH:mm:ss')# GMT;Path=/;HttpOnly");
+		}
+		return true;
+	}
+	
 	// PRIVATE
 	
 	private String function base64UrlDecode(required String base64UrlValue) {
@@ -423,7 +441,7 @@ component accessors="true" {
 		}
 		return signedRequest;
 	}
-		
+	
 	private String function generateParametersSignature(required Struct parameters, required String secretKey) {
 		var buffer = createObject("java","java.lang.StringBuffer").init("");
 		var key = "";
@@ -467,15 +485,7 @@ component accessors="true" {
 		var key = "";
 		var resultUrl = "https://www.facebook.com/" & arguments.path;
 		if (structCount(arguments.parameters)) {
-			resultUrl = resultUrl & "?";
-			for (key in arguments.parameters) {
-				if (right(resultUrl, 1) != "?") {
-					resultUrl = resultUrl  & "&";
-				}
-				if (structKeyExists(arguments.parameters, key)) {
-					resultUrl = resultUrl & key & "=" & URLEncodedFormat(arguments.parameters[key]);
-				}
-			}
+			resultUrl = resultUrl & "?" & serializeQueryString(arguments.parameters);
 		}
 		return resultUrl;
 	}
@@ -502,7 +512,7 @@ component accessors="true" {
 		return parameters;
 	}
 	
-	public Struct function parseSignedRequestParameters(required String signedRequest) {
+	private Struct function parseSignedRequestParameters(required String signedRequest) {
 		var encodedParameters = listLast(trim(arguments.signedRequest), ".");
 		var encodedSignature = listFirst(trim(arguments.signedRequest), ".");
 		var expectedSignature = hashHmacSHA256(encodedParameters, getSecretKey());
@@ -514,6 +524,21 @@ component accessors="true" {
 			parameters = deserializeJSON(base64UrlDecode(encodedParameters));
 		}
 		return parameters;
+	}
+	
+	private String function serializeQueryString(required Struct parameters, Boolean urlEncoded = true) {
+		var queryString = "";
+		for (var key in arguments.parameters) {
+			if (queryString != "") {
+				queryString = queryString  & "&";
+			}
+			if (arguments.urlEncoded) {
+				queryString = queryString & key & "=" & urlEncodedFormat(arguments.parameters[key]);
+			} else {
+				queryString = queryString & key & "=" & arguments.parameters[key];
+			}
+		}
+		return queryString;
 	}
 	
 	private Boolean function validateUserSession(required Struct userSession) {

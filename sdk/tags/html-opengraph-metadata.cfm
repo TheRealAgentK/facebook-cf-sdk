@@ -15,8 +15,6 @@
 <cfif attributes.type is not ""><meta property="og:type" content="#attributes.type#"/></cfif>
 <cfif attributes.imageUrl is not "">
     <meta property="og:image" content="#attributes.imageUrl#"/>
-<cfelse>
-    <meta property="og:image" content="http://79.125.19.184/xabi/apps/oney/assets/images/app-logo-30x30.png" />
 </cfif>
 <cfif attributes.url is not ""><meta property="og:url" content="#attributes.url#"/></cfif>
 <meta property="og:site_name" content="#attributes.siteName#"/>

@@ -7,17 +7,6 @@
 <cfparam name="attributes.statusEnabled" default="true" />
 <cfparam name="attributes.xfbmlEnabled" default="true" />
 <cfset userSession = attributes.facebookApp.getUserSession() />
-<cfif thisTag.generatedContent is "">
-	<!---<cfsavecontent variable="thisTag.generatedContent">
-		// whenever the user logs in or logs out, we refresh the page
-		FB.Event.subscribe("auth.login", function(response) {
-			window.location.reload();
-		});
-		FB.Event.subscribe("auth.logout", function(response) {
-			window.location.reload();
-		});
-	</cfsavecontent>--->
-</cfif>
 </cfsilent>
 <cfoutput>
 	<div id="fb-root"></div>
