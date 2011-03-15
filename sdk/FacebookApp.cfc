@@ -119,7 +119,8 @@ component accessors="true" {
 		var accessToken = getUserAccessToken();
 		if (accessToken == "") {
 			accessToken = getApplicationAccessToken();
-		}	
+		}
+		return accessToken;
 	}
 	
 	/*
@@ -481,7 +482,7 @@ component accessors="true" {
 		return "fbs_" & getAppId();
 	}
 	
-	private String function getUrl(String path = "", Struct parameters = structNew()) {
+	private String function getUrl(String path = "", Struct parameters = {}) {
 		var key = "";
 		var resultUrl = "https://www.facebook.com/" & arguments.path;
 		if (structCount(arguments.parameters)) {
