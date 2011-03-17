@@ -59,7 +59,7 @@ component accessors="true" {
 		setPermissions(arguments.permissions);
 		setSecretKey(arguments.secretKey);
 		setSiteUrl(arguments.siteUrl);
-		//variables.accessTokenHttpService = new Http(url="https://graph.facebook.com/oauth/access_token?type=client_cred&client_id=#variables.appId#&client_secret=#variables.secretKey#");
+		variables.accessTokenHttpService = new Http(url="https://graph.facebook.com/oauth/access_token?type=client_cred&client_id=#variables.appId#&client_secret=#variables.secretKey#");
 		return this;
 	}
 	
@@ -84,7 +84,7 @@ component accessors="true" {
 			writeDump(var=parameters, format="text");
 			for (key in parameters) {
 				if (key == "signed_request") {
-					parameters = parseSignedRequestParameters(form.signed_request);
+					parameters = parseSignedRequestParameters(url.signed_request);
 					writeOutput("<br />");
 					writeDump(var=parameters, format="text");
 				}
@@ -112,6 +112,18 @@ component accessors="true" {
 	}
 	
 	/*
+	 * @description Extend an existing signed request with user session info (expires, oauth_token and user_id)
+	 * @hint 
+	 */
+	public String function extendSignedRequest(required String signedRequest, required Struct userSession) {
+		writeLog(text="FacebookApp.extendSignedRequest signedRequest=" & arguments.signedRequest, file="debug");
+		var parameters = parseSignedRequestParameters(arguments.signedRequest);
+		var extendedSignedRequest = createSignedRequestFromSession(arguments.userSession, parameters);
+		writeLog(text="FacebookApp.extendSignedRequest extendedSignedRequest=" & extendedSignedRequest, file="debug");
+		return extendedSignedRequest;
+	}
+	
+	/*
 	 * @description Get OAuth accessToken
 	 * @hint Return user accessToken if user session exists, application accessToken if no user session is found
 	 */
@@ -127,13 +139,12 @@ component accessors="true" {
 	 * @hint 
 	 */
 	public String function getApplicationAccessToken() {
-		/*var response = variables.accessTokenHttpService.send().getPrefix();
+		var response = variables.accessTokenHttpService.send().getPrefix();
 		if (listLen(response.fileContent, "=") == 2) {
 			return listLast(response.fileContent, "=");
 		} else {
 			return "";
-		}*/
-		return variables.appId & "|" & variables.secretKey;
+		}
 	}
 	
 	/*
@@ -389,7 +400,6 @@ component accessors="true" {
 	}
 	
 	public Boolean function setSessionCookie(required Struct userSession) {
-		//var parameters = deserializeFromQueryString(arguments.queryString);
 		if (structKeyExists(userSession, "expires")) {
 			var expirationDate = dateAdd("s", userSession["expires"] + getTimeZoneInfo().UTCTotalOffset , "01/01/1970");
 			// Set cookie (use PageContext method in order to keep lower case name and add expires date)
@@ -420,7 +430,7 @@ component accessors="true" {
 	}
 	
 	private Struct function createSessionFromSignedRequestParameters(required Struct parameters) {
-		var userSession = structNew();
+		var userSession = {};
 		if (structKeyExists(arguments.parameters, "oauth_token")) {
 			userSession["uid"] = arguments.parameters["user_id"];
 			userSession["access_token"] = arguments.parameters["oauth_token"];
@@ -430,14 +440,23 @@ component accessors="true" {
 		return userSession;
 	}
 	
-	private String function createSignedRequestFromSession(required Struct userSession) {
+	private String function createSignedRequest(required String jsonParameters) {
+		var encodedParameters = base64UrlEncode(arguments.jsonParameters);
+		var signature = hashHmacSHA256(encodedParameters, getSecretKey());
+		var encodedSignature = base64UrlEncode(signature);
+		var signedRequest = encodedSignature & "." & encodedParameters;
+		return signedRequest;
+	}
+
+	private String function createSignedRequestFromSession(required Struct userSession, Struct parameters = structNew()) {
 		var signedRequest = "";
 		if (structKeyExists(arguments.userSession, "access_token")) {
-			var jsonParameters = '{"algorithm":"HMAC-SHA256","expires":#userSession["expires"]#,"oauth_token":"#userSession["access_token"]#","user_id":"#userSession["uid"]#"}';
-			var encodedParameters = base64UrlEncode(jsonParameters);
-			var signature = hashHmacSHA256(encodedParameters, getSecretKey());
-			var encodedSignature = base64UrlEncode(signature);
-			signedRequest = encodedSignature & "." & encodedParameters;
+			var sessionParameters = {expires=arguments.userSession["expires"], oauth_token=URLDecode(arguments.userSession["access_token"]),user_id=arguments.userSession["uid"]};
+			structAppend(arguments.parameters, sessionParameters, true);
+		}
+		if (structCount(arguments.parameters)) {
+			var jsonParameters = serializeJsonSignedRequest(arguments.parameters);
+			signedRequest = createSignedRequest(jsonParameters);
 		}
 		return signedRequest;
 	}
@@ -539,6 +558,47 @@ component accessors="true" {
 			}
 		}
 		return queryString;
+	}
+	
+	private String function serializeJsonSignedRequest(required Struct parameters) {
+		var jsonParameters = '{"algorithm":"HMAC-SHA256"';
+		if (structKeyExists(arguments.parameters, "expires")) {
+			jsonParameters = jsonParameters & ',"expires":' & arguments.parameters["expires"];
+		}
+		if (structKeyExists(arguments.parameters, "issued_at")) {
+			jsonParameters = jsonParameters & ',"issued_at":' & arguments.parameters["issued_at"];
+		}
+		if (structKeyExists(arguments.parameters, "oauth_token")) {
+			jsonParameters = jsonParameters & ',"oauth_token":"' & arguments.parameters["oauth_token"] & '"';
+		}
+		if (structKeyExists(arguments.parameters, "user")) {
+			jsonParameters = jsonParameters & ',"user":{';
+			var commaRequired = false;
+			if (structKeyExists(arguments.parameters["user"], "country")) {
+				jsonParameters = jsonParameters & '"country":"' & arguments.parameters["user"]["country"] & '"';
+				commaRequired = true;
+			}
+			if (structKeyExists(arguments.parameters["user"], "locale")) {
+				if (commaRequired) {
+					jsonParameters = jsonParameters & ',';
+				} else {
+					commaRequired = true;
+				}
+				jsonParameters = jsonParameters & '"locale":"' & arguments.parameters["user"]["locale"] & '"';
+			}
+			if (structKeyExists(arguments.parameters["user"], "age") && structKeyExists(arguments.parameters["user"]["age"], "min")) {
+				if (commaRequired) {
+					jsonParameters = jsonParameters & ',';
+				}
+				jsonParameters = jsonParameters & '"age":{"min":' & arguments.parameters["user"]["age"]["min"] & '}';
+			}
+			jsonParameters = jsonParameters & '}';
+		}
+		if (structKeyExists(arguments.parameters, "user_id")) {
+			jsonParameters = jsonParameters & ',"user_id":"' & arguments.parameters["user_id"] & '"';
+		}
+		jsonParameters = jsonParameters & '}';
+		return jsonParameters;
 	}
 	
 	private Boolean function validateUserSession(required Struct userSession) {

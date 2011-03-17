@@ -4,7 +4,7 @@
 <cfparam name="attributes.facebookApp" />
 <cfparam name="attributes.cookieEnabled" default="true" />
 <cfparam name="attributes.localeCode" default="en_US" />
-<cfparam name="attributes.statusEnabled" default="true" />
+<cfparam name="attributes.statusEnabled" default="false" />
 <cfparam name="attributes.xfbmlEnabled" default="true" />
 <cfset userSession = attributes.facebookApp.getUserSession() />
 </cfsilent>
