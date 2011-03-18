@@ -116,10 +116,8 @@ component accessors="true" {
 	 * @hint 
 	 */
 	public String function extendSignedRequest(required String signedRequest, required Struct userSession) {
-		writeLog(text="FacebookApp.extendSignedRequest signedRequest=" & arguments.signedRequest, file="debug");
 		var parameters = parseSignedRequestParameters(arguments.signedRequest);
 		var extendedSignedRequest = createSignedRequestFromSession(arguments.userSession, parameters);
-		writeLog(text="FacebookApp.extendSignedRequest extendedSignedRequest=" & extendedSignedRequest, file="debug");
 		return extendedSignedRequest;
 	}
 	
