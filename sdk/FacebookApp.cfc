@@ -570,6 +570,30 @@ component accessors="true" {
 		if (structKeyExists(arguments.parameters, "oauth_token")) {
 			jsonParameters = jsonParameters & ',"oauth_token":"' & arguments.parameters["oauth_token"] & '"';
 		}
+		if (structKeyExists(arguments.parameters, "page")) {
+			jsonParameters = jsonParameters & ',"page":{';
+			var commaRequired = false;
+			if (structKeyExists(arguments.parameters["page"], "id")) {
+				jsonParameters = jsonParameters & '"id":"' & arguments.parameters["page"]["id"] & '"';
+				commaRequired = true;
+			}
+			if (structKeyExists(arguments.parameters["page"], "admin") && arguments.parameters["page"]["admin"]) {
+				if (commaRequired) {
+					jsonParameters = jsonParameters & ',';
+				} else {
+					commaRequired = true;
+				}
+				jsonParameters = jsonParameters & '"admin":true';
+				commaRequired = true;
+			}
+			if (structKeyExists(arguments.parameters["page"], "liked") && arguments.parameters["page"]["liked"]) {
+				if (commaRequired) {
+					jsonParameters = jsonParameters & ',';
+				}
+				jsonParameters = jsonParameters & '"liked":true';
+			}
+			jsonParameters = jsonParameters & '}';
+		}
 		if (structKeyExists(arguments.parameters, "user")) {
 			jsonParameters = jsonParameters & ',"user":{';
 			var commaRequired = false;
