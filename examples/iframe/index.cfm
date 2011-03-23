@@ -180,7 +180,7 @@ naitik = facebookGraphAPI.getObject(id='naitik');
 		</div>
 		<div class="footer">
 			<div class="content">
-				<a href="http://github.com/affinitiz/facebook-cf-sdk">Facebook ColdFusion SDK</a> - Open source project by <a href="http://poweredby.affinitiz.com">Affinitiz</a> - 
+				<a href="http://github.com/affinitiz/facebook-cf-sdk">Facebook ColdFusion SDK</a> - Open source project by <a href="http://affinitiz.com">Affinitiz</a> - 
 				<a href="http://www.apache.org/licenses/LICENSE-2.0">Licensed under the Apache License, Version 2.0</a><br />
 			</div>
 		</div>
