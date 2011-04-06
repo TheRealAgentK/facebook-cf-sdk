@@ -24,13 +24,14 @@ component accessors="true" {
 	 * @description Facebook Rest API constructor
 	 * @hint Requires an application or user accessToken
 	 */
-	public facebook.sdk.FacebookRestAPI function init(String accessToken = "") {
+	public facebook.sdk.FacebookRestAPI function init(String accessToken = "", Numeric timeout = 10) {
 		variables.ACCESS_TOKEN = arguments.accessToken;
+		variables.TIMEOUT = arguments.timeout;
 		return this;
 	}
 	
 	public Any function call(required String method, String returnFormat = "json") {
-		var httpService = new Http(url="https://api.facebook.com/method/#arguments.method#");
+		var httpService = new Http(url="https://api.facebook.com/method/#arguments.method#", timeout="#variables.TIMEOUT#");
 		var name = "";
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		for (name in arguments) {
@@ -72,7 +73,7 @@ component accessors="true" {
 	
 	public String function publishAlbum(required String profileId, required String name, required String description) {
 		var result = structNew();
-		var httpService = new Http(url="https://api.facebook.com/method/photos.createAlbum");
+		var httpService = new Http(url="https://api.facebook.com/method/photos.createAlbum", timeout="#variables.TIMEOUT#");
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		httpService.addParam(type="url", name="name", value="#arguments.name#");
 		httpService.addParam(type="url", name="description", value="#arguments.description#");
@@ -84,7 +85,7 @@ component accessors="true" {
 	
 	public String function publishPhoto(required String profileId, required String albumId, required String sourcePath, String message = "") {
 		var result = structNew();
-		var httpService = new Http(url="https://api.facebook.com/method/photos.upload", method="POST");
+		var httpService = new Http(url="https://api.facebook.com/method/photos.upload", method="POST", timeout="#variables.TIMEOUT#");
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		httpService.addParam(type="url", name="aid", value="#arguments.albumId#");
 		httpService.addParam(type="url", name="uid", value="#arguments.profileId#");
