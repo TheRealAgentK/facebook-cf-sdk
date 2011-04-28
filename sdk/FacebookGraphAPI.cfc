@@ -328,6 +328,21 @@ component {
 	}
 	
 	/*
+	 * @description Add a video to a profile
+	 * @hint Requires the publish_stream permission.
+	 */
+	public Boolean function publishVideo(required String sourcePath, String description = "", String title = "") {
+		var httpService = new Http(url="https://graph-video.facebook.com/me/videos", method="POST", timeout="#variables.TIMEOUT#");
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		httpService.addParam(type="file", name="source", file="#arguments.sourcePath#");
+		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
+		if (trim(arguments.title) != "") httpService.addParam(type="formField", name="title", value="#arguments.title#");
+		result = makeRequest(httpService);
+		return true;
+	}
+	
+	/*
 	 * @description Search for objects of a given type.
 	 * @hint Supported search object type : post, user, page, event, group. Requires the publish_stream permission.
 	 */
