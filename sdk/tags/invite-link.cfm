@@ -5,6 +5,8 @@
 	<cfparam name="attributes.style" default="" />
 	<cfparam name="attributes.title" default="" />
 	<cfparam name="attributes.toolType" default="Invite" />
+	<cfset replace(attributes.message, "'", "&rsquo;", "all") />
+	<cfset replace(attributes.title, "'", "&rsquo;", "all") />
 </cfsilent>
 <cfoutput><a class="#attributes.class#" onclick="FB.ui({method: 'apprequests', message: '#attributes.message#'}); return false;"<cfif attributes.style is not ""> style="#attributes.style#"</cfif> title="#attributes.toolType#"><span>#attributes.label#</span></a></cfoutput>
 <cfexit method="exittag" />
