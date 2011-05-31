@@ -1,7 +1,12 @@
 <cfsilent>
 	<cfparam name="attributes.class" default="facebook user picture" />
 	<cfparam name="attributes.facebookId" />
+	<cfparam name="attributes.linkEnabled" default="false" />
+	<cfparam name="attributes.style" default="" />
+	<cfparam name="attributes.target" default="" />
+	<cfparam name="attributes.toolTip" default="" />
 	<cfparam name="attributes.type" default="square" />
+	<cfset profileUrl = "http://www.facebook.com/profile.php?id=" & attributes.facebookId />
 	<cfswitch expression="#attributes.type#">
 	<cfcase value="large">
 		<cfset height = "" />
@@ -22,5 +27,9 @@
 	</cfdefaultcase>
 	</cfswitch>
 </cfsilent>
-<cfoutput><img src="http://graph.facebook.com/#attributes.facebookId#/picture?type=#attributes.type#" class="#attributes.class#" <cfif isNumeric(height)>height="#height#"</cfif> width="#width#"/></cfoutput>
+<cfoutput>
+<cfif attributes.linkEnabled>
+	<a class="#attributes.class#" href="#profileUrl#"<cfif attributes.style is not ""> style="#attributes.style#"</cfif><cfif attributes.target is not ""> target="#attributes.target#"</cfif>  title="#attributes.toolTip#" target="_blank"></cfif>
+	<img src="http://graph.facebook.com/#attributes.facebookId#/picture?type=#attributes.type#" class="#attributes.class#" <cfif isNumeric(height)>height="#height#"</cfif> width="#width#"/>
+	<cfif attributes.linkEnabled></a></cfif></cfoutput>
 <cfexit method="exittag" />

@@ -2,6 +2,7 @@
 	<cfparam name="attributes.caption" default="" />
 	<cfparam name="attributes.class" default="post publish link" />
 	<cfparam name="attributes.description" default="" />
+	<cfparam name="attributes.disabled" default="false" />
 	<cfparam name="attributes.label" default="Publish" />
 	<cfparam name="attributes.link" default="" />
 	<cfparam name="attributes.toolType" default="Publish" />
@@ -14,5 +15,6 @@
 	<cfset replace(attributes.label, "'", "&rsquo;", "all") />
 	<cfset replace(attributes.name, "'", "&rsquo;", "all") />
 </cfsilent>
-<cfoutput><a class="#attributes.class#" onclick="FB.ui({'caption':'#attributes.caption#', 'description':'#attributes.description#', 'link':'#attributes.link#', 'method':'feed','message':'#attributes.message#', 'name':'#attributes.name#', 'picture':'#attributes.picture#', 'source':'#attributes.source#'}); return false;"<cfif attributes.style is not ""> style="#attributes.style#"</cfif> title="#attributes.toolType#"><span>#attributes.label#</span></a></cfoutput>
+<cfoutput><a class="#attributes.class#" onclick="<cfif not attributes.disabled>FB.ui({'caption':'#attributes.caption#', 'description':'#attributes.description#', 'link':'#attributes.link#', 'method':'feed','message':'#attributes.message#', 'name':'#attributes.name#', 'picture':'#attributes.picture#', 'source':'#attributes.source#'}); </cfif>return false;"<cfif attributes.style is not ""> style="#attributes.style#"</cfif> title="#attributes.toolType#"><span>#attributes.label#</span></a></cfoutput>
+
 <cfexit method="exittag" />
