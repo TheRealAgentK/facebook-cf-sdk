@@ -24,7 +24,7 @@ component accessors="true" {
 	 * @description Facebook Rest API constructor
 	 * @hint Requires an application or user accessToken
 	 */
-	public facebook.sdk.FacebookRestAPI function init(String accessToken = "", Numeric timeout = 10) {
+	public Any function init(String accessToken = "", Numeric timeout = 10) {
 		variables.ACCESS_TOKEN = arguments.accessToken;
 		variables.TIMEOUT = arguments.timeout;
 		return this;
