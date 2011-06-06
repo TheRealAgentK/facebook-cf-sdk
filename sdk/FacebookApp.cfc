@@ -53,7 +53,7 @@ component accessors="true" {
 	 * @description Facebook App constructor
 	 * @hint Requires an appId and its secretKey
 	 */
-	public FacebookApp function init(required String appId, required String secretKey, String appUrl = "", String permissions = "", String siteUrl = "") {
+	public Any function init(required String appId, required String secretKey, String appUrl = "", String permissions = "", String siteUrl = "") {
 		setAppUrl(arguments.appUrl);
 		setAppId(arguments.appId);
 		setPermissions(arguments.permissions);
