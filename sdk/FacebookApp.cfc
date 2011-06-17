@@ -352,7 +352,7 @@ component accessors="true" {
 		var pageAdmin = false;
 		var page = getPage();
 		if (structKeyExists(page, "admin")) {
-			pageAdmin = page.liked;
+			pageAdmin = page.admin;
 		}
 		return pageAdmin;	
 	}
