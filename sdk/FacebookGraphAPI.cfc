@@ -153,6 +153,37 @@ component {
 		result = makeRequest(httpService);
 		return result;
 	}
+
+	/*
+	 * @description Get multiple graph objects in a single batched request.
+	 * @hint 
+	 */
+	public Array function getObjectsBatched(required Array relativeUrls) {
+		var httpService = new Http(url="https://graph.facebook.com", method="POST", timeout="#variables.TIMEOUT#");
+		var response = {};
+		var result = {};
+		var results = [];
+		var batch = [];
+		var query = {};
+		for (var relativeUrl in arguments.relativeUrls) {
+			query = {};
+			query["method"] = "GET";
+			query["relative_url"] = relativeUrl;
+			arrayAppend(batch, query);
+		}
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		httpService.addParam(type="url", name="batch", value="#serializeJSON(batch)#");
+		result = makeRequest(httpService);
+		for (response in result) {
+			if (response["code"] == 200) {
+				arrayAppend(results, deserializeJSON(response["body"]));
+			} else {
+				arrayAppend(results, {});
+			}
+		}
+		
+		return results;
+	}
 	
 	/*
 	 * @description Get multiple graph objects.
