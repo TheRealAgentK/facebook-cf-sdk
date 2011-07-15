@@ -151,6 +151,7 @@ component {
 		if (listLen(arguments.fields)) httpService.addParam(type="url", name="fields", value="#arguments.fields#");
 		if (arguments.metadata == 1) httpService.addParam(type="url", name="metadata", value="1");
 		result = makeRequest(httpService);
+		if (!isStruct(result)) result = {};
 		return result;
 	}
 
@@ -174,14 +175,15 @@ component {
 		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
 		httpService.addParam(type="url", name="batch", value="#serializeJSON(batch)#");
 		result = makeRequest(httpService);
-		for (response in result) {
-			if (response["code"] == 200) {
-				arrayAppend(results, deserializeJSON(response["body"]));
-			} else {
-				arrayAppend(results, {});
+		if (isArray(result)) {
+			for (response in result) {
+				if (response["code"] == 200) {
+					arrayAppend(results, deserializeJSON(response["body"]));
+				} else {
+					arrayAppend(results, {});
+				}
 			}
 		}
-		
 		return results;
 	}
 	
@@ -197,6 +199,7 @@ component {
 		if (arguments.metadata == 1) httpService.addParam(type="url", name="metadata", value="1");
 		httpService.addParam(type="url", name="ids", value="#arguments.ids#");
 		results = makeRequest(httpService);
+		if (!isStruct(results)) results = {};
 		return results;
 	}
 	
