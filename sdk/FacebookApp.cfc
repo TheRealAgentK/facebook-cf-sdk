@@ -147,6 +147,22 @@ component accessors="true" {
 	}
 	
 	/*
+	 * @description Get app data passed through URL when app is installed on a page (app_data parameter)
+	 * @hint Return value of app_data
+	 */
+	public String function getAppData() {
+		var appData = "";
+		var signedRequest = getSignedRequest();
+		if (signedRequest != "") {
+			var parameters = parseSignedRequestParameters(signedRequest);
+			if (structKeyExists(parameters, "app_data")) {
+				appData = parameters["app_data"];
+			}
+		}
+		return appData;
+	}
+	
+	/*
 	 * @description Get a login status URL to fetch the status from facebook.
 	 * @hint 
 	 * Available parameters:
