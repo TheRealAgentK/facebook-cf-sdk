@@ -4,7 +4,7 @@
 <cfparam name="attributes.cookieEnabled" default="true" />
 <cfparam name="attributes.facebookApp" />
 <cfparam name="attributes.localeCode" default="en_US" />
-<cfparam name="attributes.channelUrl" default="http://#cgi.SERVER_NAME#/facebook/sdk/assets/scripts/channel.cfm?localeCode=#attributes.localeCode#" />
+<cfparam name="attributes.channelUrl" default="" /><!--- Ex. : http://#cgi.SERVER_NAME#/facebook/sdk/assets/scripts/channel.cfm?localeCode=#attributes.localeCode# --->
 <cfparam name="attributes.oauthEnabled" default="false" />
 <cfparam name="attributes.statusEnabled" default="false" />
 <cfparam name="attributes.xfbmlEnabled" default="true" />
