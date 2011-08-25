@@ -330,7 +330,7 @@ component {
 	 * @description Add an entry to a profile's feed.
 	 * @hint Requires the publish_stream permission.
 	 */
-	public String function publishPost(required String profileId, String actions = "", String caption = "", String description = "",  String link = "", String message = "", String picture = "", String privacy = "", String name = "", String source = "") {
+	public String function publishPost(required String profileId, String actions = "", String caption = "", String description = "",  String link = "", String message = "", String picture = "", String privacy = "", String name = "", String source = "", String targeting = "") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/feed", method="POST", timeout="#variables.TIMEOUT#");
 		var result = {};
 		httpService.addParam(type="formField", name="access_token", value="#variables.ACCESS_TOKEN#");
@@ -343,6 +343,7 @@ component {
 		if (trim(arguments.privacy) != "") httpService.addParam(type="formField", name="privacy", value="#arguments.privacy#");
 		if (trim(arguments.name) != "") httpService.addParam(type="formField", name="name", value="#arguments.name#");
 		if (trim(arguments.source) != "") httpService.addParam(type="formField", name="source", value="#arguments.source#");
+		if (trim(arguments.targeting) != "") httpService.addParam(type="formField", name="targeting", value="#arguments.targeting#");
 		result = makeRequest(httpService);
 		return result["id"];
 	}
