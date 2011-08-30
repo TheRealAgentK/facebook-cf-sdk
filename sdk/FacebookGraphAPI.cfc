@@ -31,6 +31,17 @@ component {
 	}
 	
 	/*
+	 * @description Block a user from a page.
+	 * @hint Requires the manage_pages permission.
+	 */
+	public Boolean function blockUser(required String pageId, required String userId) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/blocked/#arguments.userId#", method="POST", timeout="#variables.TIMEOUT#");
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		makeRequest(httpService);
+		return true;
+	}
+	
+	/*
 	 * @description Create a subscription for the application
 	 * @hint Requires an application accessToken
 	 */
@@ -107,6 +118,22 @@ component {
 		}
 		makeRequest(httpService);
 		return true;
+	}
+	
+	/*
+	 * @description Get blocked users for a page.
+	 * @hint 
+	 */
+	public Array function getBlockedUsers(required String pageId) {
+		var users = [];
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/blocked", timeout="#variables.TIMEOUT#");
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		result = makeRequest(httpService);
+		if (structKeyExists(result, "data")) {
+			users = result.data;
+		}
+		return users;
 	}
 	
 	/*
@@ -231,6 +258,38 @@ component {
 			users = result.data;
 		}
 		return users;
+	}
+	
+	/*
+	 * @description Check if a user has liked a page
+	 * @hint Requires a user accessToken
+	 */
+	public Boolean function isPageLiked(required String pageId, required String userId) {
+		var liked = false;
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.userId#/likes/#arguments.pageId#", timeout="#variables.TIMEOUT#");
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		result = makeRequest(httpService);
+		if (structKeyExists(result, "data") && arrayLen(result.data)) {
+			liked = true;
+		}
+		return liked;
+	}
+	
+	/*
+	 * @description Check if a user is blocked on a page
+	 * @hint Requires a user page accessToken, requires the manage_pages permission
+	 */
+	public Boolean function isUserBlocked(required String pageId, required String userId) {
+		var blocked = false;
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/blocked/#arguments.userId#", timeout="#variables.TIMEOUT#");
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		result = makeRequest(httpService);
+		if (structKeyExists(result, "data") && arrayLen(result.data)) {
+			blocked = true;
+		}
+		return blocked;
 	}
 	
 	/*
@@ -394,6 +453,17 @@ component {
 			results = result.data;
 		}
 		return results;
+	}
+	
+	/*
+	 * @description Remove a blocked user.
+	 * @hint Requires the manage_pages permission.
+	 */
+	public Boolean function unblockUser(required String pageId, required String userId) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/blocked/#arguments.userId#", method="DELETE", timeout="#variables.TIMEOUT#");
+		httpService.addParam(type="url", name="access_token", value="#variables.ACCESS_TOKEN#");
+		makeRequest(httpService);
+		return true;
 	}
 	
 	// PRIVATE
