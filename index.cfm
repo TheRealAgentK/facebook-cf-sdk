@@ -45,7 +45,7 @@
 		</div>
 		<div class="header">
 			<div class="content">
-				<h1>Facebook ColdFusion SDK</h1>
+				<h1>Facebook ColdFusion SDK - V3.1.1</h1>
 			</div>
 		</div>
 		<div class="body washbody example">
@@ -62,12 +62,29 @@
 					<p>
 						<b>Facebook ColdFusion SDK</b> provides 3 components :
 						<ul>
-							<li><b>FacebookApp.cfc</b> - A library to build iFrame/FBML apps for Facebook.com and social websites with Facebook Connect (the library is a complete port to ColdFusion of Facebook PHP SDK V2.1.2).</li>
+							<li><b>FacebookApp.cfc</b> - A library to build apps on Facebook.com and social websites with Facebook Connect (the library is a complete port to ColdFusion of Facebook PHP SDK V3.1.1).</li>
 							<li><b>FacebookGraphAPI.cfc</b> - A client wrapper to call Facebook Graph API (the wrapper is inspired from the latest official .NET and Python SDKs graph clients).</li>
 							<li><b>FacebookRestAPI.cfc</b> - A client wrapper to call the old Facebook Rest API.</li>
 						</ul>
 					</p>
 				</div>
+				<hr />
+				<h2>Migration</h2>
+				<p>
+					As explained in <a href="http://developers.facebook.com/roadmap/">Facebook Platform Roadmap</a>, by <b>October 1, 2011</b>:
+					<ul>
+						<li>all Website and Canvas apps must exclusively support <a href="http://tools.ietf.org/html/draft-ietf-oauth-v2-20" target="_blank">OAuth 2.0 (draft 20)</a></li>
+						<li>all Canvas Apps must use the <code>signed_request</code> parameter</li>
+						<li>an <b>SSL Certificate</b> is required for all Canvas and Page Tab apps (not in Sandbox mode)</li>
+						<li>old, previous versions of our SDKs will <b>stop working</b>, including the old JavaScript SDK, old iOS SDK</li>
+					</ul>
+				</p>
+				<p>
+					<span style="color:red;font-weight:bold;">Previous Facebook ColdFusion SDK (V2.*) will stop working so you MUST upgrade to V3 by October 1, 2011.</span><br />
+				</p>
+				<p>
+					Check SDK documentation to see <a href="http://github.com/affinitiz/facebook-cf-sdk/wiki/migration">How to migrate from SDK V2 to SDK V3</a>
+				</p>
 				<hr />
 				<h2>Documentation</h2>
 				<p>

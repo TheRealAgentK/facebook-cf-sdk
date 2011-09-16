@@ -1,5 +1,5 @@
 ﻿/**
-  * Copyright 2010 Affinitiz
+  * Copyright 2011 Affinitiz
   * Author: Benoit Hediard (hediard@affinitiz.com)
   *
   * Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -18,13 +18,14 @@
   * @hint A client wrapper to call the old Facebook Rest API
   * 
   */
-component accessors="true" {
+component extends="FacebookBase" {
 	
 	/*
 	 * @description Facebook Rest API constructor
-	 * @hint Requires an application or user accessToken
+	 * @hint Requires an application or user accessToken, appId is only used to invalidate current session if an invalid token is detected
 	 */
-	public Any function init(String accessToken = "", Numeric timeout = 10) {
+	public Any function init(String accessToken = "", Numeric appId = 0, Numeric timeout = 10) {
+		super.init(appId=arguments.appId);
 		variables.ACCESS_TOKEN = arguments.accessToken;
 		variables.TIMEOUT = arguments.timeout;
 		return this;
@@ -40,7 +41,7 @@ component accessors="true" {
 			}
 		}
 		httpService.addParam(type="url", name="format", value="#returnformat#");
-		return makeRequest(httpService);
+		return callAPIService(httpService);
 	}
 	
 	/*
@@ -79,7 +80,7 @@ component accessors="true" {
 		httpService.addParam(type="url", name="description", value="#arguments.description#");
 		httpService.addParam(type="url", name="uid", value="#arguments.profileId#");
 		httpService.addParam(type="url", name="format", value="json");
-		result = makeRequest(httpService);
+		result = callAPIService(httpService);
 		return result['aid'];
 	}
 	
@@ -92,27 +93,8 @@ component accessors="true" {
 		httpService.addParam(type="file", name="data", file="#arguments.sourcePath#");
 		httpService.addParam(type="url", name="format", value="json");
 		if (trim(arguments.message) != "") httpService.addParam(type="formField", name="message", value="#arguments.message#");
-		result = makeRequest(httpService);
+		result = callAPIService(httpService);
 		return result['pid'];
-	}
-	
-	// PRIVATE
-	
-	private Any function makeRequest(required Http httpService) {
-		var response = arguments.httpService.send().getPrefix();
-		var result = structNew();
-		if (isJSON(response.fileContent)) {
-			result = deserializeJSON(response.fileContent);
-			if (isStruct(result) && structKeyExists(result, "error_code")) {
-				throw(message="Error #result.error_code# (#result.error_msg#)", type="FacebookAPI");
-			}
-		} else {
-			result = response;
-			if (response.statusCode != "200 OK") {
-				throw(message="#response.statusCode#", type="FacebookHTTP");
-			}
-		}
-		return result;
 	}
 
 }

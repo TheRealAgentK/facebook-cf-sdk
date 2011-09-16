@@ -1,5 +1,5 @@
-Facebook ColdFusion SDK
-=======================
+Facebook ColdFusion SDK - V3.1.1
+================================
 
 # Introduction
 
@@ -9,7 +9,7 @@ This project contains the open source **Facebook ColdFusion SDK** that allows yo
 
 **Facebook ColdFusion SDK** provides 3 components :
 
-* **FacebookApp.cfc** - A library to build iFrame/FBML [apps on Facebook.com](http://developers.facebook.com/docs/guides/canvas/) and [websites with the Facebook Platform](http://developers.facebook.com/docs/guides/web) (the library is a complete port to ColdFusion of the [Facebook PHP SDK V2.1.2](http://github.com/facebook/php-sdk)).
+* **FacebookApp.cfc** - A library to build [apps on Facebook.com](http://developers.facebook.com/docs/guides/canvas/) and [websites with the Facebook Platform](http://developers.facebook.com/docs/guides/web) (the library is a complete port to ColdFusion of the [Facebook PHP SDK V3.1.1](http://github.com/facebook/php-sdk)).
 * **FacebookGraphAPI.cfc** - A client wrapper to call Facebook Graph API (the wrapper is inspired from the latest official .NET and Python SDKs graph clients).
 * **FacebookRestAPI.cfc** - A client wrapper to call the old Facebook Rest API.
 

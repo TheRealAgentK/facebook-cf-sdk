@@ -9,8 +9,8 @@ SECRET_KEY = "";
 
 // Create facebookApp instance
 facebookApp = new FacebookApp(appId=APP_ID, secretKey=SECRET_KEY);
-// Get user session
-userSession = facebookApp.getUserSession();
+// Get user id
+userId = facebookApp.getUserId();
 </cfscript>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
@@ -39,18 +39,45 @@ userSession = facebookApp.getUserSession();
 	<div class="body washbody example">
 		<div class="content">
 			<facebook:init facebookApp="#facebookApp#" />
-			<cfif not structKeyExists(userSession, "uid")>
+			<cfif userId eq 0>
 				<h2>Authentication</h2>
-				<facebook:login-link /><br />
+				<table>
+			    <tr>
+			    	<td><pre>&lt;facebook:login-link /&gt;</pre></td>
+			    	<td style="padding-top:25px;"><facebook:login-link /></td>
+			    </tr>
+			    </table>
+				<br />
 			<cfelse>
 			    <h2>Authenticated</h2>
-			    <facebook:logout-link />
-			    <facebook:picture facebookId="#userSession.uid#" />
-			    <facebook:profile-link facebookId="#userSession.uid#" /><br />
-			    <hr />
-			    <facebook:share-link label="Share this site" url="http://#cgi.SERVER_NAME#" /> |
-			    <facebook:publish-link label="Publish to your stream" message="ColdFusion rocks!" /> |
-			    <facebook:invite-link label="Invite your friend" message="You should try this app" title="ColdFusion Facebook SDK" />
+			    <br />
+			    <h3>ColdFusion Facebook SDK custom tags</h3>
+			    <table>
+			    <tr>
+			    	<td><pre>&lt;facebook:logout-link /&gt;</pre></td>
+			    	<td style="padding-top:25px;"><facebook:logout-link /></td>
+			    </tr>
+			    <tr>
+			    	<td><pre>&lt;facebook:picture facebookId="#userId#" /&gt;</pre></td>
+			    	<td style="padding-top:25px;"><facebook:picture facebookId="#userId#" /></td>
+			    </tr>
+			    <tr>
+			    	<td><pre>&lt;facebook:profile-link<br />facebookId="#userId#" /&gt;</pre></td>
+			    	<td style="padding-top:25px;"><facebook:profile-link facebookId="#userId#" /></td>
+			    </tr>
+			    <tr>
+			    	<td><pre>&lt;facebook:share-link<br />label="Share this site"<br />url="http://#cgi.SERVER_NAME#" /&gt;</pre></td>
+			    	<td style="padding-top:25px;"><facebook:share-link label="Share this site" url="http://#cgi.SERVER_NAME#" /></td>
+			    </tr>
+			    <tr>
+			    	<td><pre>&lt;facebook:publish-link<br />label="Publish to your stream"<br />message="ColdFusion rocks!" /&gt;</pre></td>
+			    	<td style="padding-top:25px;"><facebook:publish-link label="Publish to your stream" message="ColdFusion rocks!" /></td>
+			    </tr>
+			    <tr>
+			    	<td><pre>&lt;facebook:invite-link<br />label="Invite your friend"<br />message="You should try this app"<br />title="ColdFusion Facebook SDK" /&gt;</pre></td>
+			    	<td style="padding-top:25px;"><facebook:invite-link label="Invite your friend" message="You should try this app" title="ColdFusion Facebook SDK" /></td>
+			    </tr>
+			    </table>
 			</cfif>
 		</div>
 	</div>

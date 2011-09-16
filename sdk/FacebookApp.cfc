@@ -1,5 +1,5 @@
 ﻿/**
-  * Copyright 2010 Affinitiz, Inc.
+  * Copyright 2011 Affinitiz, Inc.
   * Author: Benoit Hediard (hediard@affinitiz.com)
   *
   * Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -14,136 +14,118 @@
   * License for the specific language governing permissions and limitations
   * under the License.
   *
-  * @displayname Facebook App
-  * @hint A library to build iFrame/FBML apps for Facebook.com and social websites with Facebook Connect
+  * @displayname Base Facebook App
+  * @hint A library to build apps on Facebook.com and social websites with Facebook Connect
   * 
   */
-component accessors="true" {
+component accessors="true" extends="FacebookBase" {
 	
-	/**
-     * @description Facebook App URL
-	 * @hint Ex.: http://apps.facebook.com/your-app
-     */
-	property String appUrl;
 	/**
      * @description Facebook App Id
 	 * @hint
 	 */
-	property String appId;
-	/**
-     * @description Facebook App required permissions
-	 * @hint Ex.: 
-     */
-	property String permissions;
+	property Numeric appId;
 	/**
      * @description Facebook application secret key
 	 * @hint 
 	 */
 	property String secretKey;
-	/**
-     * @description Canvas or Site URL
-	 * @hint Ex.: http://youserver.com/yourapp
-     */
-	property String siteUrl;
 	
-	variables.DROP_QUERY_PARAMS = "session,signed_request";
-	variables.VERSION = '2.1.1';
-
+	variables.DROP_QUERY_PARAMS = "code,logged_out,state,signed_request";
+	variables.VERSION = "3.1.1";
+	
 	/*
 	 * @description Facebook App constructor
 	 * @hint Requires an appId and its secretKey
 	 */
-	public Any function init(required String appId, required String secretKey, String appUrl = "", String permissions = "", String siteUrl = "") {
-		setAppUrl(arguments.appUrl);
+	public Any function init(required Numeric appId, required String secretKey) {
+		if (!isPersistentDataEnabled()) {
+			throw(message="Persistent scope is not available (by default session scope, so you must enable session management for this app)", type="UnvailablePersistentScope");
+		}
+		super.init(arguments.appId);
 		setAppId(arguments.appId);
-		setPermissions(arguments.permissions);
 		setSecretKey(arguments.secretKey);
-		setSiteUrl(arguments.siteUrl);
-		variables.accessTokenHttpService = new Http(url="https://graph.facebook.com/oauth/access_token?type=client_cred&client_id=#variables.appId#&client_secret=#variables.secretKey#");
 		return this;
 	}
 	
 	/*
-	 * @description Delete session cookie. 
-   	 * @hint Only useful to external website (with Facebook Connect)
+	 * @description Add parameters to an existing signed request
+	 * @hint Useful for example to add user info to an existing signed request with page info
 	 */
-	public void function deleteSessionCookie() {
-		structDelete(cookie, getSessionCookieName());
+	public String function addParametersToSignedRequest(required Struct parameters, required String signedRequest) {
+		var newParameters = parseSignedRequest(arguments.signedRequest);
+		structAppend(newParameters, arguments.parameters, true);
+		return createSignedRequest(newParameters);
 	}
 	
 	/*
-	 * @description Dump parameters for debug purpose. 
+	 * @description Dump signed request for debug purpose. 
    	 * @hint This will automatically dump all the parameters passed to the current page.
 	 */
-	public void function dumpParameters(String eventName = "") {
+	public void function dumpSignedRequest() {
 		var key = "";
-		var key2 = "";
-		var parameters = parseQueryStringParameters(cgi.QUERY_STRING);
+		var parameters = parseQueryString(cgi.QUERY_STRING);
+		var signedRequest = {};
 		if (structCount(parameters)) {
 			writeOutput("<h4>URL</h4>");
 			writeDump(var=parameters, format="text");
 			for (key in parameters) {
 				if (key == "signed_request") {
-					parameters = parseSignedRequestParameters(url.signed_request);
+					signedRequest = parseSignedRequest(url.signed_request);
 					writeOutput("<br />");
-					writeDump(var=parameters, format="text");
+					writeDump(var=signedRequest, format="text");
 				}
 			}
 		}
 		if (structCount(form)) {
 			writeOutput("<hr />");
 			writeOutput("<h4>FORM</h4>");
-			writeDump(var=parameters, format="text");
+			writeDump(var=form, format="text");
 			for (key in form) {
 				if (key == "signed_request") {
-					parameters = parseSignedRequestParameters(form.signed_request);
+					signedRequest = parseSignedRequest(form.signed_request);
 					writeOutput("<br />");
-					writeDump(var=parameters, format="text");
+					writeDump(var=signedRequest, format="text");
 				}
 			}
 		}
-		var cookieName = getSessionCookieName();
+		var cookieName = getSignedRequestCookieName();
 		if (structKeyExists(cookie, cookieName)) {
 			writeOutput("<hr />");
 			writeOutput("<h4>COOKIE</h4>");
-			parameters = parseQueryStringParameters(cookie[cookieName]);
-			writeDump(var=parameters, format="text");
+			signedRequest = parseSignedRequest(cookie[cookieName]);
+			writeDump(var=signedRequest, format="text");
 		}
-	}
-	
-	/*
-	 * @description Extend an existing signed request with user session info (expires, oauth_token and user_id)
-	 * @hint 
-	 */
-	public String function extendSignedRequest(required String signedRequest, required Struct userSession) {
-		var parameters = parseSignedRequestParameters(arguments.signedRequest);
-		var extendedSignedRequest = createSignedRequestFromSession(arguments.userSession, parameters);
-		return extendedSignedRequest;
 	}
 	
 	/*
 	 * @description Get OAuth accessToken
-	 * @hint Return user accessToken if user session exists, application accessToken if no user session is found
+	 * @hint Determines the access token that should be used for API calls. The first time this is called, accessToken is set equal to either a valid user access token, or it's set to the application access token if a valid user access token wasn't available. Subsequent calls return whatever the first call returned.
 	 */
 	public String function getAccessToken() {
-		var accessToken = getUserAccessToken();
-		if (accessToken == "") {
-			accessToken = getApplicationAccessToken();
+		if (!hasRequestData("access_token")) {
+			var accessToken = getUserAccessToken();
+			if (accessToken == "") {
+				// No user access token, establish access token to be the application access token, in case we navigate to the /oauth/access_token endpoint, where SOME access token is required.
+				accessToken = getApplicationAccessToken();
+			}
+			setRequestData("access_token", accessToken);
 		}
-		return accessToken;
+		return getRequestData("access_token");
 	}
 	
 	/*
 	 * @description Get application OAuth accessToken
 	 * @hint 
 	 */
-	public String function getApplicationAccessToken() {
-		var response = variables.accessTokenHttpService.send().getPrefix();
-		if (listLen(response.fileContent, "=") == 2) {
-			return listLast(response.fileContent, "=");
+	public String function getApplicationAccessToken(Boolean apiEnabled = false) {
+		var accessToken = "";
+		if (arguments.apiEnabled) {
+			accessToken = callOAuthGraphAPI(grantType="client_credentials");
 		} else {
-			return "";
+			accessToken = getAppId() & '|' & getSecretKey();
 		}
+		return accessToken;
 	}
 	
 	/*
@@ -153,11 +135,8 @@ component accessors="true" {
 	public String function getAppData() {
 		var appData = "";
 		var signedRequest = getSignedRequest();
-		if (signedRequest != "") {
-			var parameters = parseSignedRequestParameters(signedRequest);
-			if (structKeyExists(parameters, "app_data")) {
-				appData = parameters["app_data"];
-			}
+		if (structKeyExists(signedRequest, "app_data")) {
+			appData = signedRequest["app_data"];
 		}
 		return appData;
 	}
@@ -184,22 +163,15 @@ component accessors="true" {
 	 * @description Get a Login URL for use with redirects.
 	 * @hint By default, full page redirect is assumed. If you are using the generated URL with a window.open() call in JavaScript, you can pass in display=popup as part of the parameters.
 	 * Available parameters:
-   	 * - next: the url to go to after a successful login
-   	 * - cancel_url: the url to go to after the user cancels
-     * - req_perms: comma separated list of requested extended perms
-     * - display: can be "page" (default, full page) or "popup"
+   	 * - redirect_uri: the url to go to after a successful login
+   	 * - scope: comma separated list of requested extended perms
 	 */
 	public String function getLoginUrl(Struct parameters = structNew()) {
-		var currentUrl = getCurrentUrl();
-		if (!structKeyExists(arguments.parameters, "api_key")) arguments.parameters["api_key"] = variables.appId;
-		if (!structKeyExists(arguments.parameters, "cancel_url")) arguments.parameters["cancel_url"] = currentUrl;
-		if (!structKeyExists(arguments.parameters, "display")) arguments.parameters["display"] = "page";
-		if (!structKeyExists(arguments.parameters, "fbconnect")) arguments.parameters["fbconnect"] = 1;
-		if (!structKeyExists(arguments.parameters, "next")) arguments.parameters["next"] = currentUrl;
-		if (!structKeyExists(arguments.parameters, "return_session")) arguments.parameters["return_session"] = 1;
-		if (!structKeyExists(arguments.parameters, "session_version")) arguments.parameters["session_version"] = 3;
-		if (!structKeyExists(arguments.parameters, "v")) arguments.parameters["v"] = 1;
-		return getUrl("login.php", arguments.parameters);
+		establishCSRFStateToken();
+		if (!structKeyExists(arguments.parameters, "client_id")) arguments.parameters["client_id"] = variables.appId;
+		if (!structKeyExists(arguments.parameters, "redirect_uri")) arguments.parameters["redirect_uri"] = getCurrentUrl();
+		if (!structKeyExists(arguments.parameters, "state")) arguments.parameters["state"] = getCSRFStateToken();
+		return getUrl("dialog/oauth", arguments.parameters);
 	}
 	
 	/*
@@ -209,8 +181,7 @@ component accessors="true" {
    	 * - next: the url to go to after a successful logout
 	 */
 	public String function getLogoutUrl(Struct parameters = structNew()) {
-		if (!structKeyExists(arguments.parameters, "api_key")) arguments.parameters["api_key"] = variables.appId;
-		if (!structKeyExists(arguments.parameters, "next")) arguments.parameters["next"] = getCurrentUrl();
+		if (!structKeyExists(arguments.parameters, "next")) arguments.parameters["next"] = getCurrentUrl("logged_out=1");
 		if (!structKeyExists(arguments.parameters, "access_token")) arguments.parameters["access_token"] = getAccessToken();
 		return getUrl("logout.php", arguments.parameters);
 	}
@@ -222,11 +193,8 @@ component accessors="true" {
 	public Struct function getPage() {
 		var page = {};
 		var signedRequest = getSignedRequest();
-		if (signedRequest != "") {
-			var parameters = parseSignedRequestParameters(signedRequest);
-			if (structKeyExists(parameters, "page")) {
-				page = parameters.page;
-			}
+		if (structKeyExists(signedRequest, "page")) {
+			page = signedRequest["page"];
 		}
 		return page;
 	}
@@ -244,95 +212,120 @@ component accessors="true" {
 		return pageId;
 	}
 
-	
 	/*
 	 * @description Get signed request
-	 * @hint 
+	 * @hint Retrieve the signed request, either from a url/form parameter or, if not present, from a cookie
 	 */
-	public String function getSignedRequest() {
-		var signedRequest = "";
-		if (structKeyExists(url, "signed_request")) {
-			signedRequest = url.signed_request;
-		} else if (structKeyExists(form, "signed_request")) {
-			signedRequest = form.signed_request;
-		} else {
-			signedRequest = createSignedRequestFromSession(getUserSession());	
+	public Struct function getSignedRequest() {
+		if (!hasRequestData("signed_request")) {
+			var signedRequestCookieName = getSignedRequestCookieName();
+			if (structKeyExists(url, "signed_request")) {
+				// apps.facebook.com (navigation inside iframe page)
+				setRequestData("signed_request", parseSignedRequest(url.signed_request));
+			} else if (structKeyExists(form, "signed_request")) {
+				// apps.facebook.com (default iframe page)
+				setRequestData("signed_request", parseSignedRequest(form.signed_request));
+			} else if (structKeyExists(cookie, signedRequestCookieName)) {
+				// Cookie created by Facebook Connect Javascript SDK
+				setRequestData("signed_request", parseSignedRequest(cookie[signedRequestCookieName]));
+			} else {
+				setRequestData("signed_request", {});
+			}
 		}
-		return signedRequest;
+		return getRequestData("signed_request");
 	}
 	
 	/*
 	 * @description Get user OAuth accessToken
-	 * @hint 
+	 * @hint Determines and returns the user access token, first using the signed request if present, and then falling back on the authorization code if present.  The intent is to return a valid user access token, or "" if one is determined to not be available.
 	 */
 	public String function getUserAccessToken() {
 		var accessToken = "";
-		var userSession = getUserSession();
-		if (structKeyExists(userSession, "access_token")) {
-			accessToken = userSession.access_token;
+		// First, consider a signed request if it's supplied. if there is a signed request, then it alone determines the access token.
+		var signedRequest = getSignedRequest();
+		if (structCount(signedRequest)) {
+			if (structKeyExists(signedRequest, "oauth_token")) {
+				// apps.facebook.com hands the access_token in the signed_request
+				accessToken = signedRequest["oauth_token"];
+				setPersistentData("access_token", accessToken);
+			} else if (structKeyExists(signedRequest, "code")) {
+				// Facebook Javascript SDK puts an authorization code in signed request
+				accessToken = getAccessTokenFromCode(signedRequest["code"], "");
+				if (accessToken != "") {
+					setPersistentData("code", signedRequest["code"]);
+					setPersistentData("access_token", accessToken);
+				}
+			}
+			
+			if (accessToken == "") {
+				// Signed request states there's no access token, so anything stored should be invalidated.
+				invalidateUser();
+			}
+		} else {
+			// Falling back on the authorization code if present
+			var code = getAuthorizationCode();
+			if (code != "" && code != getPersistentData("code")) {
+				accessToken = getAccessTokenFromCode(code);
+				if (accessToken != "") {
+					setPersistentData("code", code);
+					setPersistentData("access_token", accessToken);
+				}
+			
+				if (accessToken == "") {
+					// Code was bogus, so everything based on it should be invalidated.
+					invalidateUser();
+				}
+			} else {
+				// Falling back on persistent store, knowing nothing explicit (signed request, authorization code, etc.) was present to shadow it (or we saw a code in URL/FORM scope, but it's the same as what's in the persistent store)
+				accessToken = getPersistentData("access_token");
+				if (accessToken == "") {
+					// Invalid session, so everything based on it should be invalidated.
+					invalidateUser();
+				}
+			}
 		}
 		return accessToken;
 	}
 	
 	/*
-	 * @description Get user id
-	 * @hint 
+	 * @description Get the UID of the connected user, or 0 if the Facebook user is not connected.	 
+	 * @hint Determines the connected user by first examining any signed requests, then considering an authorization code, and then falling back to any persistent store storing the user.
 	 */
 	public Numeric function getUserId() {
-		var userId = 0;
-		var userSession = getUserSession();
-		if (structKeyExists(userSession, "uid")) {
-			userId = userSession.uid;
-		}
-		return userId;
-	}
-	
-	/*
-	 * @description Get the session object. 
-   	 * @hint This will automatically look for a signed session sent via the signed_request, Cookie or Query Parameters if needed.
-	 */
-	public Struct function getUserSession(String signedRequest = "") {
-		var userSession = structNew();
-		arguments.signedRequest = trim(arguments.signedRequest);
-		if (arguments.signedRequest == "") {
-			// Try loading session from url.signed_request or form.signed_request
-			if (structKeyExists(url, "signed_request")) {
-				arguments.signedRequest = trim(url.signed_request);
-			} else if (structKeyExists(form, "signed_request")) {
-				arguments.signedRequest = trim(form.signed_request);
+		if (!hasRequestData("user_id")) {
+			var userId = 0;
+			if (structKeyExists(url, "logged_out")) {
+				invalidateUser();
+			} else {
+				// If a signed request is supplied, then it solely determines who the user is.
+				var signedRequest = getSignedRequest();
+				if (structCount(signedRequest)) {
+					if (structKeyExists(signedRequest, "user_id")) {
+						userId = signedRequest["user_id"];
+						setPersistentData("user_id", userId);
+					} else {
+						// If the signed request didn't present a user id, then invalidate all entries in any persistent store.
+						invalidateUser();
+					}
+				} else {
+					userId = getPersistentData("user_id", 0);
+					// Use access_token to fetch user id if we have a user access_token, or if the cached access token has changed.
+					var accessToken = getAccessToken();
+					if (accessToken != "" && accessToken != getApplicationAccessToken() && !(userId > 0 && accessToken == getPersistentData("access_token"))) {
+						var graphAPI = new FacebookGraphAPI(accessToken);
+						var userInfo = graphAPI.getObject(id="me", fields="id");
+						if (structKeyExists(userInfo, "id") && userInfo["id"] > 0) {
+							userId = userInfo["id"];
+							setPersistentData("user_id", userId);
+						} else {
+							invalidateUser();
+						}
+					}
+				}
 			}
+			setRequestData("user_id", userId);
 		}
-		if (arguments.signedRequest != "") {
-			var parameters = parseSignedRequestParameters(arguments.signedRequest);
-			if (structCount(parameters)) {
-				userSession = createSessionFromSignedRequestParameters(parameters);
-			}
-		}
-		if (!structCount(userSession)) {
-			// Try loading session form url.session or form.session
-			if (structKeyExists(url, "session")) {
-				userSession = deserializeJson(url.session);				
-			} else 	if (structKeyExists(form, "session")) {
-				userSession = deserializeJson(form.session);				
-			}
-			validateUserSession(userSession);
-		}
-		if (!structCount(userSession)) {
-			var cookieName = getSessionCookieName();
-			if (structKeyExists(cookie, cookieName)) {
-				userSession = parseQueryStringParameters(cookie[cookieName]);
-			}
-			validateUserSession(userSession);
-		}
-		return userSession;
-	}
-	
-	/*
-	 * @description Check if session cookie exists. 
-   	 * @hint
-	 */
-	public Boolean function hasSessionCookie() {
-		return structKeyExists(cookie, getSessionCookieName());
+		return getRequestData("user_id");
 	}
 	
 	/*
@@ -348,7 +341,7 @@ component accessors="true" {
 	 * @hint 
 	 */
 	public Boolean function isInFacebook() {
-		return (structKeyExists(url, "signed_request") or structKeyExists(form, "signed_request"));
+		return (structKeyExists(url, "signed_request") || structKeyExists(form, "signed_request"));
 	}
 	
 	/*
@@ -368,7 +361,7 @@ component accessors="true" {
 		var pageAdmin = false;
 		var page = getPage();
 		if (structKeyExists(page, "admin")) {
-			pageAdmin = page.admin;
+			pageAdmin = page["admin"];
 		}
 		return pageAdmin;	
 	}
@@ -381,138 +374,123 @@ component accessors="true" {
 		var pageLiked = false;
 		var page = getPage();
 		if (structKeyExists(page, "liked")) {
-			pageLiked = page.liked;
+			pageLiked = page["liked"];
 		}
 		return pageLiked;	
 	}
 	
 	/*
-	 * @description Log parameters for debug purpose. 
+	 * @description Log signed request for debug purpose. 
    	 * @hint This will automatically log in current application log all the parameters passed to the current page.
 	 */
-	public void function logParameters(String eventName = "") {
+	public void function logSignedRequest(String eventName = "") {
 		var key = "";
 		var key2 = "";
-		var parameters = parseQueryStringParameters(cgi.QUERY_STRING);
+		var parameters = parseQueryString(cgi.QUERY_STRING);
+		var signedRequest = {};
 		for (key in parameters) {
-			writeLog(file=application.applicationName, type="Information", text="FacebookApp.logParameters() #eventName# URL key=#key# value=#parameters[key]#");
+			writeLog(file=application.applicationName, type="Information", text="FacebookApp.logSignedRequest() #eventName# URL key=#key# value=#parameters[key]#");
 			if (key == "signed_request") {
-				parameters = parseSignedRequestParameters(form.signed_request);
-				for (key2 in parameters) {
-					writeLog(file=application.applicationName, type="Information", text="FacebookApp.logParameters() #eventName# URL.SIGNED_REQUEST key=#key2# value=#parameters[key2]#");
+				signedRequest = parseSignedRequest(form.signed_request);
+				for (key2 in signedRequest) {
+					writeLog(file=application.applicationName, type="Information", text="FacebookApp.logSignedRequest() #eventName# URL.SIGNED_REQUEST key=#key2# value=#signedRequest[key2]#");
 				}
 			}
 		}
 		for (key in form) {
-			writeLog(file=application.applicationName, type="Information", text="FacebookApp.logParameters() #eventName# FORM key=#key# value=#form[key]#");
+			writeLog(file=application.applicationName, type="Information", text="FacebookApp.logSignedRequest() #eventName# FORM key=#key# value=#form[key]#");
 			if (key == "signed_request") {
-				parameters = parseSignedRequestParameters(form.signed_request);
-				for (key2 in parameters) {
-					writeLog(file=application.applicationName, type="Information", text="FacebookApp.logParameters() #eventName# FORM.SIGNED_REQUEST key=#key2# value=#parameters[key2]#");
+				signedRequest = parseSignedRequest(form.signed_request);
+				for (key2 in signedRequest) {
+					writeLog(file=application.applicationName, type="Information", text="FacebookApp.logSignedRequest() #eventName# FORM.SIGNED_REQUEST key=#key2# value=#signedRequest[key2]#");
 				}
 			}
 		}	
 	}
 	
-	public Boolean function setSessionCookie(required Struct userSession) {
-		if (structKeyExists(userSession, "expires")) {
-			var expirationDate = dateAdd("s", userSession["expires"] + getTimeZoneInfo().UTCTotalOffset , "01/01/1970");
-			// Set cookie (use PageContext method in order to keep lower case name and add expires date)
-			getPageContext().getResponse().setHeader("Set-Cookie", getSessionCookieName() & "=" & serializeQueryString(arguments.userSession, false) & ";Expires=#dateFormat(expirationDate, 'ddd, dd-mmm-yyyy')# #timeFormat(expirationDate, 'HH:mm:ss')# GMT;Path=/;HttpOnly");
-		}
-		return true;
-	}
-	
 	// PRIVATE
 	
-	private String function base64UrlDecode(required String base64UrlValue) {
-		var base64Value = replaceList(arguments.base64UrlValue, "-,_", "+,/");
-		var paddingMissingCount = 0;
-		var modulo = len(base64Value) % 4;
-		if (modulo != 0) {
-			paddingMissingCount = 4 - modulo;
-		}
-		for (var i=0; i < paddingMissingCount; i++) {
-			base64Value = base64Value & "=";
-		}
-		return toString(toBinary(base64Value), "ISO-8859-1");
-	}
-	
-	private String function base64UrlEncode(required String value) {
-		var base64Value = toBase64(arguments.value, "ISO-8859-1");
-		var base64UrlValue = replace(replaceList(base64Value, "+,/", "-,_"), "=", "", "ALL");
-		return base64UrlValue;
-	}
-	
-	private Struct function createSessionFromSignedRequestParameters(required Struct parameters) {
-		var userSession = {};
-		if (structKeyExists(arguments.parameters, "oauth_token")) {
-			userSession["uid"] = arguments.parameters["user_id"];
-			userSession["access_token"] = arguments.parameters["oauth_token"];
-			userSession["expires"] = arguments.parameters["expires"];
-			userSession["sig"] = generateParametersSignature(userSession, getSecretKey());
-		}
-		return userSession;
-	}
-	
-	private String function createSignedRequest(required String jsonParameters) {
-		var encodedParameters = base64UrlEncode(arguments.jsonParameters);
+	private String function createSignedRequest(required Struct parameters) {
+		var jsonParameters = serializeJsonSignedRequest(arguments.parameters);
+		var encodedParameters = base64UrlEncode(jsonParameters);
 		var signature = hashHmacSHA256(encodedParameters, getSecretKey());
 		var encodedSignature = base64UrlEncode(signature);
 		var signedRequest = encodedSignature & "." & encodedParameters;
 		return signedRequest;
 	}
-
-	private String function createSignedRequestFromSession(required Struct userSession, Struct parameters = structNew()) {
-		var signedRequest = "";
-		if (structKeyExists(arguments.userSession, "access_token")) {
-			var sessionParameters = {expires=arguments.userSession["expires"], oauth_token=URLDecode(arguments.userSession["access_token"]),user_id=arguments.userSession["uid"]};
-			structAppend(arguments.parameters, sessionParameters, true);
+	
+	private void function establishCSRFStateToken() {
+		if (getCSRFStateToken() == "") {
+ 			var stateToken = hash(createUUID());
+			setRequestData("state", stateToken);
+  			setPersistentData("state", stateToken);
 		}
-		if (structCount(arguments.parameters)) {
-			var jsonParameters = serializeJsonSignedRequest(arguments.parameters);
-			signedRequest = createSignedRequest(jsonParameters);
-		}
-		return signedRequest;
 	}
 	
-	private String function generateParametersSignature(required Struct parameters, required String secretKey) {
-		var buffer = createObject("java","java.lang.StringBuffer").init("");
-		var key = "";
-		var sortedKeys = listToArray(listSort(structKeyList(arguments.parameters),"textnocase", "Asc", ","));
-		for (key in sortedKeys) {
-			buffer.append(key & "=" & arguments.parameters[key]);
+	private String function getAccessTokenFromCode(required String code, String redirectUri) {
+		var accessToken = "";
+		if (arguments.code != "") {
+			if (!structKeyExists(arguments, "redirectUri")) {
+				arguments.redirectUri = getCurrentUrl();
+			}
+			var graphAPI = new FacebookGraphAPI(appId=getAppId());
+			accessToken = graphAPI.getOAuthAccessToken(clientId=getAppId(), clientSecret=getSecretKey(), code=arguments.code, redirectUri=arguments.redirectUri);
 		}
-		buffer.append(arguments.secretKey);
-		return LCase(hash(buffer.toString()));
+		return accessToken;
 	}
 	
-	private String function getCurrentUrl() {
+	private String function getAuthorizationCode() {
+		var code = "";
+		if (structKeyExists(url, "code") && structKeyExists(url, "state")) {
+			var stateToken = getCSRFStateToken();
+			if (stateToken != "" && stateToken == url["state"]) {
+				// CSRF state token has done its job, so delete it
+				deleteRequestData("state");
+				deletePersistentData("state");
+				code = url["code"];
+			} else {
+				// Ignore (CSRF state token does not match one provided)
+			}
+		}
+		return code;
+	}
+	
+	private String function getCSRFStateToken() {
+		if (!hasRequestData("state")) {
+			setRequestData("state", getPersistentData("state"));
+		}
+		return getRequestData("state");
+	}
+	
+	private String function getCurrentUrl(String queryString = "") {
 		var i = 0;
 		var key = "";
 		var keyValues = listToArray(CGI.query_string, "&");
-		var currentUrl = getPageContext().getRequest().GetRequestUrl().toString();
+		var currentUrl = getPageContext().getRequest().getRequestUrl().toString();
 		var value = "";
 		if (arrayLen(keyValues)) {
-			currentUrl = currentUrl & "?";
 			for (i=1; i <= arrayLen(keyValues); i++) {
 				if (listLen(keyValues[i], "=") == 2) {
 					key = listFirst(keyValues[i],"=");
 					value = listLast(keyValues[i],"=");
 					if (!listFind(variables.DROP_QUERY_PARAMS, key)) {
-						if (i > 1) {
-							currentUrl = currentUrl & "&";
-						}
-						currentUrl = currentUrl & key & "=" & value;
+						arguments.queryString = listAppend(arguments.queryString, key & "=" & value, "&");
 					}
 				}
 			}
 		}
+		if (arguments.queryString != "") {
+			currentUrl = currentUrl & "?" & arguments.queryString;
+		}
+		var httpRequestData = getHttpRequestData();
+		if (structKeyExists(httpRequestData.headers, "X-Forwarded-Proto")) {
+			// Detect forwarded protocol (for example from EC2 Load Balancer)
+			var javaUrl = createObject( "java", "java.net.URL").init(currentUrl);
+			var currentProtocol = javaUrl.getProtocol();
+			var forwardedProtocol = httpRequestData.headers["X-Forwarded-Proto"];
+			replaceNoCase(currentUrl, currentProtocol, forwardedProtocol);
+		}
 		return currentUrl;
-	}
-	
-	private String function getSessionCookieName() {
-		return "fbs_" & getAppId();
 	}
 	
 	private String function getUrl(String path = "", Struct parameters = {}) {
@@ -523,62 +501,30 @@ component accessors="true" {
 		}
 		return resultUrl;
 	}
-	
-	private String function hashHmacSHA256(required String value, required String secretKey) {
-		if (secretKey == "") {
-			throw(errorcode="Invalid secretKey", message="Invalid secretKey (cannot be empty)", type="Facebook Application Security");
-		}
-		var secretKeySpec = createObject('java', 'javax.crypto.spec.SecretKeySpec' ).init(arguments.secretKey.getBytes(), 'HmacSHA256');
-		var mac = createObject('java', "javax.crypto.Mac").getInstance("HmacSHA256");
-		mac.init(secretKeySpec);
-		return toString(mac.doFinal(value.getBytes()), "ISO-8859-1");
-	}
-	
-	private Struct function parseQueryStringParameters(required String queryString) {
-		var keyValue = "";
-		var keyValues = listToArray(replace(arguments.queryString,'"', '', 'ALL'), "&");
-		var parameters = structNew();
-		for (keyValue in keyValues) {
-			if (listLen(keyValue, "=") == 2) {
-				parameters[listFirst(keyValue,"=")] = listLast(keyValue,"=");
-			}
-		}
-		return parameters;
-	}
-	
-	private Struct function parseSignedRequestParameters(required String signedRequest) {
+
+	private Struct function parseSignedRequest(required String signedRequest) {
 		var encodedParameters = listLast(trim(arguments.signedRequest), ".");
 		var encodedSignature = listFirst(trim(arguments.signedRequest), ".");
+		var parameters = deserializeJSON(base64UrlDecode(encodedParameters));
+		if (structKeyExists(parameters, "algorithm") && UCase(parameters["algorithm"]) != "HMAC-SHA256") {
+			throw(errorcode="Invalid algorithm", message="Unknown algorithm. Expected HMAC-SHA256", type="FacebookApp Security");
+		}
+
 		var expectedSignature = hashHmacSHA256(encodedParameters, getSecretKey());
-		var parameters = structNew();
 		var signature = base64UrlDecode(encodedSignature);
 		if (signature != expectedSignature) {
-			throw(errorcode="Invalid signature", message="Invalid signed request", type="Facebook Application Security");
-		} else {
-			parameters = deserializeJSON(base64UrlDecode(encodedParameters));
+			throw(errorcode="Invalid signature", message="Invalid signed request", type="FacebookApp Security");
 		}
 		return parameters;
-	}
-	
-	private String function serializeQueryString(required Struct parameters, Boolean urlEncoded = true) {
-		var queryString = "";
-		for (var key in arguments.parameters) {
-			if (queryString != "") {
-				queryString = queryString  & "&";
-			}
-			if (arguments.urlEncoded) {
-				queryString = queryString & key & "=" & urlEncodedFormat(arguments.parameters[key]);
-			} else {
-				queryString = queryString & key & "=" & arguments.parameters[key];
-			}
-		}
-		return queryString;
 	}
 	
 	private String function serializeJsonSignedRequest(required Struct parameters) {
 		var jsonParameters = '{"algorithm":"HMAC-SHA256"';
 		if (structKeyExists(arguments.parameters, "expires")) {
 			jsonParameters = jsonParameters & ',"expires":' & arguments.parameters["expires"];
+		}
+		if (structKeyExists(arguments.parameters, "code")) {
+			jsonParameters = jsonParameters & ',"code":"' & arguments.parameters["code"]& '"';
 		}
 		if (structKeyExists(arguments.parameters, "issued_at")) {
 			jsonParameters = jsonParameters & ',"issued_at":' & arguments.parameters["issued_at"];
@@ -639,23 +585,5 @@ component accessors="true" {
 		jsonParameters = jsonParameters & '}';
 		return jsonParameters;
 	}
-	
-	private Boolean function validateUserSession(required Struct userSession) {
-			var valid = false;
-			if (isStruct(arguments.userSession) 
-				&& structKeyExists(arguments.userSession, "uid")
-				&& structKeyExists(arguments.userSession, "access_token")
-				&& structKeyExists(arguments.userSession, "sig")) {
-				var userSessionWithoutSignature = duplicate(arguments.userSession);
-				structDelete(userSessionWithoutSignature, "sig");
-				var expectedSignature = generateParametersSignature(userSessionWithoutSignature, getSecretKey());
-				if (arguments.userSession["sig"] == expectedSignature) {
-					valid = true;
-				} else {
-					throw(errorcode="Invalid signature", message="Invalid session signature in url/form session parameter", type="Facebook Application Security");
-				}
-			}
-			return valid;
-		}
-
-	}
+		
+}	

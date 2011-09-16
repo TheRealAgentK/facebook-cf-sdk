@@ -63,9 +63,6 @@ dd{margin:0}
 .body dl,
 .body table,
 .body pre,
-.body ul,
-.body ol,
-.body pre,
 .body code,
 .body table.params td.name{font-family:monospace;color:#006000;font-size:13px}
 .body h2 code{font-size:inherit}
