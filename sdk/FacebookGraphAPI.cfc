@@ -32,6 +32,23 @@ component extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Install an app in a page profile tab at the end of the current list of installed tabs
+	 * @hint Requires a page accessToken
+	 */
+	public Boolean function addPageTab(required String appId, required String pageId) {
+		var installed = false;
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs", method="POST", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="formField", name="app_id", value=arguments.appId);
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data") && arrayLen(result.data)) {
+			installed = true;
+		}
+		return installed;
+	}
+	
+	/*
 	 * @description Block a user from a page.
 	 * @hint Requires the manage_pages permission.
 	 */
@@ -46,7 +63,7 @@ component extends="FacebookBase" {
 	 * @description Create a subscription for the application
 	 * @hint Requires an application accessToken
 	 */
-	public Any function createSubscription(required String appId, required String callbackUrl, required String fields, required String object, required String verifyToken = "") {
+	public Any function createAppSubscription(required String appId, required String callbackUrl, required String fields, required String object, required String verifyToken = "") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
@@ -62,7 +79,7 @@ component extends="FacebookBase" {
 	 * @description Create a test user
 	 * @hint Requires an application accessToken
 	 */
-	public Struct function createTestUser(required String appId, Boolean installed = false, String permissions = "") {
+	public Struct function createAppTestUser(required String appId, Boolean installed = false, String permissions = "") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/accounts/test-users", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
@@ -76,7 +93,7 @@ component extends="FacebookBase" {
 	 * @description Create a test user friend connection
 	 * @hint Requires user1 accessToken
 	 */
-	public Boolean function createTestUserFriendConnection(required String userId1, required String userId2) {
+	public Boolean function createAppTestUserFriendConnection(required String userId1, required String userId2) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.userId1#/friends/#arguments.userId2#", method="POST", timeout=variables.TIMEOUT);
 		var result = false;
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
@@ -108,24 +125,67 @@ component extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Delete an app profile tab 
+	 * @hint Requires a page accessToken
+	 */
+	public Boolean function deletePageTab(required String appId, required String pageId) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/app_#arguments.appId#", method="DELETE", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		result = callAPIService(httpService);
+		return result;
+	}
+	
+	/*
 	 * @description Remove a subscription for an application
 	 * @hint Requires the publish_stream permission.
 	 */
-	public Boolean function deleteSubscription(required String appId, String object = "") {
+	public Boolean function deleteAppSubscription(required String appId, String object = "") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="DELETE", timeout=variables.TIMEOUT);
+		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		if(len(arguments.object)) {
 			httpService.addParam(type="formField", name="object", value="#arguments.object#");
 		}
-		callAPIService(httpService);
-		return true;
+		result = callAPIService(httpService);
+		return result;
+	}
+	
+	/*
+	 * @description List all application's subscriptions
+	 * @hint Requires an application accessToken
+	 */
+	public Struct function getAppSubscriptions(required String appId) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="GET", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		result = callAPIService(httpService);
+		return result;
+	}
+	
+	/*
+	 * @description Get test users
+	 * @hint Requires an application accessToken
+	 */
+	public Array function getAppTestUsers(required String appId) {
+		var users = [];
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/accounts/test-users", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="url", name="installed", value="#arguments.installed#");
+		httpService.addParam(type="url", name="permissions", value="#arguments.permissions#");
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data")) {
+			users = result.data;
+		}
+		return users;
 	}
 	
 	/*
 	 * @description Get blocked users for a page.
 	 * @hint 
 	 */
-	public Array function getBlockedUsers(required String pageId) {
+	public Array function getPageBlockedUsers(required String pageId) {
 		var users = [];
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/blocked", timeout=variables.TIMEOUT);
 		var result = {};
@@ -220,6 +280,22 @@ component extends="FacebookBase" {
 	}
 
 	/*
+	 * @description Get multiple graph objects.
+	 * @hint 
+	 */
+	public Struct function getObjects(required String ids, String fields = "", Numeric metadata = 0) {
+		var httpService = new Http(url="https://graph.facebook.com", timeout=variables.TIMEOUT);
+		var results = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		if (listLen(arguments.fields)) httpService.addParam(type="url", name="fields", value=arguments.fields);
+		if (arguments.metadata == 1) httpService.addParam(type="url", name="metadata", value="1");
+		httpService.addParam(type="url", name="ids", value=arguments.ids);
+		results = callAPIService(httpService);
+		if (!isStruct(results)) results = {};
+		return results;
+	}
+	
+	/*
 	 * @description Get multiple graph objects in a single batched request.
 	 * @hint 
 	 */
@@ -252,49 +328,54 @@ component extends="FacebookBase" {
 	}
 	
 	/*
-	 * @description Get multiple graph objects.
-	 * @hint 
+	 * @description Get page admin users.
+	 * @hint Requires a page accessToken
 	 */
-	public Struct function getObjects(required String ids, String fields = "", Numeric metadata = 0) {
-		var httpService = new Http(url="https://graph.facebook.com", timeout=variables.TIMEOUT);
-		var results = {};
-		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		if (listLen(arguments.fields)) httpService.addParam(type="url", name="fields", value=arguments.fields);
-		if (arguments.metadata == 1) httpService.addParam(type="url", name="metadata", value="1");
-		httpService.addParam(type="url", name="ids", value=arguments.ids);
-		results = callAPIService(httpService);
-		if (!isStruct(results)) results = {};
-		return results;
-	}
-	
-	/*
-	 * @description List all application's subscriptions
-	 * @hint Requires an application accessToken
-	 */
-	public Struct function getSubscriptions(required String appId) {
-		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="GET", timeout=variables.TIMEOUT);
+	public Array function getPageAdmins(required String pageId) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/admins", timeout=variables.TIMEOUT);
 		var result = {};
+		var admins = [];
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		result = callAPIService(httpService);
-		return result;
-	}
-	
-	/*
-	 * @description Get test users
-	 * @hint Requires an application accessToken
-	 */
-	public Array function getTestUsers(required String appId) {
-		var users = [];
-		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/accounts/test-users", timeout=variables.TIMEOUT);
-		var result = {};
-		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		httpService.addParam(type="url", name="installed", value="#arguments.installed#");
-		httpService.addParam(type="url", name="permissions", value="#arguments.permissions#");
 		result = callAPIService(httpService);
 		if (structKeyExists(result, "data")) {
-			users = result.data;
+			admins = result.data;
 		}
-		return users;
+		return admins;
+	}
+	
+	/*
+	 * @description Get page tab
+	 * @hint Requires a page accessToken, an appId or the tabId, for example: events, info, notes, photos, reviews, wall)
+	 */
+	public Struct function getPageTab(required String pageId, String tabId = "", String appId = "") {
+		if (arguments.tabId == "") {
+			arguments.tabId = "app_" & arguments.appId;
+		}
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/#arguments.tabId#", timeout=variables.TIMEOUT);
+		var result = {};
+		var tab = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data") && arrayLen(result.data)) {
+			tab = result.data[1];
+		}
+		return tab;
+	}
+	
+	/*
+	 * @description Get page tabs.
+	 * @hint Requires a page accessToken
+	 */
+	public Array function getPageTabs(required String pageId) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs", timeout=variables.TIMEOUT);
+		var result = {};
+		var tabs = [];
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data")) {
+			tabs = result.data;
+		}
+		return tabs;
 	}
 	
 	/*
@@ -311,6 +392,22 @@ component extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Check if an app is installed in a page tab
+	 * @hint Requires a page accessToken
+	 */
+	public Boolean function isAppInstalled(required String appId, required String pageId) {
+		var installed = false;
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/apps_#arguments.appId#", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data") && arrayLen(result.data)) {
+			installed = true;
+		}
+		return installed;
+	}
+	
+	/*
 	 * @description Check if a user has liked a page
 	 * @hint Requires a user accessToken
 	 */
@@ -324,6 +421,22 @@ component extends="FacebookBase" {
 			liked = true;
 		}
 		return liked;
+	}
+	
+	/*
+	 * @description Check if a user is a page admin
+	 * @hint Requires a page accessToken
+	 */
+	public Boolean function isUserAdmin(required String pageId, required String userId) {
+		var admin = false;
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/admins/#arguments.userId#", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data") && arrayLen(result.data)) {
+			admin = true;
+		}
+		return admin;
 	}
 	
 	/*
@@ -369,22 +482,25 @@ component extends="FacebookBase" {
 	}
 		
 	/*
-	 * @description Add an event to a profile's feed
-	 * @hint Requires the publish_stream permission.
+	 * @description Add an event to a profile/page
+	 * @hint Requires the create_event / manage_pages permission. Privacy type can be "open", "closed" or "secret"
 	 */
-	public Boolean function publishEvent(required String profileId, required Date startTime, required Date endTime, String name = "") {
-		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#", method="POST", timeout=variables.TIMEOUT);
+	public String function publishEvent(required String profileId, required String name, required Date startTime, Date endTime, String message = "", String location = "", String privacyType = "open") {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/events", method="POST", timeout=variables.TIMEOUT);
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="formField", name="name", value="#arguments.name#");
 		httpService.addParam(type="formField", name="start_time", value="#dateformat(arguments.startTime, "yyyy-mm-dd")#T#TimeFormat(arguments.startTime, "HH:mm:ss")#");
-		httpService.addParam(type="formField", name="end_time", value="#dateformat(arguments.startTime, "yyyy-mm-dd")#T#TimeFormat(arguments.startTime, "HH:mm:ss")#");
-		if (trim(arguments.name) != "") httpService.addParam(type="formField", name="name", value="#arguments.name#");
-		callAPIService(httpService);
-		return true;
+		if (structKeyExists(arguments, "endTime"))httpService.addParam(type="formField", name="end_time", value="#dateformat(arguments.startTime, "yyyy-mm-dd")#T#TimeFormat(arguments.startTime, "HH:mm:ss")#");
+		if (trim(arguments.location) != "") httpService.addParam(type="formField", name="location", value="#arguments.location#");
+		if (trim(arguments.message) != "") httpService.addParam(type="formField", name="name", value="#arguments.name#");
+		if (trim(arguments.privacyType) != "") httpService.addParam(type="formField", name="privacy_type", value="#arguments.privacy_type#");
+		result = callAPIService(httpService);
+		return result["id"];
 	}
 	
 	/*
 	 * @description Change event status
-	 * @hint Available status are attending, maybe or declined.Requires the publish_stream permission.
+	 * @hint Available status are attending, maybe or declined.
 	 */
 	public Boolean function publishEventStatus(required String eventId, String status = "attending") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.eventId#/#arguments.status#", method="POST", timeout=variables.TIMEOUT);
@@ -475,8 +591,8 @@ component extends="FacebookBase" {
 	 * @description Add a video to a profile
 	 * @hint Requires the publish_stream permission.
 	 */
-	public Boolean function publishVideo(required String sourcePath, String description = "", String title = "") {
-		var httpService = new Http(url="https://graph-video.facebook.com/me/videos", method="POST", timeout=variables.TIMEOUT);
+	public Boolean function publishVideo(required String profileId, required String sourcePath, String description = "", String title = "") {
+		var httpService = new Http(url="https://graph-video.facebook.com/#arguments.profileId#/videos", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="file", name="source", file="#arguments.sourcePath#");
@@ -527,6 +643,25 @@ component extends="FacebookBase" {
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		result = callAPIService(httpService);
 		return result;
+	}
+	
+	/*
+	 * @description Install an app in a page profile tab at the end of the current list of installed tabs
+	 * @hint Requires a page accessToken
+	 */
+	public Boolean function updatePageTab(required String appId, required String pageId, String customName = "", Numeric position = 0, Boolean landingTabEnabled) {
+		var updated = false;
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/app_#arguments.appId#", method="POST", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		if (arguments.customName != "") httpService.addParam(type="formField", name="custom_name", value=arguments.customName);
+		if (arguments.position > 0) httpService.addParam(type="formField", name="position", value=arguments.position);
+		if (structKeyExists(arguments, "landingTabEnabled")) httpService.addParam(type="formField", name="is_non_connection_landing_tab", value=true);
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data") && arrayLen(result.data)) {
+			updated = true;
+		}
+		return updated;
 	}
 
 }

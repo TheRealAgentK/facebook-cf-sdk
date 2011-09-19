@@ -121,7 +121,8 @@ component accessors="true" extends="FacebookBase" {
 	public String function getApplicationAccessToken(Boolean apiEnabled = false) {
 		var accessToken = "";
 		if (arguments.apiEnabled) {
-			accessToken = callOAuthGraphAPI(grantType="client_credentials");
+			var facebookGraphAPI = new FacebookGraphAPI();
+			accessToken = facebookGraphAPI.getOAuthAccessToken(clientId=getAppId(), clientSecret=getSecretKey(), grantType="client_credentials");
 		} else {
 			accessToken = getAppId() & '|' & getSecretKey();
 		}
