@@ -169,6 +169,22 @@ component extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Get the list of event invitees with RDVP status ('invited' by default, but it could be 'attending', 'maybe', 'declined' or 'noreply')
+	 * @hint This returns an array of objects with name, id, and rsvp_status ('not_replied', 'unsure', 'attending', or 'declined') fields. 
+	 * Requires user_events or friends_events permission for non-public events.
+	 */
+	public Struct function getEventUsers(required String eventId, String status = "invited", String userId = "") {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.eventId#/#arguments.status#/#arguments.userId#", timeout=variables.TIMEOUT);
+		var users = [];
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data") && arrayLen(result.data)) {
+			users = result.data;
+		}
+		return users;
+	}
+	
+	/*
 	 * @description Get OAuth access token.
 	 * @hint
 	 */
@@ -279,6 +295,19 @@ component extends="FacebookBase" {
 			users = result.data;
 		}
 		return users;
+	}
+	
+	/*
+	 * @description Invite users to an event
+	 * @hint Requires create_event permission
+	 */
+	public Any function inviteUsersToEvent(required String eventId, required String userIds) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.eventId#/invited", method="POST", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="url", name="users", value="#arguments.userIds#");
+		result = callAPIService(httpService);
+		return result;
 	}
 	
 	/*
@@ -488,5 +517,16 @@ component extends="FacebookBase" {
 		return true;
 	}
 	
+	/*
+	 * @description Uninvite user from an event
+	 * @hint Requires  The user must be an admin of the event for this call to succeed. Requires rsvp_event permission.
+	 */
+	public Any function uninviteUserFromEvent(required String eventId, required String userId) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.eventId#/#arguments.userId#", method="DELETE", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		result = callAPIService(httpService);
+		return result;
+	}
 
 }
