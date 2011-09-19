@@ -36,21 +36,17 @@ component extends="FacebookBase" {
 	 * @hint Requires a page accessToken
 	 */
 	public Boolean function addPageTab(required String appId, required String pageId) {
-		var installed = false;
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="formField", name="app_id", value=arguments.appId);
 		result = callAPIService(httpService);
-		if (structKeyExists(result, "data") && arrayLen(result.data)) {
-			installed = true;
-		}
-		return installed;
+		return result;
 	}
 	
 	/*
 	 * @description Block a user from a page.
-	 * @hint Requires the manage_pages permission.
+	 * @hint Requires the manage_pages permission and page admin access token.
 	 */
 	public Boolean function blockUser(required String pageId, required String userId) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/blocked/#arguments.userId#", method="POST", timeout=variables.TIMEOUT);
@@ -649,14 +645,14 @@ component extends="FacebookBase" {
 	 * @description Install an app in a page profile tab at the end of the current list of installed tabs
 	 * @hint Requires a page accessToken
 	 */
-	public Boolean function updatePageTab(required String appId, required String pageId, String customName = "", Numeric position = 0, Boolean landingTabEnabled) {
+	public Boolean function updatePageTab(required String appId, required String pageId, Numeric position = 0, Boolean landingTab, String tabName = "") {
 		var updated = false;
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/app_#arguments.appId#", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		if (arguments.customName != "") httpService.addParam(type="formField", name="custom_name", value=arguments.customName);
 		if (arguments.position > 0) httpService.addParam(type="formField", name="position", value=arguments.position);
-		if (structKeyExists(arguments, "landingTabEnabled")) httpService.addParam(type="formField", name="is_non_connection_landing_tab", value=true);
+		if (structKeyExists(arguments, "landingTab")) httpService.addParam(type="formField", name="is_non_connection_landing_tab", value=true);
+		if (arguments.tabName != "") httpService.addParam(type="formField", name="custom_name", value=arguments.tabName);
 		result = callAPIService(httpService);
 		if (structKeyExists(result, "data") && arrayLen(result.data)) {
 			updated = true;
