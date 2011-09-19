@@ -646,7 +646,6 @@ component extends="FacebookBase" {
 	 * @hint Requires a page accessToken
 	 */
 	public Boolean function updatePageTab(required String appId, required String pageId, Numeric position = 0, Boolean landingTab, String tabName = "") {
-		var updated = false;
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/app_#arguments.appId#", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
@@ -654,10 +653,7 @@ component extends="FacebookBase" {
 		if (structKeyExists(arguments, "landingTab")) httpService.addParam(type="formField", name="is_non_connection_landing_tab", value=true);
 		if (arguments.tabName != "") httpService.addParam(type="formField", name="custom_name", value=arguments.tabName);
 		result = callAPIService(httpService);
-		if (structKeyExists(result, "data") && arrayLen(result.data)) {
-			updated = true;
-		}
-		return updated;
+		return result;
 	}
 
 }
