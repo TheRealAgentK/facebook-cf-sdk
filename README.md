@@ -23,16 +23,16 @@ To see the SDK in action, check the [examples](http://github.com/affinitiz/faceb
 
 # Migration from SDK V2
 
-As explained in [[Facebook Platform Roadmap|http://developers.facebook.com/roadmap/]], by October 1, 2011:
+As explained in [Facebook Platform Roadmap](http://developers.facebook.com/roadmap/), by October 1, 2011:
 
-* all Website and Canvas apps must exclusively support [[OAuth 2.0 (draft 20)|http://tools.ietf.org/html/draft-ietf-oauth-v2-20]]
+* all Website and Canvas apps must exclusively support [OAuth 2.0 (draft 20)](http://tools.ietf.org/html/draft-ietf-oauth-v2-20)
 * all Canvas Apps must use the *signed_request* parameter
 * an **SSL Certificate** is required for all Canvas and Page Tab apps (not in Sandbox mode)
 * old, previous versions of our SDKs will **stop working**, including the old JavaScript SDK, old iOS SDK
 
 **Previous Facebook ColdFusion SDK (V2.*) will stop working so you MUST upgrade to V3 by October 1, 2011.**
 
-Check SDK documentation to see [[How to migrate from SDK V2 to SDK V3|https://github.com/affinitiz/facebook-cf-sdk/wiki/Migration]]
+Check SDK documentation to see [How to migrate from SDK V2 to SDK V3](https://github.com/affinitiz/facebook-cf-sdk/wiki/Migration)
 
 # Documentation
 
