@@ -21,8 +21,8 @@ import facebook.sdk.FacebookApp;
 import facebook.sdk.FacebookGraphAPI;
 
 // Replace this with your appId and secret
-APP_ID = "160417797376199";
-SECRET_KEY = "68c067fb4df9d6c0da70211cf60ce98f";
+APP_ID = "";
+SECRET_KEY = "";
 SCOPE = "publish_stream";
 
 if (APP_ID is "" or SECRET_KEY is "") {
