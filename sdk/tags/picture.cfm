@@ -1,11 +1,11 @@
 <cfsilent>
-	<cfparam name="attributes.class" default="facebook user picture" />
 	<cfparam name="attributes.facebookId" />
 	<cfparam name="attributes.linkEnabled" default="false" />
 	<cfparam name="attributes.style" default="" />
 	<cfparam name="attributes.target" default="" />
 	<cfparam name="attributes.toolTip" default="" />
 	<cfparam name="attributes.type" default="square" />
+	<cfparam name="attributes.class" default="facebook user picture #attributes.type#" />
 	<cfset profileUrl = "http://www.facebook.com/profile.php?id=" & attributes.facebookId />
 	<cfswitch expression="#attributes.type#">
 	<cfcase value="large">
