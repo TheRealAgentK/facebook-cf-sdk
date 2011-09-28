@@ -63,9 +63,10 @@ component extends="FacebookBase" {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		httpService.addParam(type="formField", name="object", value="#arguments.object#");
-		httpService.addParam(type="formField", name="fields", value=arguments.fields);
 		httpService.addParam(type="formField", name="callback_url", value="#arguments.callbackUrl#");
+		httpService.addParam(type="formField", name="fields", value=arguments.fields);
+		//httpService.addParam(type="formField", name="include_values", value="true");
+		httpService.addParam(type="formField", name="object", value="#arguments.object#");
 		httpService.addParam(type="formField", name="verify_token", value="#arguments.verifyToken#");
 		result = callAPIService(httpService);
 		return result;

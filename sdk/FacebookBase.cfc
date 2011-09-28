@@ -113,10 +113,10 @@ component accessors="true" {
 		if (secretKey == "") {
 			throw(errorcode="Invalid secretKey", message="Invalid secretKey (cannot be empty)", type="FacebookApp Security");
 		}
-		var secretKeySpec = createObject('java', 'javax.crypto.spec.SecretKeySpec' ).init(arguments.secretKey.getBytes(), 'HmacSHA256');
-		var mac = createObject('java', "javax.crypto.Mac").getInstance("HmacSHA256");
+		var secretKeySpec = createObject("java", "javax.crypto.spec.SecretKeySpec" ).init(arguments.secretKey.getBytes(), "HmacSHA256");
+		var mac = createObject("java", "javax.crypto.Mac").getInstance(secretKeySpec.getAlgorithm());
 		mac.init(secretKeySpec);
-		return toString(mac.doFinal(value.getBytes()), "ISO-8859-1");
+		return toString(mac.doFinal(arguments.value.getBytes()), "ISO-8859-1");
 	}
 	
 	private Struct function parseQueryString(required String queryString) {
