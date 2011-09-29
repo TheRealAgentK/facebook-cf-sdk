@@ -44,7 +44,6 @@ if (APP_ID is "" or SECRET_KEY is "") {
 		} catch (any exception) {
 			// Usually an invalid session (OAuthInvalidTokenException), for example if the user logged out from facebook.com
 			userId = 0;
-		} finally {
 			facebookGraphAPI = new FacebookGraphAPI();
 		}
 	} else {
