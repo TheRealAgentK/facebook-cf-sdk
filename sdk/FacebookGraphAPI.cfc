@@ -376,6 +376,22 @@ component extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Check if an app is installed in a page tab
+	 * @hint Requires a page accessToken
+	 */
+	public Boolean function hasPageTab(required String appId, required String pageId) {
+		var installed = false;
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/apps_#arguments.appId#", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data") && arrayLen(result.data)) {
+			installed = true;
+		}
+		return installed;
+	}
+	
+	/*
 	 * @description Invite users to an event
 	 * @hint Requires create_event permission
 	 */
@@ -386,22 +402,6 @@ component extends="FacebookBase" {
 		httpService.addParam(type="url", name="users", value="#arguments.userIds#");
 		result = callAPIService(httpService);
 		return result;
-	}
-	
-	/*
-	 * @description Check if an app is installed in a page tab
-	 * @hint Requires a page accessToken
-	 */
-	public Boolean function isAppInstalled(required String appId, required String pageId) {
-		var installed = false;
-		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/apps_#arguments.appId#", timeout=variables.TIMEOUT);
-		var result = {};
-		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		result = callAPIService(httpService);
-		if (structKeyExists(result, "data") && arrayLen(result.data)) {
-			installed = true;
-		}
-		return installed;
 	}
 	
 	/*
