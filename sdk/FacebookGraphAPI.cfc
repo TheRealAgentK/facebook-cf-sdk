@@ -282,8 +282,8 @@ component extends="FacebookBase" {
 	public String function getPageAccessToken(required String pageId, required String userAccessToken) {
 		var accessToken = "";
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#", timeout=variables.TIMEOUT);
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="url", name="fields", value="access_token");
-		httpService.addParam(type="url", name="access_token", value=arguments.userAccessToken);
 		var result = callAPIService(httpService);
 		if (structKeyExists(result, "access_token")) {
 			accessToken = result["access_token"];
