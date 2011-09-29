@@ -251,10 +251,14 @@ component accessors="true" extends="FacebookBase" {
 				setPersistentData("access_token", accessToken);
 			} else if (structKeyExists(signedRequest, "code")) {
 				// Facebook Javascript SDK puts an authorization code in signed request
-				accessToken = getAccessTokenFromCode(signedRequest["code"], "");
-				if (accessToken != "") {
-					setPersistentData("code", signedRequest["code"]);
-					setPersistentData("access_token", accessToken);
+				if (signedRequest["code"] == getPersistentData("code")) {
+					accessToken = getPersistentData("access_token");
+				} else {
+					accessToken = getAccessTokenFromCode(signedRequest["code"], "");
+					if (accessToken != "") {
+						setPersistentData("code", signedRequest["code"]);
+						setPersistentData("access_token", accessToken);
+					}
 				}
 			}
 			
