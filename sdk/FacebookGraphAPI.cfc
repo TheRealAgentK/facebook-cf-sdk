@@ -279,7 +279,7 @@ component extends="FacebookBase" {
 	 * @description Get page access token from a user access token.
 	 * @hint User must have authorized manage_pages permission for the app and user must be an admin of the page
 	 */
-	public String function getPageAccessToken(required String pageId, required String userAccessToken) {
+	public String function getPageAccessToken(required String pageId) {
 		var accessToken = "";
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#", timeout=variables.TIMEOUT);
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
