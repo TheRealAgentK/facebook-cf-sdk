@@ -102,13 +102,23 @@ component extends="FacebookBase" {
 	 * @description Remove a subscription for an application
 	 * @hint 
 	 */
-	public Any function deleteAppSubscription(required String appId, String object = "") {
+	public Any function deleteAppSubscription(required String appId, required String object) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="DELETE", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		if(len(arguments.object)) {
-			httpService.addParam(type="url", name="object", value="#arguments.object#");
-		}
+		httpService.addParam(type="url", name="object", value="#arguments.object#");
+		result = callAPIService(httpService);
+		return result;
+	}
+	
+	/*
+	 * @description Remove all subscription for an application
+	 * @hint 
+	 */
+	public Any function deleteAppSubscriptions(required String appId) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="DELETE", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		result = callAPIService(httpService);
 		return result;
 	}
@@ -152,12 +162,16 @@ component extends="FacebookBase" {
 	 * @description List all application's subscriptions
 	 * @hint Requires an application accessToken
 	 */
-	public Struct function getAppSubscriptions(required String appId) {
+	public Array function getAppSubscriptions(required String appId) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="GET", timeout=variables.TIMEOUT);
 		var result = {};
+		var subscriptions = [];
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		result = callAPIService(httpService);
-		return result;
+		if (structKeyExists(result, "data")) {
+			subscriptions = result.data;
+		}
+		return subscriptions;
 	}
 	
 	/*
