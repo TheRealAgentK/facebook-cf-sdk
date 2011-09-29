@@ -99,6 +99,21 @@ component extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Remove a subscription for an application
+	 * @hint 
+	 */
+	public Any function deleteAppSubscription(required String appId, String object = "") {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="DELETE", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		if(len(arguments.object)) {
+			httpService.addParam(type="url", name="object", value="#arguments.object#");
+		}
+		result = callAPIService(httpService);
+		return result;
+	}
+	
+	/*
 	 * @description Remove a like from a post.
 	 * @hint Requires the publish_stream permission.
 	 */
@@ -129,21 +144,6 @@ component extends="FacebookBase" {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/app_#arguments.appId#", method="DELETE", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		result = callAPIService(httpService);
-		return result;
-	}
-	
-	/*
-	 * @description Remove a subscription for an application
-	 * @hint Requires the publish_stream permission.
-	 */
-	public Boolean function deleteAppSubscription(required String appId, String object = "") {
-		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#/subscriptions", method="DELETE", timeout=variables.TIMEOUT);
-		var result = {};
-		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		if(len(arguments.object)) {
-			httpService.addParam(type="formField", name="object", value="#arguments.object#");
-		}
 		result = callAPIService(httpService);
 		return result;
 	}
