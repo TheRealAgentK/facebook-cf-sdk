@@ -14,14 +14,9 @@
 		function login() {
         	FB.login(function(response) {
 				<cfif trim(thisTag.generatedContent) is "">
-					if (response.session) {
-						if (response.perms) {
-							// user is logged in and granted some permissions
-							window.location.href = "#attributes.returnUrl#";
-						} else {
-							// user is logged in, but did not grant any permissions
-							window.location.href = "#attributes.returnUrl#";
-						}
+					if (response.authResponse) {
+						// user is logged
+						window.location.href = "#attributes.returnUrl#";
 				  	} else {
 				   		// user cancelled login
 						window.location.href = "#attributes.cancelUrl#";
