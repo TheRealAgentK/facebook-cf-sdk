@@ -24,7 +24,7 @@
 				<cfelse>
 					#thisTag.generatedContent#
 				</cfif>
-			}, {perms:"#attributes.permissions#"});
+			}, {scope:"#attributes.permissions#"});
 		}
 	</script>
 
