@@ -138,9 +138,9 @@ component accessors="true" {
 				queryString = queryString  & "&";
 			}
 			if (arguments.urlEncoded) {
-				queryString = queryString & key & "=" & urlEncodedFormat(arguments.parameters[key]);
+				queryString = queryString & LCase(key) & "=" & urlEncodedFormat(arguments.parameters[key]);
 			} else {
-				queryString = queryString & key & "=" & arguments.parameters[key];
+				queryString = queryString & LCase(key) & "=" & arguments.parameters[key];
 			}
 		}
 		return queryString;
