@@ -56,6 +56,29 @@ component extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Create an open graph action on an open graph object
+	 * @hint Requires a user accessToken (or an app accessToken), return an action instance id (story id). Additional action properties can be passed, such as start_time, end_time, place, tags, ref…
+	 */
+	public String function createAction(required String appNameSpace, required String actionName, required String objectName, required String objectUrl, Struct properties = {}, Boolean scrapeEnabled = false, required String userId) {
+		var id = "";
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.userId#/#arguments.appNameSpace#:#arguments.actionName#", method="POST", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="formField", name=arguments.objectName, value=arguments.objectUrl);
+		for (var propertyName in arguments.properties) {
+			httpService.addParam(type="formField", name=propertyName, value=arguments.properties[propertyName]);
+		}
+		if (arguments.scrapeEnabled) {
+			httpService.addParam(type="formField", name="scrape", value=true);
+		}
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "id")) {
+			id = result["id"];
+		}
+		return id;
+	}
+
+	/*
 	 * @description Create a subscription for the application
 	 * @hint Requires an application accessToken
 	 */
@@ -211,6 +234,7 @@ component extends="FacebookBase" {
 	/*
 	 * @description Get graph object connections.
 	 * @hint 
+	 *		Supported connections type for action instance : likes
 	 *		Supported connections type for album : comments, photos
 	 *		Supported connections type for event : attending, declined, feed, invited, maybe, noreply, picture
 	 *		Supported connections type for group : feed, members, picture
@@ -310,7 +334,7 @@ component extends="FacebookBase" {
 	 * @description Get multiple graph objects in a single batched request.
 	 * @hint 
 	 */
-	public Array function getObjectsBatched(required Array relativeUrls) {
+	public Array function getObjectsBatched(required Array relativeUrls, Boolean headersEnabled = true) {
 		var httpService = new Http(url="https://graph.facebook.com", method="POST", timeout=variables.TIMEOUT);
 		var response = {};
 		var result = {};
@@ -325,6 +349,9 @@ component extends="FacebookBase" {
 		}
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="url", name="batch", value="#serializeJSON(batch)#");
+		if (!arguments.headersEnabled) {
+			httpService.addParam(type="url", name="no_header", value="true");
+		}
 		result = callAPIService(httpService);
 		if (isArray(result)) {
 			for (response in result) {
@@ -496,7 +523,7 @@ component extends="FacebookBase" {
 	}
 	
 	/*
-	 * @description Add a comment to a post
+	 * @description Add a comment to a post or an action instance
 	 * @hint Requires the publish_stream permission.
 	 */
 	public String function publishComment(required String postId, required String message) {
@@ -668,6 +695,21 @@ component extends="FacebookBase" {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.eventId#/#arguments.userId#", method="DELETE", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		result = callAPIService(httpService);
+		return result;
+	}
+	
+	/*
+	 * @description Update action instance properties
+	 * @hint Requires a user accessToken (or a page accessToken)
+	 */
+	public Boolean function updateAction(required String actionInstanceId, Struct properties = {}) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.actionInstanceId#", method="POST", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		for (var propertyName in arguments.properties) {
+			httpService.addParam(type="formField", name=propertyName, value=arguments.properties[propertyName]);
+		}
 		result = callAPIService(httpService);
 		return result;
 	}
