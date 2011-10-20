@@ -182,6 +182,42 @@ component extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Execute multiple FQL Query.
+	 * @hint Return an array of query results.
+	 */
+	public Struct function executeMultipleQuery(required Array queries) {
+		var httpService = new Http(url="https://graph.facebook.com/fql", method="GET", timeout=variables.TIMEOUT);
+		var queryResults = structNew();
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="url", name="q", value=serializeJSON(arguments.queries));
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data") && isArray(result.data)) {
+			for (var i=1; i <= arrayLen(result.data); i++) {
+				queryResults[result.data[i].name] = result.data[i].fql_result_set;
+			}
+		}
+		return queryResults;
+	}
+	
+	/*
+	 * @description Execute a FQL Query.
+	 * @hint 
+	 */
+	public Array function executeQuery(required String query) {
+		var httpService = new Http(url="https://graph.facebook.com/fql", method="GET", timeout=variables.TIMEOUT);
+		var queryResults = arrayNew(1);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="url", name="q", value=arguments.query);
+		result = callAPIService(httpService);
+		if (structKeyExists(result, "data")) {
+			queryResults = result.data;
+		}
+		return queryResults;
+	}
+	
+	/*
 	 * @description List all application's subscriptions
 	 * @hint Requires an application accessToken
 	 */
