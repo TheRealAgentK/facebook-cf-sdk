@@ -7,6 +7,7 @@
 <cfparam name="attributes.channelUrl" default="" /><!--- Ex. : http://#cgi.SERVER_NAME#/facebook/sdk/assets/scripts/channel.cfm?localeCode=#attributes.localeCode# --->
 <cfparam name="attributes.oauthEnabled" default="true" />
 <cfparam name="attributes.statusEnabled" default="false" />
+<cfparam name="attributes.setSizeEnabled" default="true" />
 <cfparam name="attributes.xfbmlEnabled" default="true" />
 <cfif getPageContext().getRequest().isSecure()>
 	<cfset replaceNoCase(attributes.channelUrl, "http://", "https://") />
@@ -27,7 +28,7 @@
 			
 			<cfif attributes.autoGrowthEnabled>
 				FB.Canvas.setAutoGrowth();
-			<cfelse>
+			<cfelseif attributes.setSizeEnabled>
 				FB.Canvas.setSize();
 			</cfif>
 			
