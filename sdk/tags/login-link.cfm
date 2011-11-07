@@ -10,7 +10,7 @@
 	</cfif>
 </cfsilent>
 <cfoutput>
-	<script>
+	<script type="text/javascript">
 		function login() {
         	FB.login(function(response) {
 				<cfif trim(thisTag.generatedContent) is "">

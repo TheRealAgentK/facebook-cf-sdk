@@ -338,7 +338,7 @@ component accessors="true" extends="FacebookBase" {
    	 * @hint 
 	 */
 	public Boolean function isEnabled() {
-		return (getAppId() != "" && getSecretKey() != "");
+		return (getAppId() != 0 && getSecretKey() != "");
 	}
 	
 	/*
