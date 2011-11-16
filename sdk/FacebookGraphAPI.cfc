@@ -575,19 +575,36 @@ component extends="FacebookBase" {
 	 * @description Add an event to a profile/page
 	 * @hint Requires the create_event / manage_pages permission. Privacy type can be "open", "closed" or "secret"
 	 */
-	public String function publishEvent(required String profileId, required String name, required Date startTime, Date endTime, String message = "", String location = "", String privacyType = "open") {
+	public String function publishEvent(required String profileId, required String name, required Date startTime, Date endTime, String description = "", String location = "", String privacyType = "open") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/events", method="POST", timeout=variables.TIMEOUT);
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="formField", name="name", value="#arguments.name#");
 		httpService.addParam(type="formField", name="start_time", value="#dateformat(arguments.startTime, "yyyy-mm-dd")#T#TimeFormat(arguments.startTime, "HH:mm:ss")#");
-		if (structKeyExists(arguments, "endTime"))httpService.addParam(type="formField", name="end_time", value="#dateformat(arguments.startTime, "yyyy-mm-dd")#T#TimeFormat(arguments.startTime, "HH:mm:ss")#");
+		if (structKeyExists(arguments, "endTime"))httpService.addParam(type="formField", name="end_time", value="#dateformat(arguments.endTime, "yyyy-mm-dd")#T#TimeFormat(arguments.endTime, "HH:mm:ss")#");
 		if (trim(arguments.location) != "") httpService.addParam(type="formField", name="location", value="#arguments.location#");
-		if (trim(arguments.message) != "") httpService.addParam(type="formField", name="name", value="#arguments.name#");
-		if (trim(arguments.privacyType) != "") httpService.addParam(type="formField", name="privacy_type", value="#arguments.privacy_type#");
+		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
+		if (trim(arguments.privacyType) != "") httpService.addParam(type="formField", name="privacy_type", value="#arguments.privacyType#");
 		result = callAPIService(httpService);
 		return result["id"];
 	}
-	
+
+	/*
+	 * @description Update an event.
+	 * @hint Requires the create_event / manage_pages permission. Privacy type can be "open", "closed" or "secret"
+	 */
+	public String function updateEvent(required String eventId, String name = "", Date startTime, Date endTime, String description = "", String location = "", String privacyType = "open") {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.eventId#", method="POST", timeout=variables.TIMEOUT);
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		if (Len(trim(arguments.name)))httpService.addParam(type="formField", name="name", value="#arguments.name#");
+		if (structKeyExists(arguments, "startTime"))httpService.addParam(type="formField", name="start_time", value="#dateformat(arguments.startTime, "yyyy-mm-dd")#T#TimeFormat(arguments.startTime, "HH:mm:ss")#");
+		if (structKeyExists(arguments, "endTime"))httpService.addParam(type="formField", name="end_time", value="#dateformat(arguments.endTime, "yyyy-mm-dd")#T#TimeFormat(arguments.endTime, "HH:mm:ss")#");
+		if (trim(arguments.location) != "") httpService.addParam(type="formField", name="location", value="#arguments.location#");
+		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
+		if (trim(arguments.privacyType) != "") httpService.addParam(type="formField", name="privacy_type", value="#arguments.privacyType#");
+		result = callAPIService(httpService);
+		return result;
+	}
+		
 	/*
 	 * @description Change event status
 	 * @hint Available status are attending, maybe or declined.
