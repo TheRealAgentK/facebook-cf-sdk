@@ -283,11 +283,12 @@ component extends="FacebookBase" {
 	  *		Supported connections type for user : albums, activities, books, checkins, events, feed, friends, groups, interests, home, links, likes, music, movies, notes, photos, picture, posts, statuses, tagged, television, thread, updates, videos
 	 *		Supported connections type for video : comments
 	 */
-	public Array function getConnections(required String id, required String type, Numeric limit=-1, Numeric offset=-1, Date since, Date until) {
+	public Array function getConnections(required String id, required String type, Numeric limit=-1, Numeric offset=-1, Date since, Date until, String dateFormat = "") {
 		var connections = [];
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.id#/#arguments.type#", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		if (arguments.dateFormat == "unix") httpService.addParam(type="url", name="date_format", value="U");
 		if (arguments.limit > 0) httpService.addParam(type="url", name="limit", value="#arguments.limit#");
 		if (arguments.offset > 0) httpService.addParam(type="url", name="offset", value="#arguments.offset#");
 		if (structKeyExists(arguments, "since") && isDate(arguments.since)) httpService.addParam(type="url", name="since", value="#dateDiff("s", dateConvert("utc2Local", "January 1 1970 00:00"), arguments.since)#");
