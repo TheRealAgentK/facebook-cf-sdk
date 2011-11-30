@@ -5,3 +5,5 @@ settings.xml
 .DS_Store/settings.xml
 
 Capfile
+facebook-cf-sdk.sublime-workspace
+facebook-cf-sdk.sublime-project
