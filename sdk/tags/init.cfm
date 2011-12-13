@@ -20,6 +20,7 @@
 				appId   : "#attributes.facebookApp.getAppId()#",
 				<cfif attributes.channelUrl is not "">channelUrl  : "#attributes.channelUrl#",  // Custom channel URL</cfif>
 				cookie  : <cfif attributes.cookieEnabled>true<cfelse>false</cfif>, // enable cookies to allow the server to access the session
+				oauth	: true,
 				status  : <cfif attributes.statusEnabled>true<cfelse>false</cfif>, // check login status
 				xfbml   : <cfif attributes.xfbmlEnabled>true<cfelse>false</cfif> // parse XFBML
 			});
