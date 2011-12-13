@@ -5,7 +5,6 @@
 <cfparam name="attributes.facebookApp" />
 <cfparam name="attributes.localeCode" default="en_US" />
 <cfparam name="attributes.channelUrl" default="" /><!--- Ex. : http://#cgi.SERVER_NAME#/facebook/sdk/assets/scripts/channel.cfm?localeCode=#attributes.localeCode# --->
-<cfparam name="attributes.oauthEnabled" default="true" />
 <cfparam name="attributes.sizeEnabled" default="true" />
 <cfparam name="attributes.statusEnabled" default="false" />
 <cfparam name="attributes.xfbmlEnabled" default="true" />
@@ -21,7 +20,6 @@
 				appId   : "#attributes.facebookApp.getAppId()#",
 				<cfif attributes.channelUrl is not "">channelUrl  : "#attributes.channelUrl#",  // Custom channel URL</cfif>
 				cookie  : <cfif attributes.cookieEnabled>true<cfelse>false</cfif>, // enable cookies to allow the server to access the session
-				<cfif attributes.oauthEnabled>oauth : true, // enables OAuth 2.0</cfif>
 				status  : <cfif attributes.statusEnabled>true<cfelse>false</cfif>, // check login status
 				xfbml   : <cfif attributes.xfbmlEnabled>true<cfelse>false</cfif> // parse XFBML
 			});
