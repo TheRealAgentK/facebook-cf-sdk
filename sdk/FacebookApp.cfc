@@ -24,7 +24,7 @@ component accessors="true" extends="FacebookBase" {
      * @description Facebook App Id
 	 * @hint
 	 */
-	property Numeric appId;
+	property String appId;
 	/**
      * @description Facebook application secret key
 	 * @hint 
@@ -38,7 +38,7 @@ component accessors="true" extends="FacebookBase" {
 	 * @description Facebook App constructor
 	 * @hint Requires an appId and its secretKey
 	 */
-	public Any function init(required Numeric appId, required String secretKey) {
+	public Any function init(required String appId, required String secretKey) {
 		if (!isPersistentDataEnabled()) {
 			throw(message="Persistent scope is not available (by default session scope, so you must enable session management for this app)", type="UnvailablePersistentScope");
 		}

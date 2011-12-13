@@ -33,7 +33,7 @@ component accessors="true" {
 	 * @description Facebook Graph API constructor
 	 * @hint Requires an application or user accessToken
 	 */
-	public Any function init(Numeric appId = 0) {
+	public Any function init(String appId = "") {
 		setAppId(arguments.appId);
 		return this;
 	}

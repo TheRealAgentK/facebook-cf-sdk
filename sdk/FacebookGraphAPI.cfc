@@ -24,7 +24,7 @@ component extends="FacebookBase" {
 	 * @description Facebook Graph API constructor
 	 * @hint Requires an application or user accessToken, appId is only used to invalidate current session if an invalid token is detected
 	 */
-	public Any function init(String accessToken = "", Numeric appId = 0, Numeric timeout = 10) {
+	public Any function init(String accessToken = "", String appId = "", Numeric timeout = 10) {
 		super.init(appId=arguments.appId);
 		variables.ACCESS_TOKEN = arguments.accessToken;
 		variables.TIMEOUT = arguments.timeout;
