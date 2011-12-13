@@ -392,7 +392,7 @@ component extends="FacebookBase" {
 		result = callAPIService(httpService);
 		if (isArray(result)) {
 			for (response in result) {
-				if (structKeyExists(response, "code") && response["code"] == 200) {
+				if (isStruct(response) && structKeyExists(response, "code") && response["code"] == 200) {
 					arrayAppend(results, deserializeJSON(response["body"]));
 				} else {
 					arrayAppend(results, {});
