@@ -142,7 +142,7 @@ if (APP_ID is "" or SECRET_KEY is "") {
 					      Log in via Facebook JavaScript SDK: <a href="javascript:login()">Login/Install</a>
 					    </div>
 						<div>
-					      Log in Facebook JavaScript SDK &amp; XFBML: <fb:login-button perms="publish_stream" onclick="addLoginListener()"></fb:login-button>
+					      Log in Facebook JavaScript SDK &amp; XFBML: <fb:login-button scope="#SCOPE#" onclick="addLoginListener()"></fb:login-button>
 					    </div>
 						<hr />
 					</cfif>
