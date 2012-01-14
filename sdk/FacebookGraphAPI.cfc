@@ -673,13 +673,14 @@ component extends="FacebookBase" {
 	 * @description Add an entry to a profile's feed.
 	 * @hint Requires the publish_stream permission.
 	 */
-	public String function publishPost(required String profileId, String actions = "", String caption = "", String description = "",  String link = "", String message = "", String picture = "", String privacy = "", String name = "", String source = "", String targeting = "") {
+	public String function publishPost(required String profileId, String actions = "", String caption = "", String description = "", String display = "",  String link = "", String message = "", String picture = "", String privacy = "", String name = "", String source = "", String targeting = "") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/feed", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="formField", name="access_token", value=variables.ACCESS_TOKEN);
 		if (trim(arguments.actions) != "") httpService.addParam(type="formField", name="actions", value="#arguments.actions#");
 		if (trim(arguments.caption) != "") httpService.addParam(type="formField", name="caption", value="#arguments.caption#");
 		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
+		if (trim(arguments.display) != "") httpService.addParam(type="formField", name="display", value="#arguments.display#");
 		if (trim(arguments.link) != "") httpService.addParam(type="formField", name="link", value="#arguments.link#");
 		if (trim(arguments.message) != "") httpService.addParam(type="formField", name="message", value="#arguments.message#");
 		if (trim(arguments.picture) != "") httpService.addParam(type="formField", name="picture", value="#arguments.picture#");
