@@ -291,8 +291,18 @@ component extends="FacebookBase" {
 		if (arguments.dateFormat == "unix") httpService.addParam(type="url", name="date_format", value="U");
 		if (arguments.limit > 0) httpService.addParam(type="url", name="limit", value="#arguments.limit#");
 		if (arguments.offset > 0) httpService.addParam(type="url", name="offset", value="#arguments.offset#");
-		if (structKeyExists(arguments, "since") && isDate(arguments.since)) httpService.addParam(type="url", name="since", value="#dateDiff("s", dateConvert("utc2Local", "January 1 1970 00:00"), arguments.since)#");
-		if (structKeyExists(arguments, "until") && isDate(arguments.until)) httpService.addParam(type="url", name="until", value="#dateDiff("s", dateConvert("utc2Local", "January 1 1970 00:00"), arguments.until)#");
+		if (structKeyExists(arguments, "since")) {
+			if (isDate(arguments.since)) {
+				arguments.since = dateDiff("s", dateConvert("utc2Local", "January 1 1970 00:00"), arguments.since);
+			}
+			httpService.addParam(type="url", name="since", value=arguments.since);	
+		} 
+		if (structKeyExists(arguments, "until")) {
+			if (isDate(arguments.until)) {
+				arguments.until = dateDiff("s", dateConvert("utc2Local", "January 1 1970 00:00"), arguments.until);
+			}
+			httpService.addParam(type="url", name="until", value=arguments.until);
+		}
 		result = callAPIService(httpService);
 		if (structKeyExists(result, "data")) {
 			connections = result.data;
