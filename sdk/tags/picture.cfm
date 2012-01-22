@@ -1,6 +1,7 @@
 <cfsilent>
 	<cfparam name="attributes.facebookId" />
 	<cfparam name="attributes.linkEnabled" default="false" />
+	<cfparam name="attributes.protocol" default="http" />
 	<cfparam name="attributes.style" default="" />
 	<cfparam name="attributes.target" default="" />
 	<cfparam name="attributes.toolTip" default="" />
@@ -30,6 +31,6 @@
 <cfoutput>
 <cfif attributes.linkEnabled>
 	<a class="#attributes.class#" href="#profileUrl#"<cfif attributes.style is not ""> style="#attributes.style#"</cfif><cfif attributes.target is not ""> target="#attributes.target#"</cfif>  title="#attributes.toolTip#" target="_blank"></cfif>
-	<img src="http://graph.facebook.com/#attributes.facebookId#/picture?type=#attributes.type#" class="#attributes.class#" <cfif isNumeric(height)>height="#height#"</cfif> width="#width#"/>
+	<img src="#attributes.protocol#://graph.facebook.com/#attributes.facebookId#/picture?type=#attributes.type#" class="#attributes.class#" <cfif isNumeric(height)>height="#height#"</cfif> width="#width#"/>
 	<cfif attributes.linkEnabled></a></cfif></cfoutput>
 <cfexit method="exittag" />
