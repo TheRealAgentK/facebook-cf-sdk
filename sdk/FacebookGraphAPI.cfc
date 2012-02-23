@@ -782,6 +782,21 @@ component extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Update application properties
+	 * @hint Requires an app accessToken
+	 */
+	public Boolean function updateAppProperties(required String appId, Struct properties = {}) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.appId#", method="POST", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		for (var propertyName in arguments.properties) {
+			httpService.addParam(type="formField", name=propertyName, value=arguments.properties[propertyName]);
+		}
+		result = callAPIService(httpService);
+		return result;
+	}
+	
+	/*
 	 * @description Install an app in a page profile tab at the end of the current list of installed tabs
 	 * @hint Requires a page accessToken
 	 */
