@@ -59,7 +59,7 @@ component extends="FacebookBase" {
 	 * @description Create an open graph action on an open graph object
 	 * @hint Requires a user accessToken (or an app accessToken), return an action instance id (story id). Additional action properties can be passed, such as start_time, end_time, place, tags, ref…
 	 */
-	public String function createAction(required String appNameSpace, required String actionName, required String objectName, required String objectUrl, Struct properties = {}, Boolean scrapeEnabled = false, required String userId) {
+	public String function createAction(required String actionName, required String appNameSpace, required String objectName, required String objectUrl, Struct properties = {}, Boolean scrapeEnabled = false, required String userId) {
 		var id = "";
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.userId#/#arguments.appNameSpace#:#arguments.actionName#", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
@@ -721,6 +721,19 @@ component extends="FacebookBase" {
 		if (trim(arguments.title) != "") httpService.addParam(type="formField", name="title", value="#arguments.title#");
 		result = callAPIService(httpService);
 		return true;
+	}
+	
+	/*
+	 * @description Ask Facebook to recrawl the URL
+	 * @hint Required objectId (which can be a facebook ID or object page URL)
+	 */
+	public Any function scrapeObject(required String objectId) {
+		var httpService = new Http(url="https://graph.facebook.com/", method="POST", timeout=variables.TIMEOUT);
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="formField", name="id", value=arguments.objectId);
+		httpService.addParam(type="formField", name="scrape", value="true");
+		var result = callAPIService(httpService);
+		return result;
 	}
 	
 	/*
