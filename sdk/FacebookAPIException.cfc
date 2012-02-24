@@ -45,6 +45,8 @@ component accessors="true" {
 		// Error code
 		if (structKeyExists(arguments.result, "error_code")) {
 			setErrorCode(arguments.result["error_code"]);
+		} else if (structKeyExists(arguments.result, "error") && isStruct(result["error"]) && structKeyExists(arguments.result["error"], "code")) {
+			setErrorCode(arguments.result["error"]["code"]);
 		} else {
 			setErrorCode(0);
 		}
@@ -55,7 +57,7 @@ component accessors="true" {
 			setMessage(arguments.result["error_description"]);
 		} else if (structKeyExists(arguments.result, "error") && isStruct(result["error"]) && structKeyExists(arguments.result["error"], "message")) {
 			// OAuth 2.0 Draft 00 style
-			setMessage(arguments.result["error"]["message"]);
+			setMessage(arguments.result["error"]["message"] & " [code=" & getErrorCode() & "]");
 		} else if (structKeyExists(arguments.result, "error_msg")) {
 			// Rest server style
 			setMessage(arguments.result["error_msg"]);
