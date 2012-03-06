@@ -379,11 +379,16 @@ component extends="FacebookBase" {
 		var results = [];
 		var batch = [];
 		var query = {};
-		for (var relativeUrl in arguments.relativeUrls) {
-			query = {};
-			query["method"] = "GET";
-			query["relative_url"] = relativeUrl;
-			arrayAppend(batch, query);
+		var relativeUrl = "";
+		for (var i=1; i <= arrayLen(arguments.relativeUrls); i++) {
+			relativeUrl = arguments.relativeUrls[i];
+			//ensure there is a value, only if there is do we proceed
+			if (Len(Trim(relativeUrl)) gt 0) {
+				query = {};
+				query["method"] = "GET";
+				query["relative_url"] = relativeUrl;
+				arrayAppend(batch, query);
+			}
 		}
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="url", name="batch", value="#serializeJSON(batch)#");

@@ -120,12 +120,13 @@ component accessors="true" {
 	}
 	
 	private Struct function parseQueryString(required String queryString) {
-		var keyValue = "";
-		var keyValues = listToArray(replace(arguments.queryString,'"', '', 'ALL'), "&");
+		var key = "";
+		var keyArray = listToArray(replace(arguments.queryString,'"', '', 'ALL'), "&");
 		var parameters = structNew();
-		for (keyValue in keyValues) {
-			if (listLen(keyValue, "=") == 2) {
-				parameters[listFirst(keyValue,"=")] = listLast(keyValue,"=");
+		for (var i=1; i <= arrayLen(keyArray); i++) {
+			key = keyArray[i];
+			if (listLen(key, "=") == 2) {
+				parameters[listFirst(key,"=")] = listLast(key,"=");
 			}
 		}
 		return parameters;
@@ -208,8 +209,15 @@ component accessors="true" {
 	}
 
 	private void function deleteAllPersistentData() {
-		for (var key in listToArray(variables.PERSISTENT_KEYS)) {
-			deletePersistentData(key);
+		var key = "";
+		var keyArray = listToArray(variables.PERSISTENT_KEYS);
+		//loop over array, getting keys
+		for (var i=1; i <= arrayLen(keyArray); i++) {
+			key = keyArray[i];
+			//after getting key from array, check to ensure it is not blank
+			if (Len(Trim(key)) gt 0) {
+				deletePersistentData(key);
+			}
 		}
 	}
 	
