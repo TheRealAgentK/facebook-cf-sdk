@@ -133,7 +133,8 @@ component accessors="true" {
 	
 	private String function serializeQueryString(required Struct parameters, Boolean urlEncoded = true) {
 		var queryString = "";
-		for (var key in arguments.parameters) {
+		var key = "";
+		for (key in arguments.parameters) {
 			if (queryString != "") {
 				queryString = queryString  & "&";
 			}

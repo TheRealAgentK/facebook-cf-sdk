@@ -63,9 +63,10 @@ component extends="FacebookBase" {
 		var id = "";
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.userId#/#arguments.appNameSpace#:#arguments.actionName#", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
+		var propertyName = "";
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="formField", name=arguments.objectName, value=arguments.objectUrl);
-		for (var propertyName in arguments.properties) {
+		for (propertyName in arguments.properties) {
 			httpService.addParam(type="formField", name=propertyName, value=arguments.properties[propertyName]);
 		}
 		if (arguments.scrapeEnabled) {
@@ -760,8 +761,9 @@ component extends="FacebookBase" {
 	public Boolean function updateAction(required String actionInstanceId, Struct properties = structNew()) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.actionInstanceId#", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
+		var propertyName = "";
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		for (var propertyName in arguments.properties) {
+		for (propertyName in arguments.properties) {
 			httpService.addParam(type="formField", name=propertyName, value=arguments.properties[propertyName]);
 		}
 		result = callAPIService(httpService);
