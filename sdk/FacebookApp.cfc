@@ -520,7 +520,7 @@ component accessors="true" extends="FacebookBase" {
 		return currentUrl;
 	}
 	
-	private String function getUrl(String path = "", Struct parameters = {}) {
+	private String function getUrl(String path = "", Struct parameters = structNew()) {
 		var key = "";
 		var resultUrl = "https://www.facebook.com/" & arguments.path;
 		if (structCount(arguments.parameters)) {
