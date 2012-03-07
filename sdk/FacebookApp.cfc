@@ -130,6 +130,28 @@ component accessors="true" extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Get page OAuth accessToken
+	 * @hint Requires the manage_pages permission and a userAccessToken
+	 */
+	public String function getPageAccessToken(required String pageId) {
+		var accessToken = "";
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/");
+		var result = {};
+		var userAccessToken = getUserAccessToken();
+		
+		httpService.addParam(type="url", name="fields", value="access_token");
+		httpService.addParam(type="url", name="access_token", value=userAccessToken);
+		
+		result = callAPIService(httpService);
+		
+		if (structKeyExists(result, "access_token")) {
+			accessToken = result.access_token;
+		}
+		
+		return accessToken;
+	}
+	
+	/*
 	 * @description Get app data passed through URL when app is installed on a page (app_data parameter)
 	 * @hint Return value of app_data
 	 */
