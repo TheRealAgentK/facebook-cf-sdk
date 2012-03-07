@@ -183,9 +183,9 @@ component extends="FacebookBase" {
 	
 	/*
 	 * @description Execute multiple FQL Query.
-	 * @hint Return an array of query results.
+	 * @hint Return an array or struct of query results.
 	 */
-	public Struct function executeMultipleQuery(required Array queries) {
+	public Struct function executeMultipleQuery(required Any queries) {
 		var httpService = new Http(url="https://graph.facebook.com/fql", method="GET", timeout=variables.TIMEOUT);
 		var queryResults = structNew();
 		var result = {};
