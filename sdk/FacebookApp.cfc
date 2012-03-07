@@ -490,7 +490,7 @@ component accessors="true" extends="FacebookBase" {
 	}
 	
 	private String function getCurrentUrl(String queryString = "") {
-		var i = 0;
+		var i = 1;
 		var key = "";
 		var keyValues = listToArray(CGI.query_string, "&");
 		var currentUrl = getPageContext().getRequest().getRequestUrl().toString();
@@ -520,7 +520,7 @@ component accessors="true" extends="FacebookBase" {
 		return currentUrl;
 	}
 	
-	private String function getUrl(String path = "", Struct parameters = {}) {
+	private String function getUrl(String path = "", Struct parameters = structNew()) {
 		var key = "";
 		var resultUrl = "https://www.facebook.com/" & arguments.path;
 		if (structCount(arguments.parameters)) {

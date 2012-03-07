@@ -59,13 +59,14 @@ component extends="FacebookBase" {
 	 * @description Create an open graph action on an open graph object
 	 * @hint Requires a user accessToken (or an app accessToken), return an action instance id (story id). Additional action properties can be passed, such as start_time, end_time, place, tags, ref…
 	 */
-	public String function createAction(required String appNameSpace, required String actionName, required String objectName, required String objectUrl, Struct properties = {}, Boolean scrapeEnabled = false, required String userId) {
+	public String function createAction(required String appNameSpace, required String actionName, required String objectName, required String objectUrl, Struct properties = structNew(), Boolean scrapeEnabled = false, required String userId) {
 		var id = "";
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.userId#/#arguments.appNameSpace#:#arguments.actionName#", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
+		var propertyName = "";
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="formField", name=arguments.objectName, value=arguments.objectUrl);
-		for (var propertyName in arguments.properties) {
+		for (propertyName in arguments.properties) {
 			httpService.addParam(type="formField", name=propertyName, value=arguments.properties[propertyName]);
 		}
 		if (arguments.scrapeEnabled) {
@@ -378,11 +379,16 @@ component extends="FacebookBase" {
 		var results = [];
 		var batch = [];
 		var query = {};
-		for (var relativeUrl in arguments.relativeUrls) {
-			query = {};
-			query["method"] = "GET";
-			query["relative_url"] = relativeUrl;
-			arrayAppend(batch, query);
+		var relativeUrl = "";
+		for (var i=1; i <= arrayLen(arguments.relativeUrls); i++) {
+			relativeUrl = arguments.relativeUrls[i];
+			//ensure there is a value, only if there is do we proceed
+			if (Len(Trim(relativeUrl)) gt 0) {
+				query = {};
+				query["method"] = "GET";
+				query["relative_url"] = relativeUrl;
+				arrayAppend(batch, query);
+			}
 		}
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="url", name="batch", value="#serializeJSON(batch)#");
@@ -757,11 +763,12 @@ component extends="FacebookBase" {
 	 * @description Update action instance properties
 	 * @hint Requires a user accessToken (or a page accessToken)
 	 */
-	public Boolean function updateAction(required String actionInstanceId, Struct properties = {}) {
+	public Boolean function updateAction(required String actionInstanceId, Struct properties = structNew()) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.actionInstanceId#", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
+		var propertyName = "";
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		for (var propertyName in arguments.properties) {
+		for (propertyName in arguments.properties) {
 			httpService.addParam(type="formField", name=propertyName, value=arguments.properties[propertyName]);
 		}
 		result = callAPIService(httpService);
