@@ -330,7 +330,7 @@ component extends="FacebookBase" {
 	 * @description Get OAuth access token.
 	 * @hint
 	 */
-	public String function getOAuthAccessToken(String clientId = "", String clientSecret = "", String code = "", String grantType = "", String redirectUri) {
+	public String function getOAuthAccessToken(String clientId = "", String clientSecret = "", String code = "", String exchangeToken = "", String grantType = "", String redirectUri) {
 		var accessToken = "";
 		var httpService = new Http(url="https://graph.facebook.com/oauth/access_token", timeout=variables.TIMEOUT);
 		var queryString = "";
@@ -338,6 +338,10 @@ component extends="FacebookBase" {
 		if (arguments.clientSecret != "") httpService.addParam(type="url", name="client_secret", value=arguments.clientSecret);
 		if (arguments.code != "") httpService.addParam(type="url", name="code", value=arguments.code);
 		if (arguments.grantType != "") httpService.addParam(type="url", name="grant_type", value=arguments.grantType);
+		if (arguments.exchangeToken != "") {
+			httpService.addParam(type="url", name="grant_type", value="fb_exchange_token")
+			httpService.addParam(type="url", name="fb_exchange_token", value=arguments.exchangeToken);
+		}
 		if (structKeyExists(arguments, "redirectUri")) httpService.addParam(type="url", name="redirect_uri", value=arguments.redirectUri); // RedirectUri can be empty (when JS SDK is used to connect)
 		var result = callAPIService(httpService);
 		if (structKeyExists(result, "access_token")) {
