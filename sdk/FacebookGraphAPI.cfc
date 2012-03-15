@@ -330,7 +330,7 @@ component extends="FacebookBase" {
 	 * @description Get OAuth access token.
 	 * @hint
 	 */
-	public String function getOAuthAccessToken(String clientId = "", String clientSecret = "", String code = "", String grantType = "", String redirectUri) {
+	public String function getOAuthAccessToken(String clientId = "", String clientSecret = "", String code = "", String exchangeToken = "", String grantType = "", String redirectUri) {
 		var accessToken = "";
 		var httpService = new Http(url="https://graph.facebook.com/oauth/access_token", timeout=variables.TIMEOUT);
 		var queryString = "";
@@ -338,6 +338,10 @@ component extends="FacebookBase" {
 		if (arguments.clientSecret != "") httpService.addParam(type="url", name="client_secret", value=arguments.clientSecret);
 		if (arguments.code != "") httpService.addParam(type="url", name="code", value=arguments.code);
 		if (arguments.grantType != "") httpService.addParam(type="url", name="grant_type", value=arguments.grantType);
+		if (arguments.exchangeToken != "") {
+			httpService.addParam(type="url", name="grant_type", value="fb_exchange_token")
+			httpService.addParam(type="url", name="fb_exchange_token", value=arguments.exchangeToken);
+		}
 		if (structKeyExists(arguments, "redirectUri")) httpService.addParam(type="url", name="redirect_uri", value=arguments.redirectUri); // RedirectUri can be empty (when JS SDK is used to connect)
 		var result = callAPIService(httpService);
 		if (structKeyExists(result, "access_token")) {
@@ -590,8 +594,8 @@ component extends="FacebookBase" {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/events", method="POST", timeout=variables.TIMEOUT);
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="formField", name="name", value="#arguments.name#");
-		httpService.addParam(type="formField", name="start_time", value="#dateformat(arguments.startTime, "yyyy-mm-dd")#T#TimeFormat(arguments.startTime, "HH:mm:ss")#");
-		if (structKeyExists(arguments, "endTime"))httpService.addParam(type="formField", name="end_time", value="#dateformat(arguments.endTime, "yyyy-mm-dd")#T#TimeFormat(arguments.endTime, "HH:mm:ss")#");
+		httpService.addParam(type="formField", name="start_time", value="#dateformat(arguments.startTime, 'yyyy-mm-dd')#T#TimeFormat(arguments.startTime, 'HH:mm:ss')#");
+		if (structKeyExists(arguments, "endTime"))httpService.addParam(type="formField", name="end_time", value="#dateformat(arguments.endTime, 'yyyy-mm-dd')#T#TimeFormat(arguments.endTime, 'HH:mm:ss')#");
 		if (trim(arguments.location) != "") httpService.addParam(type="formField", name="location", value="#arguments.location#");
 		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
 		if (trim(arguments.privacyType) != "") httpService.addParam(type="formField", name="privacy_type", value="#arguments.privacyType#");
@@ -599,23 +603,6 @@ component extends="FacebookBase" {
 		return result["id"];
 	}
 
-	/*
-	 * @description Update an event.
-	 * @hint Requires the create_event / manage_pages permission. Privacy type can be "open", "closed" or "secret"
-	 */
-	public String function updateEvent(required String eventId, String name = "", Date startTime, Date endTime, String description = "", String location = "", String privacyType = "open") {
-		var httpService = new Http(url="https://graph.facebook.com/#arguments.eventId#", method="POST", timeout=variables.TIMEOUT);
-		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		if (Len(trim(arguments.name)))httpService.addParam(type="formField", name="name", value="#arguments.name#");
-		if (structKeyExists(arguments, "startTime"))httpService.addParam(type="formField", name="start_time", value="#dateformat(arguments.startTime, "yyyy-mm-dd")#T#TimeFormat(arguments.startTime, "HH:mm:ss")#");
-		if (structKeyExists(arguments, "endTime"))httpService.addParam(type="formField", name="end_time", value="#dateformat(arguments.endTime, "yyyy-mm-dd")#T#TimeFormat(arguments.endTime, "HH:mm:ss")#");
-		if (trim(arguments.location) != "") httpService.addParam(type="formField", name="location", value="#arguments.location#");
-		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
-		if (trim(arguments.privacyType) != "") httpService.addParam(type="formField", name="privacy_type", value="#arguments.privacyType#");
-		result = callAPIService(httpService);
-		return result;
-	}
-		
 	/*
 	 * @description Change event status
 	 * @hint Available status are attending, maybe or declined.
@@ -651,6 +638,21 @@ component extends="FacebookBase" {
 		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
 		if (trim(arguments.message) != "") httpService.addParam(type="formField", name="message", value="#arguments.message#");
 		if (trim(arguments.name) != "") httpService.addParam(type="formField", name="name", value="#arguments.name#");
+		result = callAPIService(httpService);
+		return result["id"];
+	}
+
+	/*
+	 * @description Add a milestone to a page timeline
+	 * @hint Requires the publish_stream permission.
+	 */
+	public String function publishMilestone(required String profileId, required String title, String description = "", required Date startTime) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.profileId#/milestones", method="POST", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="formField", name="title", value="#arguments.title#");
+		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
+		httpService.addParam(type="formField", name="start_time", value="#dateformat(arguments.startTime, 'yyyy-mm-dd')#T#TimeFormat(arguments.startTime, 'HH:mm:ss')#");
 		result = callAPIService(httpService);
 		return result["id"];
 	}
@@ -810,16 +812,66 @@ component extends="FacebookBase" {
 	}
 	
 	/*
+	 * @description Update an event.
+	 * @hint Requires the create_event / manage_pages permission. Privacy type can be "open", "closed" or "secret"
+	 */
+	public String function updateEvent(required String eventId, String name = "", Date startTime, Date endTime, String description = "", String location = "", String privacyType = "open") {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.eventId#", method="POST", timeout=variables.TIMEOUT);
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		if (Len(trim(arguments.name)))httpService.addParam(type="formField", name="name", value="#arguments.name#");
+		if (structKeyExists(arguments, "startTime"))httpService.addParam(type="formField", name="start_time", value="#dateformat(arguments.startTime, 'yyyy-mm-dd')#T#TimeFormat(arguments.startTime, 'HH:mm:ss')#");
+		if (structKeyExists(arguments, "endTime"))httpService.addParam(type="formField", name="end_time", value="#dateformat(arguments.endTime, "yyyy-mm-dd")#T#TimeFormat(arguments.endTime, 'HH:mm:ss')#");
+		if (trim(arguments.location) != "") httpService.addParam(type="formField", name="location", value="#arguments.location#");
+		if (trim(arguments.description) != "") httpService.addParam(type="formField", name="description", value="#arguments.description#");
+		if (trim(arguments.privacyType) != "") httpService.addParam(type="formField", name="privacy_type", value="#arguments.privacyType#");
+		result = callAPIService(httpService);
+		return result;
+	}
+
+	/*
+	 * @description Update page attributes.
+	 * @hint 
+	 */
+	public Boolean function updatePageAttributes(required String pageId, String about = "", String description = "", String phone = "", String info = "", String website = "") {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#", method="POST", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		if (arguments.about != "") httpService.addParam(type="formField", name="about", value=arguments.about);
+		if (arguments.description != "") httpService.addParam(type="formField", name="description", value=arguments.description);
+		if (arguments.phone != "") httpService.addParam(type="formField", name="phone", value=arguments.phone);
+		if (arguments.info != "") httpService.addParam(type="formField", name="general_info", value=arguments.info);
+		if (arguments.website != "") httpService.addParam(type="formField", name="website", value=arguments.website);
+		result = callAPIService(httpService);
+		return result;
+	}
+
+	/*
+	 * @description Update page cover.
+	 * @hint 
+	 */
+	public Boolean function updatePageCover(required String pageId, required String coverId, Boolean feedStoryDisabled = true, Numeric yOffset = 50) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#", method="POST", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="formField", name="cover", value=arguments.coverId);
+		httpService.addParam(type="formField", name="no_feed_story", value=arguments.feedStoryEnabled);
+		httpService.addParam(type="formField", name="offset_y", value=arguments.yOffset);
+		result = callAPIService(httpService);
+		return result;
+	}
+
+	/*
 	 * @description Install an app in a page profile tab at the end of the current list of installed tabs
 	 * @hint Requires a page accessToken
 	 */
-	public Boolean function updatePageTab(required String appId, required String pageId, Numeric position = 0, Boolean landingTab, String tabName = "") {
+	public Boolean function updatePageTab(required String appId, required String pageId, Numeric position = 0, String customName = "", String customImagePath = "", String customImageUrl) {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/app_#arguments.appId#", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		if (arguments.position > 0) httpService.addParam(type="formField", name="position", value=arguments.position);
-		if (structKeyExists(arguments, "landingTab")) httpService.addParam(type="formField", name="is_non_connection_landing_tab", value=true);
-		if (arguments.tabName != "") httpService.addParam(type="formField", name="custom_name", value=arguments.tabName);
+		if (arguments.customName != "") httpService.addParam(type="formField", name="custom_name", value=arguments.customName);
+		if (arguments.customImagePath != "") httpService.addParam(type="file", name="source", file="#arguments.customImagePath#");
+		if (arguments.customImageUrl != "") httpService.addParam(type="formField", name="custom_image_url", value=arguments.customImageUrl);
 		result = callAPIService(httpService);
 		return result;
 	}
