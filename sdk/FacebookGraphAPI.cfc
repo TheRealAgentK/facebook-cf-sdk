@@ -339,7 +339,7 @@ component extends="FacebookBase" {
 		if (arguments.code != "") httpService.addParam(type="url", name="code", value=arguments.code);
 		if (arguments.grantType != "") httpService.addParam(type="url", name="grant_type", value=arguments.grantType);
 		if (arguments.exchangeToken != "") {
-			httpService.addParam(type="url", name="grant_type", value="fb_exchange_token")
+			httpService.addParam(type="url", name="grant_type", value="fb_exchange_token");
 			httpService.addParam(type="url", name="fb_exchange_token", value=arguments.exchangeToken);
 		}
 		if (structKeyExists(arguments, "redirectUri")) httpService.addParam(type="url", name="redirect_uri", value=arguments.redirectUri); // RedirectUri can be empty (when JS SDK is used to connect)
@@ -864,13 +864,13 @@ component extends="FacebookBase" {
 	 * @description Install an app in a page profile tab at the end of the current list of installed tabs
 	 * @hint Requires a page accessToken
 	 */
-	public Boolean function updatePageTab(required String appId, required String pageId, Numeric position = 0, String customName = "", String customImagePath = "", String customImageUrl) {
+	public Boolean function updatePageTab(required String appId, required String pageId, Numeric position = 0, String customName = "", String customImagePath = "", String customImageUrl = "") {
 		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/tabs/app_#arguments.appId#", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		if (arguments.position > 0) httpService.addParam(type="formField", name="position", value=arguments.position);
 		if (arguments.customName != "") httpService.addParam(type="formField", name="custom_name", value=arguments.customName);
-		if (arguments.customImagePath != "") httpService.addParam(type="file", name="source", file="#arguments.customImagePath#");
+		if (arguments.customImagePath != "") httpService.addParam(type="file", name="custom_image", file="#arguments.customImagePath#");
 		if (arguments.customImageUrl != "") httpService.addParam(type="formField", name="custom_image_url", value=arguments.customImageUrl);
 		result = callAPIService(httpService);
 		return result;
