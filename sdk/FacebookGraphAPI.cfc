@@ -339,7 +339,7 @@ component extends="FacebookBase" {
 		if (arguments.code != "") httpService.addParam(type="url", name="code", value=arguments.code);
 		if (arguments.grantType != "") httpService.addParam(type="url", name="grant_type", value=arguments.grantType);
 		if (arguments.exchangeToken != "") {
-			httpService.addParam(type="url", name="grant_type", value="fb_exchange_token")
+			httpService.addParam(type="url", name="grant_type", value="fb_exchange_token");
 			httpService.addParam(type="url", name="fb_exchange_token", value=arguments.exchangeToken);
 		}
 		if (structKeyExists(arguments, "redirectUri")) httpService.addParam(type="url", name="redirect_uri", value=arguments.redirectUri); // RedirectUri can be empty (when JS SDK is used to connect)
