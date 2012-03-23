@@ -194,6 +194,7 @@ component accessors="true" extends="FacebookBase" {
 		if (!structKeyExists(arguments.parameters, "client_id")) arguments.parameters["client_id"] = variables.appId;
 		if (!structKeyExists(arguments.parameters, "redirect_uri")) arguments.parameters["redirect_uri"] = getCurrentUrl();
 		if (!structKeyExists(arguments.parameters, "state")) arguments.parameters["state"] = getCSRFStateToken();
+                if (!structKeyExists(arguments.parameters, "display")) arguments.parameters["display"] = "page";
 		return getUrl("dialog/oauth", arguments.parameters);
 	}
 	
