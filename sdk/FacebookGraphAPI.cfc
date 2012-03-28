@@ -875,5 +875,18 @@ component extends="FacebookBase" {
 		result = callAPIService(httpService);
 		return result;
 	}
+	
+	/*
+	 * @description Update post visibility (show/hide in timeline)
+	 * @hint Requires a page accessToken
+	 */
+	public Boolean function updatePostVisibility(required String postId, Boolean hidden = false) {
+		var httpService = new Http(url="https://graph.facebook.com/#arguments.postId#", method="POST", timeout=variables.TIMEOUT);
+		var result = {};
+		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+		httpService.addParam(type="formField", name="is_hidden", value=arguments.hidden);
+		result = callAPIService(httpService);
+		return result;
+	}
 
 }
