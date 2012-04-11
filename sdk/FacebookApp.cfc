@@ -32,6 +32,7 @@ component accessors="true" extends="FacebookBase" {
 	property String secretKey;
 	
 	variables.DROP_QUERY_PARAMS = "code,logged_out,state,signed_request";
+	variables.EXPIRATION_PREVENTION_THRESHOLD = 600000; // 10 minutes
 	variables.VERSION = "3.1.1";
 	
 	/*
@@ -96,6 +97,19 @@ component accessors="true" extends="FacebookBase" {
 			signedRequest = parseSignedRequest(cookie[cookieName]);
 			writeDump(var=signedRequest, format="text");
 		}
+	}
+	
+	/*
+	 * @description Exchange a valid access token with a new one with extended expiration time (60 days). 
+   	 * @hint It only works with user access token.
+	 */
+	public Struct function exchangeAccessToken(required String accessToken) {
+		var result = {};
+		if (arguments.accessToken != "") {
+			var graphAPI = new FacebookGraphAPI(appId=getAppId());
+			result = graphAPI.getOAuthAccessData(clientId=getAppId(), clientSecret=getSecretKey(), exchangeToken=arguments.accessToken);
+		}
+		return result;
 	}
 	
 	/*
@@ -264,6 +278,7 @@ component accessors="true" extends="FacebookBase" {
 	 */
 	public String function getUserAccessToken() {
 		var accessToken = "";
+		var result = {};
 		// First, consider a signed request if it's supplied. if there is a signed request, then it alone determines the access token.
 		var signedRequest = getSignedRequest();
 		if (structCount(signedRequest)) {
@@ -274,12 +289,22 @@ component accessors="true" extends="FacebookBase" {
 			} else if (structKeyExists(signedRequest, "code")) {
 				// Facebook Javascript SDK puts an authorization code in signed request
 				if (signedRequest["code"] == getPersistentData("code")) {
-					accessToken = getPersistentData("access_token");
+					if (!isAccessTokenExpired()) {
+						if (isAccessTokenExpiredSoon()) {
+							accessToken = exchangeAccessToken(getPersistentData("access_token"));
+						} else {
+							accessToken = getPersistentData("access_token");
+						}
+					}
 				} else {
-					accessToken = getAccessTokenFromCode(signedRequest["code"], "");
-					if (accessToken != "") {
-						setPersistentData("code", signedRequest["code"]);
+					result = getAccessTokenFromCode(signedRequest["code"], "");
+					if (structKeyExists(result, "access_token") ) {
+						accessToken = result["access_token"];
 						setPersistentData("access_token", accessToken);
+						setPersistentData("code", signedRequest["code"]);
+						if (structKeyExists(result, "expires")) {
+							setPersistentData("expiration_time", getTickCount() + result["expires"] * 1000);	
+						}
 					}
 				}
 			}
@@ -292,10 +317,14 @@ component accessors="true" extends="FacebookBase" {
 			// Falling back on the authorization code if present
 			var code = getAuthorizationCode();
 			if (code != "" && code != getPersistentData("code")) {
-				accessToken = getAccessTokenFromCode(code);
-				if (accessToken != "") {
-					setPersistentData("code", code);
+				result = getAccessTokenFromCode(signedRequest["code"], "");
+				if (structKeyExists(result, "access_token") ) {
+					accessToken = result["access_token"];
 					setPersistentData("access_token", accessToken);
+					setPersistentData("code", signedRequest["code"]);
+					if (structKeyExists(result, "expires")) {
+						setPersistentData("expiration_time", getTickCount() + result["expires"] * 1000);	
+					}
 				}
 			
 				if (accessToken == "") {
@@ -454,16 +483,16 @@ component accessors="true" extends="FacebookBase" {
 		}
 	}
 	
-	private String function getAccessTokenFromCode(required String code, String redirectUri) {
-		var accessToken = "";
+	private Struct function getAccessTokenFromCode(required String code, String redirectUri) {
+		var result = {};
 		if (arguments.code != "") {
 			if (!structKeyExists(arguments, "redirectUri")) {
 				arguments.redirectUri = getCurrentUrl();
 			}
 			var graphAPI = new FacebookGraphAPI(appId=getAppId());
-			accessToken = graphAPI.getOAuthAccessToken(clientId=getAppId(), clientSecret=getSecretKey(), code=arguments.code, redirectUri=arguments.redirectUri);
+			result = graphAPI.getOAuthAccessData(clientId=getAppId(), clientSecret=getSecretKey(), code=arguments.code, redirectUri=arguments.redirectUri);
 		}
-		return accessToken;
+		return result;
 	}
 	
 	private String function getAuthorizationCode() {
@@ -527,6 +556,16 @@ component accessors="true" extends="FacebookBase" {
 			resultUrl = resultUrl & "?" & serializeQueryString(arguments.parameters);
 		}
 		return resultUrl;
+	}
+	
+	private Boolean function isAccessTokenExpired() {
+		var expirationTime = getPersistentData("expiration_time", 0);
+		return expirationTime && (getTickCount() > expirationTime);
+	}
+
+	private Boolean function isAccessTokenExpiredSoon() {
+		var expirationTime = getPersistentData("expiration_time", 0);
+		return expirationTime && (!isAccessTokenExpired() && (expirationTime - getTickCount()) < variables.EXPIRATION_PREVENTION_THRESHOLD);
 	}
 
 	private Struct function parseSignedRequest(required String signedRequest) {
