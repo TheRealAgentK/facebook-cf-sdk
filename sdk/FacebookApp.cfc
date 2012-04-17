@@ -291,7 +291,12 @@ component accessors="true" extends="FacebookBase" {
 				if (signedRequest["code"] == getPersistentData("code")) {
 					if (!isAccessTokenExpired()) {
 						if (isAccessTokenExpiredSoon()) {
-							accessToken = exchangeAccessToken(getPersistentData("access_token"));
+							var result = exchangeAccessToken(getPersistentData("access_token"));
+							if (structKeyExists(result, "access_token") && structKeyExists(result, "expires")) {
+								accessToken = result["access_token"];
+								setPersistentData("access_token", accessToken);
+								setPersistentData("expiration_time", getTickCount() + result["expires"] * 1000);
+							}
 						} else {
 							accessToken = getPersistentData("access_token");
 						}
