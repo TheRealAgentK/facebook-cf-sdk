@@ -26,7 +26,7 @@ component accessors="true" {
 	 */
 	property String appId;
 	
-	variables.PERSISTENT_KEYS = "access_token,code,state,user_id";
+	variables.PERSISTENT_KEYS = "access_token,code,expiration_time,state,user_id";
 	variables.REQUEST_KEYS = variables.PERSISTENT_KEYS & ",signed_request";
 	
 	/*

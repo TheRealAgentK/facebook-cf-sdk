@@ -336,18 +336,41 @@ component extends="FacebookBase" {
 		var queryString = "";
 		if (arguments.clientId != "") httpService.addParam(type="url", name="client_id", value=arguments.clientId);
 		if (arguments.clientSecret != "") httpService.addParam(type="url", name="client_secret", value=arguments.clientSecret);
-		if (arguments.code != "") httpService.addParam(type="url", name="code", value=arguments.code);
-		if (arguments.grantType != "") httpService.addParam(type="url", name="grant_type", value=arguments.grantType);
 		if (arguments.exchangeToken != "") {
 			httpService.addParam(type="url", name="grant_type", value="fb_exchange_token");
 			httpService.addParam(type="url", name="fb_exchange_token", value=arguments.exchangeToken);
+		} else {
+			if (arguments.code != "") httpService.addParam(type="url", name="code", value=arguments.code);
+			if (arguments.grantType != "") httpService.addParam(type="url", name="grant_type", value=arguments.grantType);
+			if (structKeyExists(arguments, "redirectUri")) httpService.addParam(type="url", name="redirect_uri", value=arguments.redirectUri); // RedirectUri can be empty (when JS SDK is used to connect)
 		}
-		if (structKeyExists(arguments, "redirectUri")) httpService.addParam(type="url", name="redirect_uri", value=arguments.redirectUri); // RedirectUri can be empty (when JS SDK is used to connect)
 		var result = callAPIService(httpService);
 		if (structKeyExists(result, "access_token")) {
 			accessToken = result["access_token"];
 		}	
 		return accessToken;
+	}
+	
+	/*
+	 * @description Get OAuth access token with all data (expires parameter).
+	 * @hint This function has been added to be able to get the expires parameter
+	 */
+	public Struct function getOAuthAccessData(String clientId = "", String clientSecret = "", String code = "", String exchangeToken = "", String grantType = "", String redirectUri) {
+		var accessToken = "";
+		var httpService = new Http(url="https://graph.facebook.com/oauth/access_token", timeout=variables.TIMEOUT);
+		var queryString = "";
+		if (arguments.clientId != "") httpService.addParam(type="url", name="client_id", value=arguments.clientId);
+		if (arguments.clientSecret != "") httpService.addParam(type="url", name="client_secret", value=arguments.clientSecret);
+		if (arguments.exchangeToken != "") {
+			httpService.addParam(type="url", name="grant_type", value="fb_exchange_token");
+			httpService.addParam(type="url", name="fb_exchange_token", value=arguments.exchangeToken);
+		} else {
+			if (arguments.code != "") httpService.addParam(type="url", name="code", value=arguments.code);
+			if (arguments.grantType != "") httpService.addParam(type="url", name="grant_type", value=arguments.grantType);
+			if (structKeyExists(arguments, "redirectUri")) httpService.addParam(type="url", name="redirect_uri", value=arguments.redirectUri); // RedirectUri can be empty (when JS SDK is used to connect)
+		}
+		var result = callAPIService(httpService);
+		return result;
 	}
 	
 	/*
