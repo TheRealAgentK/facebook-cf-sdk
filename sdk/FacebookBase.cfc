@@ -64,10 +64,10 @@ component accessors="true" {
 				var exception = new FacebookAPIException(result);
 				if (getAppId() != "" && listFindNoCase("OAuthException,invalid_token", exception.getType())) {
 					// if API request is executed in the context of an app
-					if (findNoCase("Error validating access token", exception.getMessage()) || findNoCase("Invalid OAuth access token", exception.getMessage())) {
+					if (findNoCase("validating access token", exception.getMessage()) || findNoCase("Invalid OAuth access token", exception.getMessage())) {
 						// Access token is not valid, invalidate current user id and token
 						invalidateUser();	
-					} else if (findNoCase("Error validating verification code", exception.getMessage()) || findNoCase("Code was invalid or expired", exception.getMessage())) {
+					} else if (findNoCase("validating verification code", exception.getMessage()) || findNoCase("Code was invalid or expired", exception.getMessage())) {
 						// Code is not valid, invalid current user
 						invalidateUser();						
 					}
