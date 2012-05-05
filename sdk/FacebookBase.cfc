@@ -74,7 +74,7 @@ component accessors="true" {
 				}
 				throw(errorCode="#exception.getErrorCode()#", message="#exception.getType()# - #exception.getMessage()#", type="#exception.getType()#");
 			}
-		} else if (isSimpleValue(response.fileContent) && response.statusCode == "200 OK") {
+		} else if (isSimpleValue(response.fileContent) && (response.statusCode == "200 OK" || response.statusCode == "200")) {
 			result = parseQueryString(response.fileContent);
 		} else {
 			throw(message="#response.statusCode#", type="FacebookHTTP");
