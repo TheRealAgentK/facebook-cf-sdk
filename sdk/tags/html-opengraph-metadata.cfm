@@ -7,6 +7,8 @@
 <cfparam name="attributes.title" />
 <cfparam name="attributes.type" default="" />
 <cfparam name="attributes.url" default="" />
+<cfparam name="attributes.videoUrl" default="" />
+<cfparam name="attributes.videoType" default="application/x-shockwave-flash" />
 </cfsilent>
 <cfoutput>
 <!--- Basic metadata --->
@@ -16,6 +18,10 @@
 </cfif>
 <cfif attributes.imageUrl is not "">
     <meta property="og:image" content="#attributes.imageUrl#"/>
+</cfif>
+<cfif attributes.videoUrl is not "">
+    <meta property="og:video" content="#attributes.videoUrl#"/>
+    <meta property="og:video:type" content="#attributes.videoType#"/>
 </cfif>
 <cfif attributes.url is not ""><meta property="og:url" content="#attributes.url#"/>
 </cfif>

@@ -64,17 +64,17 @@ component accessors="true" {
 				var exception = new FacebookAPIException(result);
 				if (getAppId() != "" && listFindNoCase("OAuthException,invalid_token", exception.getType())) {
 					// if API request is executed in the context of an app
-					if (findNoCase("Error validating access token", exception.getMessage()) || findNoCase("Invalid OAuth access token", exception.getMessage())) {
+					if (findNoCase("validating access token", exception.getMessage()) || findNoCase("Invalid OAuth access token", exception.getMessage())) {
 						// Access token is not valid, invalidate current user id and token
 						invalidateUser();	
-					} else if (findNoCase("Error validating verification code", exception.getMessage()) || findNoCase("Code was invalid or expired", exception.getMessage())) {
+					} else if (findNoCase("validating verification code", exception.getMessage()) || findNoCase("Code was invalid or expired", exception.getMessage())) {
 						// Code is not valid, invalid current user
 						invalidateUser();						
 					}
 				}
 				throw(errorCode="#exception.getErrorCode()#", message="#exception.getType()# - #exception.getMessage()#", type="#exception.getType()#");
 			}
-		} else if (isSimpleValue(response.fileContent) && response.statusCode == "200 OK") {
+		} else if (isSimpleValue(response.fileContent) && (response.statusCode == "200 OK" || response.statusCode == "200")) {
 			result = parseQueryString(response.fileContent);
 		} else {
 			throw(message="#response.statusCode#", type="FacebookHTTP");
