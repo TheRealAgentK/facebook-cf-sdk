@@ -229,7 +229,11 @@ component accessors="true" {
 	}
 	
 	public Boolean function isPersistentDataEnabled() {
-		return application.getApplicationSettings().sessionManagement;
+		if (ListFirst(server.coldfusion.productversion,",") GTE 10) {
+			return getApplicationMetaData().sessionManagement; // CF10 compatible
+		} else {
+			return application.getApplicationSettings().sessionManagement;
+		}
 	}
 		
 	private void function setPersistentData(required String key, required Any value) {
