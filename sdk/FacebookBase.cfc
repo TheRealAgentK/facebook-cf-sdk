@@ -229,7 +229,9 @@ component accessors="true" {
 	}
 	
 	public Boolean function isPersistentDataEnabled() {
-		return application.getApplicationSettings().sessionManagement;
+		// REMOVED for CF10 Compatibility
+		// return application.getApplicationSettings().sessionManagement;
+		return true;
 	}
 		
 	private void function setPersistentData(required String key, required Any value) {
