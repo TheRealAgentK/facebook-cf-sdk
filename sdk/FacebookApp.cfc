@@ -323,11 +323,11 @@ component accessors="true" extends="FacebookBase" {
 			// Falling back on the authorization code if present
 			var code = getAuthorizationCode();
 			if (code != "" && code != getPersistentData("code")) {
-				result = getAccessTokenFromCode(signedRequest["code"], "");
+				result = getAccessTokenFromCode(code);
 				if (structKeyExists(result, "access_token") ) {
 					accessToken = result["access_token"];
 					setPersistentData("access_token", accessToken);
-					setPersistentData("code", signedRequest["code"]);
+					setPersistentData("code", code);
 					if (structKeyExists(result, "expires")) {
 						setPersistentData("expiration_time", getTickCount() + result["expires"] * 1000);	
 					}
