@@ -58,7 +58,7 @@ component accessors="true" {
 	private Any function callAPIService(required Http httpService) {
 		var response = arguments.httpService.send().getPrefix();
 		var result = {};
-		if (response.fileContent neq 'null' && isJSON(response.fileContent)) {
+		if (response.fileContent != 'null' && isJSON(response.fileContent)) {
 			result = deserializeJSON(response.fileContent);
 			if (isStruct(result) && (structKeyExists(result, "error") || structKeyExists(result, "error_code"))) {
 				var exception = new FacebookAPIException(result);
