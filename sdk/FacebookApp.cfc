@@ -575,9 +575,14 @@ component accessors="true" extends="FacebookBase" {
 	}
 
 	private Struct function parseSignedRequest(required String signedRequest) {
-		var encodedParameters = listLast(trim(arguments.signedRequest), ".");
-		var encodedSignature = listFirst(trim(arguments.signedRequest), ".");
-		var parameters = deserializeJSON(base64UrlDecode(encodedParameters));
+		try {
+			var encodedParameters = listLast(trim(arguments.signedRequest), ".");
+			var encodedSignature = listFirst(trim(arguments.signedRequest), ".");
+			var parameters = deserializeJSON(base64UrlDecode(encodedParameters));
+		}
+		catch (Any excpt) {
+			throw(errorcode="Invalid signed request", message="Invalid signed request", type="FacebookApp Security");
+		}
 		if (structKeyExists(parameters, "algorithm") && UCase(parameters["algorithm"]) != "HMAC-SHA256") {
 			throw(errorcode="Invalid algorithm", message="Unknown algorithm. Expected HMAC-SHA256", type="FacebookApp Security");
 		}
