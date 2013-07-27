@@ -1,3 +1,8 @@
+WARNING: sorry, this project is not maintained any more...
+We have completely migrated from ColdFusion to Grails and provides now support for [Facebook SDK Grails Plugin](https://github.com/agorapulse/grails-facebook-sdk).
+If anyone wants to takeover this project to takeover its maintenance, let me know, contact me on GitHub or Twitter (@benorama).
+
+
 Facebook ColdFusion SDK - V3.1.1
 ================================
 
