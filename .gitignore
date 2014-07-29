@@ -3,6 +3,7 @@ settings.xml
 .settings/org.eclipse.core.resources.prefs
 .DS_Store
 .DS_Store/settings.xml
+.idea
 
 Capfile
 facebook-cf-sdk.sublime-workspace
