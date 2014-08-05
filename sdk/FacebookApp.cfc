@@ -340,10 +340,6 @@ component accessors="true" extends="FacebookBase" {
 			} else {
 				// Falling back on persistent store, knowing nothing explicit (signed request, authorization code, etc.) was present to shadow it (or we saw a code in URL/FORM scope, but it's the same as what's in the persistent store)
 				accessToken = getPersistentData("access_token");
-				if (accessToken == "") {
-					// Invalid session, so everything based on it should be invalidated.
-					invalidateUser();
-				}
 			}
 		}
 		return accessToken;
