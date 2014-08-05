@@ -14,11 +14,11 @@ Facebook CFML SDK - V3.1.1a (05/08/2014)
 
 The [Facebook Platform](http://developers.facebook.com/) is a set of APIs that make your application more social. Read more about [integrating Facebook with your web site](http://developers.facebook.com/docs/guides/web) on the Facebook developer site. 
 
-This project contains the open source **Facebook CFML SDK** that allows you to integrate the [Facebook Platform](http://developers.facebook.com/) on your website powered by a CFML-based application server,[Adobe ColdFusion](http://www.adobe.com/products/coldfusion) or [Railo](http://www.getrailo.org/index.cfm/download).
+This project contains the open source **Facebook CFML SDK** that allows you to integrate the [Facebook Platform](http://developers.facebook.com/) on your website powered by a CFML-based application server, [Adobe ColdFusion](http://www.adobe.com/products/coldfusion) or [Railo](http://www.getrailo.org/index.cfm/download).
 
 **Facebook CFML SDK** provides 3 components :
 
-* **FacebookApp.cfc** - A library to build [apps on Facebook.com](http://developers.facebook.com/docs/guides/canvas/) and [websites with the Facebook Platform](http://developers.facebook.com/docs/guides/web) (the library is a complete port to ColdFusion of the [Facebook PHP SDK V3.1.1](http://github.com/facebook/php-sdk)).
+* **FacebookApp.cfc** - A library to build [apps on Facebook.com](http://developers.facebook.com/docs/guides/canvas/) and [websites with the Facebook Platform](http://developers.facebook.com/docs/guides/web) (the library is a complete port to CFML of the [Facebook PHP SDK V3.1.1](http://github.com/facebook/php-sdk)).
 * **FacebookGraphAPI.cfc** - A client wrapper to call Facebook Graph API (the wrapper is inspired from the latest official .NET and Python SDKs graph clients).
 * **FacebookRestAPI.cfc** - A client wrapper to call the old Facebook Rest API.
 
@@ -42,7 +42,7 @@ To view the latest SDK documentation, please use the project [Wiki](http://githu
 
 # Downloads
 
-Github has deprecated the Download section, to download the latest version of the SDK, please use the project's "Download ZIP" button or clone the repository to your local machine. [Downloads](http://github.com/affinitiz/facebook-cf-sdk/downloads) section on GitHub.
+Github has deprecated the Download section, to download the latest version of the SDK, please use the project's "Download ZIP" button or clone the repository to your local machine.
 
 # Bugs
 
