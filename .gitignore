@@ -6,6 +6,6 @@ settings.xml
 .idea
 
 Capfile
-facebook-cf-sdk.sublime-workspace
-facebook-cf-sdk.sublime-project
-facebook-cf-sdk.iml
+*.sublime-workspace
+*.sublime-project
+*.iml
