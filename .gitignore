@@ -6,6 +6,7 @@ settings.xml
 .idea
 
 Capfile
+atlassian-ide-plugin.xml
 *.sublime-workspace
 *.sublime-project
 *.iml
