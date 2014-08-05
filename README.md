@@ -1,5 +1,5 @@
 # Welcome to the Facebook CFML SDK
-As of 29/07/2014 this project has been transfered from the stewardship of Benoit (@benorama on Twitter) into my ownership (@AgentK on Twitter) and is active again. Working with me on this is Ross (@fingersdancing On Twitter) and this work is kindly supported by one of our clients. Other 3rd-party contributions and suggestions are very welcome.
+As of 29/07/2014 this project has been transfered from the stewardship of Benoit (@benorama on Twitter) into my ownership (@AgentK on Twitter) and is active again. Working with me on this is Ross (@fingersdancing on Twitter) and this work is kindly supported by one of our clients. Other 3rd-party contributions and suggestions are very welcome.
 
 Benoit's team has completely migrated from ColdFusion to Grails in 2013 and provides now support for [Facebook SDK Grails Plugin](https://github.com/agorapulse/grails-facebook-sdk).
 
@@ -7,8 +7,8 @@ Please find the existing README content for Version 3.1.1 below - this will be l
 
 Kai (29/07/2014)
 
-Facebook ColdFusion SDK - V3.1.1
-================================
+Facebook ColdFusion SDK - V3.1.1a
+=================================
 
 # Introduction
 
