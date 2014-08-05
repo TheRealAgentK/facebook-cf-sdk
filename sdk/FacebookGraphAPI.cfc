@@ -419,11 +419,15 @@ component extends="FacebookBase" {
 		for (var relativeUrl in arguments.relativeUrls) {
 			query = {};
 			query["method"] = "GET";
+			if (isNumeric(relativeUrl)) {
+                relativeUrl = chr(2) & relativeUrl;
+			}
 			query["relative_url"] = relativeUrl;
 			arrayAppend(batch, query);
 		}
+		batch = replace(serializeJSON(batch),chr(2),"","all");
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
-		httpService.addParam(type="url", name="batch", value="#serializeJSON(batch)#");
+		httpService.addParam(type="url", name="batch", value="#batch#");
 		if (!arguments.headersEnabled) {
 			httpService.addParam(type="url", name="no_header", value="true");
 		}
