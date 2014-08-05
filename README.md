@@ -24,7 +24,7 @@ This project contains the open source **Facebook CFML SDK** that allows you to i
 
 # Getting started
 
-1. You must first download the latest version of the SDK. Please download the code base as a zip file or clone the repository.
+1. You must first download the latest version of the SDK. Please download the code base as a zip file, clone the repository or download a [specific tag](https://github.com/TheRealAgentK/facebook-cf-sdk/tags).
 2. [Install the SDK](http://github.com/TheRealAgentK/facebook-cf-sdk/wiki/Installation) on your CFML server.
 3. [Use the components](http://github.com/TheRealAgentK/facebook-cf-sdk/wiki/Usage) in your application.
 
@@ -42,7 +42,7 @@ To view the latest SDK documentation, please use the project [Wiki](http://githu
 
 # Downloads
 
-Github has deprecated the Download section, to download the latest version of the SDK, please use the project's "Download ZIP" button or clone the repository to your local machine.
+Github has deprecated the Download section, to download the latest version of the SDK, please use the project's "Download ZIP" button, clone the repository to your local machine or grab a [specific tag](https://github.com/TheRealAgentK/facebook-cf-sdk/tags).
 
 # Bugs
 
