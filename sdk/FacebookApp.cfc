@@ -32,8 +32,7 @@ component accessors="true" extends="FacebookBase" {
 	property String secretKey;
 	
 	variables.DROP_QUERY_PARAMS = "code,logged_out,state,signed_request";
-	variables.EXPIRATION_PREVENTION_THRESHOLD = 600000; // 10 minutes
-	variables.VERSION = "3.1.1";
+	variables.VERSION = "3.1.2";
 	
 	/*
 	 * @description Facebook App constructor
@@ -103,13 +102,20 @@ component accessors="true" extends="FacebookBase" {
 	 * @description Exchange a valid access token with a new one with extended expiration time (60 days). 
    	 * @hint It only works with user access token.
 	 */
-	public Struct function exchangeAccessToken(required String accessToken) {
+	public string function exchangeAccessToken(required String accessToken) {
 		var result = {};
 		if (arguments.accessToken != "") {
-			var graphAPI = new FacebookGraphAPI(appId=getAppId());
-			result = graphAPI.getOAuthAccessData(clientId=getAppId(), clientSecret=getSecretKey(), exchangeToken=arguments.accessToken);
-		}
-		return result;
+            var graphAPI = new FacebookGraphAPI(appId = getAppId());
+            result = graphAPI.getOAuthAccessData(clientId = getAppId(), clientSecret = getSecretKey(), exchangeToken = arguments.accessToken);
+
+            if (structKeyExists(result, "access_token") && structKeyExists(result, "expires")) {
+                accessToken = result["access_token"];
+                setPersistentData("access_token", accessToken);
+                setPersistentData("expiration_time", getTickCount() + result["expires"] * 1000);
+                return accessToken;
+            }
+        }
+		return "";
 	}
 	
 	/*
@@ -277,73 +283,62 @@ component accessors="true" extends="FacebookBase" {
 	 * @description Get user OAuth accessToken
 	 * @hint Determines and returns the user access token, first using the signed request if present, and then falling back on the authorization code if present.  The intent is to return a valid user access token, or "" if one is determined to not be available.
 	 */
-	public String function getUserAccessToken() {
-		var accessToken = "";
-		var result = {};
-		// First, consider a signed request if it's supplied. if there is a signed request, then it alone determines the access token.
-		var signedRequest = getSignedRequest();
-		if (structCount(signedRequest)) {
-			if (structKeyExists(signedRequest, "oauth_token")) {
-				// apps.facebook.com hands the access_token in the signed_request
-				accessToken = signedRequest["oauth_token"];
-				setPersistentData("access_token", accessToken);
-			} else if (structKeyExists(signedRequest, "code")) {
-				// Facebook Javascript SDK puts an authorization code in signed request
-				if (signedRequest["code"] == getPersistentData("code")) {
-					if (!isAccessTokenExpired()) {
-						if (isAccessTokenExpiredSoon()) {
-							var result = exchangeAccessToken(getPersistentData("access_token"));
-							if (structKeyExists(result, "access_token") && structKeyExists(result, "expires")) {
-								accessToken = result["access_token"];
-								setPersistentData("access_token", accessToken);
-								setPersistentData("expiration_time", getTickCount() + result["expires"] * 1000);
-							}
-						} else {
-							accessToken = getPersistentData("access_token");
-						}
-					}
-				} else {
-					result = getAccessTokenFromCode(signedRequest["code"], "");
-					if (structKeyExists(result, "access_token") ) {
-						accessToken = result["access_token"];
-						setPersistentData("access_token", accessToken);
-						setPersistentData("code", signedRequest["code"]);
-						if (structKeyExists(result, "expires")) {
-							setPersistentData("expiration_time", getTickCount() + result["expires"] * 1000);	
-						}
-					}
-				}
-			}
-			
-			if (accessToken == "") {
-				// Signed request states there's no access token, so anything stored should be invalidated.
-				invalidateUser();
-			}
-		} else {
-			// Falling back on the authorization code if present
-			var code = getAuthorizationCode();
-			if (code != "" && code != getPersistentData("code")) {
-				result = getAccessTokenFromCode(code);
-				if (structKeyExists(result, "access_token") ) {
-					accessToken = result["access_token"];
-					setPersistentData("access_token", accessToken);
-					setPersistentData("code", code);
-					if (structKeyExists(result, "expires")) {
-						setPersistentData("expiration_time", getTickCount() + result["expires"] * 1000);	
-					}
-				}
-			
-				if (accessToken == "") {
-					// Code was bogus, so everything based on it should be invalidated.
-					invalidateUser();
-				}
-			} else {
-				// Falling back on persistent store, knowing nothing explicit (signed request, authorization code, etc.) was present to shadow it (or we saw a code in URL/FORM scope, but it's the same as what's in the persistent store)
-				accessToken = getPersistentData("access_token");
-			}
-		}
-		return accessToken;
-	}
+	public String function getUserAccessToken()
+    {
+        var accessToken = "";
+        var result = {};
+        var signedRequest = getSignedRequest();
+        var code = "";
+
+        // first, consider a signed request if it's supplied. if there is a signed request, then it alone determines the access token.
+        if (structCount(signedRequest)) {
+            // apps.facebook.com hands the access_token in the signed_request
+            if (structKeyExists(signedRequest, "oauth_token")) {
+                accessToken = signedRequest["oauth_token"];
+                setPersistentData("access_token", accessToken);
+                return accessToken;
+            }
+
+            // the JS SDK puts a code in with the redirect_uri of ''
+            if (structKeyExists(signedRequest, "code")) {
+                code = signedRequest["code"];
+                if (len(code) && code == getPersistentData("code")) {
+                    // short-circuit if the code we have is the same as the one presented.
+                    return getPersistentData("access_token");
+
+                }
+                result = getAccessTokenFromCode(code, "");
+                if (structKeyExists(result, "access_token")) {
+                    accessToken = result["access_token"];
+                    setPersistentData("access_token", accessToken);
+                    setPersistentData("code", signedRequest["code"]);
+                    return accessToken;
+                }
+            }
+
+            // signed request states there's no access token, so anything stored should be cleared.
+            invalidateUser();
+            return "";
+        }
+
+        code = getAuthorizationCode();
+        if (len(code) && code != getPersistentData("code")) {
+            result = getAccessTokenFromCode(code);
+            if (structKeyExists(result, "access_token")) {
+                accessToken = result["access_token"];
+                setPersistentData("access_token", accessToken);
+                setPersistentData("code", code);
+                return accessToken;
+            }
+
+            // Code was bogus, so everything based on it should be invalidated.
+            invalidateUser();
+            return "";
+        }
+
+        // Falling back on persistent store, knowing nothing explicit (signed request, authorization code, etc.) was present to shadow it (or we saw a code in URL/FORM scope, but it's the same as what's in the persistent store)
+        return getPersistentData("access_token");
+    }
 	
 	/*
 	 * @description Get the UID of the connected user, or 0 if the Facebook user is not connected.	 
