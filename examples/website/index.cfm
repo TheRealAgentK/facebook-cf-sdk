@@ -1,3 +1,7 @@
+<cfdump var="#session#"/>
+<cfdump var="#cookie#"/>
+<cfdump var="#url#"/>
+
 <!---
   * Copyright 2010 Affinitiz, Inc.
   * Copyright 2014 Ventego Creative Ltd
@@ -40,17 +44,22 @@ if (APP_ID is "" or SECRET_KEY is "") {
 	userId = facebookApp.getUserId();
 
 	if (userId) {
-		try {
+		//try {
+		    WriteDump("b4 userAccessToken");
 			userAccessToken = facebookApp.getUserAccessToken();
-			facebookGraphAPI = new FacebookGraphAPI(accessToken=userAccessToken, appId=APP_ID);
+			extendedAccessToken = facebookApp.exchangeAccessToken(userAccessToken);
+
+			facebookGraphAPI = new FacebookGraphAPI(accessToken=extendedAccessToken, appId=APP_ID);
+			WriteDump("b4 userObject");
 			userObject = facebookGraphAPI.getObject(id=userId);
+			WriteDump("b4 userFriends");
 			userFriends = facebookGraphAPI.getConnections(id=userId, type='taggable_friends', limit=10);
 			authenticated = true;
-		} catch (any exception) {
+		//} catch (any exception) {
 		// Usually an invalid session (OAuthInvalidTokenException), for example if the user logged out from facebook.com
-		    userId = 0;
-		    facebookGraphAPI = new FacebookGraphAPI();
-		}
+		//    userId = 0;
+		//    facebookGraphAPI = new FacebookGraphAPI();
+		//}
 	} else {
 		facebookGraphAPI = new FacebookGraphAPI();
 	}
@@ -77,7 +86,6 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 <body>
 	<div class="menu">
 		<div class="content">
-			<a href="##" class="l">Example</a>
 			<div class="logo">
 				<img src="../../images/coldfusion-sdk-50x50.png" height="50" width="50" style="float:right" />
 				<span>Facebook CFML SDK (API version 2)</span>
@@ -93,6 +101,8 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 	</div>
 	<div class="body washbody example">
 		<cfoutput>
+		<div id="status">
+</div>
 		<div class="content">
 			<cfif APP_ID is "" or SECRET_KEY is "">
 				<div style="color:red">
@@ -109,33 +119,64 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 			    -->
 			    <div id="fb-root"></div>
 			    <script>
+			     	function statusChangeCallback(response) {
+                    console.log('statusChangeCallback');
+                    console.log(response);
+                    // The response object is returned with a status field that lets the
+                    // app know the current login status of the person.
+                    // Full docs on the response object can be found in the documentation
+                    // for FB.getLoginStatus().
+                    if (response.status === 'connected') {
+                      // Logged into your app and Facebook.
+                      document.getElementById('status').innerHTML = 'loggedin ';
+                    } else if (response.status === 'not_authorized') {
+                      // The person is logged into Facebook, but not your app.
+                      document.getElementById('status').innerHTML = 'Please log ' +
+                        'into this app.';
+                    } else {
+                      // The person is not logged into Facebook, so we're not sure if
+                      // they are logged into this app or not.
+                      document.getElementById('status').innerHTML = 'Please log ' +
+                        'into Facebook.';
+                    }
+                  }
+
 			     	window.fbAsyncInit = function() {
 				        FB.init({
 				          appId   : '#facebookApp.getAppId()#',
-				          cookie  : true, // enable cookies to allow the server to access the session
-				          oauth	  : true, // OAuth 2.0
-				          status  : true, // check login status
-				          xfbml   : true // parse XFBML
+				          cookie  : true,
+				          oauth	  : true,
+				          status  : true,
+				          xfbml   : false,
+				          version : 'v2.0'
 				        });
-					
+
+					    //FB.getLoginStatus(function(response) {
+                        //    statusChangeCallback(response);
+                       // });
+
 						// whenever the user logs in or logs out, we refresh the page
 						FB.Event.subscribe('auth.login', function(response) {
 					        window.location.reload();
+					        //console.log("received auth.login");
 					    });
-						FB.Event.subscribe('auth.logout', function(response) {
-					        window.location.reload();
-					    });
+						//FB.Event.subscribe('auth.logout', function(response) {
+					    //    window.location.reload();
+					    //});
 					};
-			
-				    (function() {
-				        var e = document.createElement('script');
-				        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-				        e.async = true;
-				        document.getElementById('fb-root').appendChild(e);
-				    }());
-			
+
+                    (function(d, s, id){
+                         var js, fjs = d.getElementsByTagName(s)[0];
+                         if (d.getElementById(id)) {return;}
+                         js = d.createElement(s); js.id = id;
+                         //js.src = "//connect.facebook.net/en_US/sdk.js";
+                         js.src="//connect.facebook.net/en_US/sdk/debug.js";
+                         fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));
+
 					function login() {
 			        	FB.login(function(response) {
+			        	console.log('login');console.log(response);
 			        		if (response.authResponse) {
 						    	// User successfully authenticated in
 						    	// Page reload will be done by 'auth.login' event handler
@@ -147,6 +188,7 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 					
 					function logout() {
 						FB.getLoginStatus(function(response) {
+						console.log('logout');console.log(response);
 							if (response.authResponse) {
 						    	FB.logout(function(response) {
 								  // User is now authenticated out
@@ -162,33 +204,20 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 				<h2>Authentication</h2>
 				<cfif userId>
 				    <div>
-				      Log out via Facebook JavaScript SDK: <a href="javascript:logout()">Logout</a>
+				      Log out via Facebook CFML SDK: <a href="#logoutUrl#">Logout</a>
 				    </div>
 				    <br />
-					<div>
-				      Log out Facebook.com server side redirect:
-				      <a href="#logoutUrl#">
-					  	<img src="http://static.ak.fbcdn.net/rsrc.php/z2Y31/hash/cxrz4k7j.gif">
-					  </a>
-				    </div>
 			    <cfelse>
 				    <div>
 				      Log in via Facebook JavaScript SDK: <a href="javascript:login()">Login</a><br />
 				      (<i>with Facebook ColdFusion SDK handling authorization code from cookie on reload</i>)
 				    </div>
 				    <br />
-					<div>
+					<!---<div>
 				      Log in Facebook JavaScript SDK &amp; XFBML: <fb:login-button scope="#SCOPE#"></fb:login-button><br />
 				       (<i>with Facebook ColdFusion SDK handling authorization code from cookie on reload</i>)
-				    </div>
+				    </div> --->
 				    <br />
-				    <div>
-				      Log in via Facebook.com server side redirect:
-				      <a href="#loginUrl#">
-				        <img src="http://static.ak.fbcdn.net/rsrc.php/zB6N8/hash/4li2k73z.gif">
-				      </a><br />
-				      (<i>with Facebook ColdFusion SDK handling authorization code from url on return</i>)
-				    </div>
 			    </cfif>
 			    <hr />
 				<h2>Your data</h2>
@@ -224,3 +253,6 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 	</div>
 </body>
 </html>
+
+<cfdump var="#session#"/>
+<cfdump var="#cookie#"/>
