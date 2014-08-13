@@ -35,21 +35,21 @@ SCOPE = "publish_stream,user_friends";
 
 if (APP_ID is "" or SECRET_KEY is "") {
 	// App is not configured
-	facebookGraphAPI = new FacebookGraphAPI();
+	facebookGraphAPI = new FacebookGraphAPI(apiVersion = "v2.0");
 } else {
 	// Create facebookApp instance
-	facebookApp = new FacebookApp(appId=APP_ID, secretKey=SECRET_KEY);
-	
+	facebookApp = new FacebookApp(appId=APP_ID, secretKey=SECRET_KEY, apiVersion = "v2.0");
+	//WriteDump(facebookApp);
 	// See if there is a user from a cookie or session
 	userId = facebookApp.getUserId();
-
+    //WriteDump(userId);
 	if (userId) {
 		//try {
 		    WriteDump("b4 userAccessToken");
 			userAccessToken = facebookApp.getUserAccessToken();
 			extendedAccessToken = facebookApp.exchangeAccessToken(userAccessToken);
 
-			facebookGraphAPI = new FacebookGraphAPI(accessToken=extendedAccessToken, appId=APP_ID);
+			facebookGraphAPI = new FacebookGraphAPI(accessToken=extendedAccessToken, appId=APP_ID, apiVersion = "v2.0");
 			WriteDump("b4 userObject");
 			userObject = facebookGraphAPI.getObject(id=userId);
 			WriteDump("b4 userFriends");
@@ -61,7 +61,7 @@ if (APP_ID is "" or SECRET_KEY is "") {
 		//    facebookGraphAPI = new FacebookGraphAPI();
 		//}
 	} else {
-		facebookGraphAPI = new FacebookGraphAPI();
+		facebookGraphAPI = new FacebookGraphAPI(apiVersion = "v2.0");
 	}
 	
 	// Login or logout url will be needed depending on current user state.
@@ -72,9 +72,13 @@ if (APP_ID is "" or SECRET_KEY is "") {
 		loginUrl = facebookApp.getLoginUrl(parameters);
 	}
 }
-		
-// This call will always work since we are fetching public data.
-kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
+// This call will in v2+ not work anymore, every graph API access needs a token now
+try {
+    kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
+} catch (any exception) {
+    kai_and_ross_hometown = "";
+}
+
 </cfscript>
 	
 <!DOCTYPE html>
@@ -238,10 +242,10 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 			    </cfif>
 			</cfif>
 			<hr />
-		  	<h2>Public data (this will always work)</h2>
-		    <h3>Profile pic + name</h3>
+		  	<h2>Public data</h2>
+		    <h3>Profile pic (this seems to be still working fine) + name (this will not work anymore when not logged in; see above in code, we need an access token for any graph API data request in v2+)</h3>
 			<img src="https://graph.facebook.com/Wellington-New-Zealand/picture">
-		    #kai_and_ross_hometown.name#
+		    <cfif isStruct(kai_and_ross_hometown)>#kai_and_ross_hometown.name#</cfif>
 		</div>
 		</cfoutput>
 	</div>
