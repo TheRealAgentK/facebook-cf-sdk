@@ -1,6 +1,9 @@
 /**
   * Copyright 2011 Affinitiz, Inc.
-  * Author: Benoit Hediard (hediard@affinitiz.com)
+  * Copyright 2014 Ventego Creative Ltd
+  *
+  * Initial Author: Benoit Hediard (hediard@affinitiz.com)
+  * Author: Kai Koenig (kai@ventego-creative.co.nz)
   *
   * Licensed under the Apache License, Version 2.0 (the "License"); you may
   * not use this file except in compliance with the License. You may obtain
@@ -25,6 +28,11 @@ component accessors="true" {
 	 * @hint
 	 */
 	property String appId;
+	/**
+     * @description Facebook API version to be used
+	 * @hint defaults to v2.1 (12/08/2014)
+	 */
+	property String apiVersion;
 	
 	variables.PERSISTENT_KEYS = "access_token,code,expiration_time,state,user_id";
 	variables.REQUEST_KEYS = variables.PERSISTENT_KEYS & ",signed_request";
@@ -33,8 +41,9 @@ component accessors="true" {
 	 * @description Facebook Graph API constructor
 	 * @hint Requires an application or user accessToken
 	 */
-	public Any function init(String appId = "") {
+	public Any function init(String appId = "", String apiVersion = "v2.1") {
 		setAppId(arguments.appId);
+		setApiVersion(arguments.apiVersion);
 		return this;
 	}
 	

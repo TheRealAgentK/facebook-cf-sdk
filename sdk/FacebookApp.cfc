@@ -1,7 +1,10 @@
 ﻿/**
   * Copyright 2011 Affinitiz, Inc.
-  * Author: Benoit Hediard (hediard@affinitiz.com)
+  * Copyright 2014 Ventego Creative Ltd
   *
+  * Initial Author: Benoit Hediard (hediard@affinitiz.com)
+  * Author: Kai Koenig (kai@ventego-creative.co.nz)
+
   * Licensed under the Apache License, Version 2.0 (the "License"); you may
   * not use this file except in compliance with the License. You may obtain
   * a copy of the License at
@@ -30,22 +33,28 @@ component accessors="true" extends="FacebookBase" {
 	 * @hint 
 	 */
 	property String secretKey;
-	
+	/**
+     * @description Facebook API version to be used
+	 * @hint defaults to v2.1 (12/08/2014)
+	 */
+	property String apiVersion;
+
 	variables.DROP_QUERY_PARAMS = "code,logged_out,state,signed_request";
     variables.EXPIRATION_PREVENTION_THRESHOLD = 600000; // 10 minutes
-	variables.VERSION = "3.1.2";
+	variables.VERSION = "3.2.0alpha";
 	
 	/*
 	 * @description Facebook App constructor
 	 * @hint Requires an appId and its secretKey
 	 */
-	public Any function init(required String appId, required String secretKey) {
+	public Any function init(required String appId, required String secretKey, String apiVersion = "v2.1") {
 		if (!isPersistentDataEnabled()) {
-			throw(message="Persistent scope is not available (by default session scope, so you must enable session management for this app)", type="UnvailablePersistentScope");
+			throw(message="Persistent scope is not available (by default session scope, so you must enable session management for this CFML application)", type="UnvailablePersistentScope");
 		}
-		super.init(arguments.appId);
+		super.init(arguments.appId,arguments.apiVersion);
 		setAppId(arguments.appId);
 		setSecretKey(arguments.secretKey);
+		setApiVersion(arguments.apiVersion);
 		return this;
 	}
 	
@@ -156,7 +165,7 @@ component accessors="true" extends="FacebookBase" {
 	 */
 	public String function getPageAccessToken(required String pageId) {
 		var accessToken = "";
-		var httpService = new Http(url="https://graph.facebook.com/#arguments.pageId#/");
+		var httpService = new Http(url="https://graph.facebook.com/#getApiVersion()#/#arguments.pageId#/");
 		var result = {};
 		var userAccessToken = getUserAccessToken();
 		
@@ -215,7 +224,7 @@ component accessors="true" extends="FacebookBase" {
 		if (!structKeyExists(arguments.parameters, "client_id")) arguments.parameters["client_id"] = variables.appId;
 		if (!structKeyExists(arguments.parameters, "redirect_uri")) arguments.parameters["redirect_uri"] = getCurrentUrl();
 		if (!structKeyExists(arguments.parameters, "state")) arguments.parameters["state"] = getCSRFStateToken();
-                if (!structKeyExists(arguments.parameters, "display")) arguments.parameters["display"] = "page";
+        if (!structKeyExists(arguments.parameters, "display")) arguments.parameters["display"] = "page";
 		return getUrl("dialog/oauth", arguments.parameters);
 	}
 	
