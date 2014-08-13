@@ -14,8 +14,9 @@ Facebook CFML SDK - V3.2.0alpha (12/08/2014)
 
 * Initial basic support for API versioning in the CFCs
 * There are two more working and correct examples of how to use the FB CFML SDK with a CFML-only login flow as well as a JS-Login-to-CFML flow (both using v2.0 API): /examples/website/serversideflow_v2_0.cfm and /examples/websites/j2serversideflow_v2_0.cfm
-* Note: Facebook has deprecated the REST API in the version 2.1 API. There is no further work going into the FacebookRestAPI.cfc going forward from now on. You can probably continue to use it with version 1.0 and 2.0 apps for the time being, but you're kind of on your own.
-* Note: Facebook has deprecated FQL in the version 2.1 API. There is no further work going into any FQL-related functionality of this SDK going forward from now on. You can probably continue to use it with version 1.0 and 2.0 apps for the time being, but you're kind of on your own.
+* Bugfix (c05a736170ca5533e1d0b62be96810bc405c52f2): Reverted an accidental deletion of the token expiry threshold variable
+* Note: Facebook has deprecated the REST API in their version 2.1 API. There is no further work going into the FacebookRestAPI.cfc going forward from now on. You can probably continue to use it with version 1.0 and 2.0 apps for the time being, but you're kind of on your own.
+* Note: Facebook has deprecated FQL in their version 2.1 API. There is no further work going into any FQL-related functionality of this SDK going forward from now on. You can probably continue to use it with version 1.0 and 2.0 apps for the time being, but you're kind of on your own.
 * Note: As we're using only a handful of functions in FacebookGraphAPI.cfc ourselves and the framework doesn't have test cases, API version support IS considered to be experimental. In particular FacebookGraphAPI.cfc might contain shortcut functions that are not supported in v2.0 or v2.1 anymore. Please use at your own risk and report any issues, we're really keen to fix them.
 
 # Release notes for V3.1.2 (12/08/2014)
