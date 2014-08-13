@@ -73,7 +73,7 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
-    <title>Facebook CFML SDK Examples (using API version 2)</title>
+    <title>Facebook CFML SDK Examples (using API version 1)</title>
 	<link rel="stylesheet" type="text/css" href="website.css" />
 </head>
 <body>
@@ -81,14 +81,14 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 		<div class="content">
 			<div class="logo">
 				<img src="../../images/coldfusion-sdk-50x50.png" height="50" width="50" style="float:right" />
-				<span>Facebook CFML SDK (API version 2)</span>
+				<span>Facebook CFML SDK (API version 1)</span>
 			</div>
 			<div class="clear"></div>
 		</div>
 	</div>
 	<div class="header">
 		<div class="content">
-			<h1>Facebook CFML SDK (API version 2) - Examples</h1>
+			<h1>Facebook CFML SDK (API version 1) - Examples</h1>
 			Website with Facebook Platform integration
 		</div>
 	</div>

@@ -31,10 +31,10 @@ SCOPE = "publish_stream,user_friends";
 
 if (APP_ID is "" or SECRET_KEY is "") {
 	// App is not configured
-	facebookGraphAPI = new FacebookGraphAPI();
+	facebookGraphAPI = new FacebookGraphAPI(apiVersion = "v2.0");
 } else {
 	// Create facebookApp instance
-	facebookApp = new FacebookApp(appId=APP_ID, secretKey=SECRET_KEY);
+	facebookApp = new FacebookApp(appId=APP_ID, secretKey=SECRET_KEY, apiVersion = "v2.0");
 
 	// See if there is a user from a cookie or session
 	userId = facebookApp.getUserId();
@@ -42,17 +42,19 @@ if (APP_ID is "" or SECRET_KEY is "") {
 	if (userId) {
 		try {
 			userAccessToken = facebookApp.getUserAccessToken();
-			facebookGraphAPI = new FacebookGraphAPI(accessToken=userAccessToken, appId=APP_ID);
+			// Swap short-lived token against an extended access token - use that from now on
+			extendedAccessToken = facebookApp.exchangeAccessToken(userAccessToken);
+			facebookGraphAPI = new FacebookGraphAPI(accessToken=extendedAccessToken, appId=APP_ID, apiVersion = "v2.0");
 			userObject = facebookGraphAPI.getObject(id=userId);
 			userFriends = facebookGraphAPI.getConnections(id=userId, type='taggable_friends', limit=10);
 			authenticated = true;
 		} catch (any exception) {
-		    // Usually an invalid session (OAuthInvalidTokenException), for example if the user logged out from facebook.com
+		// Usually an invalid session (OAuthInvalidTokenException), for example if the user logged out from facebook.com
 		    userId = 0;
-		    facebookGraphAPI = new FacebookGraphAPI();
+		    facebookGraphAPI = new FacebookGraphAPI(apiVersion = "v2.0");
 		}
 	} else {
-		facebookGraphAPI = new FacebookGraphAPI();
+		facebookGraphAPI = new FacebookGraphAPI(apiVersion = "v2.0");
 	}
 
 	// Login or logout url will be needed depending on current user state.
@@ -64,14 +66,18 @@ if (APP_ID is "" or SECRET_KEY is "") {
 	}
 }
 
-// This call will always work since we are fetching public data.
-kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
+// This call will in v2+ not work anymore, every graph API access needs a token now
+try {
+    kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
+} catch (any exception) {
+    kai_and_ross_hometown = "";
+}
 </cfscript>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
-    <title>Facebook CFML SDK Examples: Serverside flow (using API version 1)</title>
+    <title>Facebook CFML SDK Examples (using API version 2)</title>
 	<link rel="stylesheet" type="text/css" href="website.css" />
 </head>
 <body>
@@ -79,14 +85,14 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 		<div class="content">
 			<div class="logo">
 				<img src="../../images/coldfusion-sdk-50x50.png" height="50" width="50" style="float:right" />
-				<span>Facebook CFML SDK (API version 1)</span>
+				<span>Facebook CFML SDK (API version 2)</span>
 			</div>
 			<div class="clear"></div>
 		</div>
 	</div>
 	<div class="header">
 		<div class="content">
-			<h1>Facebook CFML SDK (API version 1) - Examples</h1>
+			<h1>Facebook CFML SDK (API version 2) - Examples</h1>
 			Website with Facebook Platform integration
 		</div>
 	</div>
@@ -102,18 +108,76 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 				</div>
 				<br />
 			<cfelse>
+				<!--
+			      We use the Facebook JavaScript SDK to provide a richer user experience. For more info,
+			      look here: http://github.com/facebook/connect-js
+			    -->
+			    <div id="fb-root"></div>
+			    <script>
+			        window.fbAsyncInit = function() {
+				        FB.init({
+                            appId   : '#facebookApp.getAppId()#',
+				            cookie  : true,
+				            oauth	: true,
+				            status  : true,
+				            xfbml   : false,
+				            version : 'v2.0'
+				        });
+
+						// whenever the user logs in or logs out, we refresh the page
+						FB.Event.subscribe('auth.login', function(response) {
+					        window.location.reload();
+					    });
+						FB.Event.subscribe('auth.logout', function(response) {
+					        window.location.reload();
+					    });
+					};
+
+                    (function(d, s, id){
+                         var js, fjs = d.getElementsByTagName(s)[0];
+                         if (d.getElementById(id)) {return;}
+                         js = d.createElement(s); js.id = id;
+                         js.src = "//connect.facebook.net/en_US/sdk.js";
+                         fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));
+
+					function login() {
+			        	FB.login(function(response) {
+			        		if (response.authResponse) {
+						    	// User successfully authenticated in
+						    	// Page reload will be done by 'auth.login' event handler
+						  	} else {
+						   		// User cancelled login
+						  	}
+						}, {scope:'#SCOPE#'});
+					}
+
+					function logout() {
+						FB.getLoginStatus(function(response) {
+							if (response.authResponse) {
+						    	FB.logout(function(response) {
+								  // User is now authenticated out
+								  // Page reload will be done by 'auth.logout' event handler
+								});
+						  	} else {
+						   		window.location.reload();
+						  	}
+						});
+					}
+			    </script>
+
 				<h2>Authentication</h2>
 				<cfif userId>
-					<div>
-				      Log out Facebook.com server side redirect:
-				      <a href="#logoutUrl#">Logout</a>
+				    <div>
+				      Log out via Facebook CFML SDK: <a href="#logoutUrl#" click="javascript:logout()">Logout</a>
 				    </div>
+				    <br />
 			    <cfelse>
 				    <div>
-				      Log in via Facebook.com server side redirect:
-				      <a href="#loginUrl#">Login</a><br />
-				      (<i>with Facebook CFML SDK handling authorization code from url on return</i>)
+				      Log in via Facebook JavaScript SDK: <a href="javascript:login()">Login</a><br />
+				      (<i>with Facebook CFML SDK handling authorization code from cookie on reload</i>)
 				    </div>
+				    <br />
 			    </cfif>
 			    <hr />
 				<h2>Your data</h2>
@@ -135,9 +199,9 @@ kai_and_ross_hometown = facebookGraphAPI.getObject(id='Wellington-New-Zealand');
 			</cfif>
 			<hr />
 		  	<h2>Public data (this will always work)</h2>
-		    <h3>Profile pic + name</h3>
+		    <h3>Profile pic (this seems to be still working fine) + name (this will not work anymore when not logged in; see above in code, we need an access token for any graph API data request in v2+)</h3>
 			<img src="https://graph.facebook.com/Wellington-New-Zealand/picture">
-		    #kai_and_ross_hometown.name#
+		    <cfif isStruct(kai_and_ross_hometown)>#kai_and_ross_hometown.name#</cfif>
 		</div>
 		</cfoutput>
 	</div>
