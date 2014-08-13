@@ -32,6 +32,7 @@ component accessors="true" extends="FacebookBase" {
 	property String secretKey;
 	
 	variables.DROP_QUERY_PARAMS = "code,logged_out,state,signed_request";
+    variables.EXPIRATION_PREVENTION_THRESHOLD = 600000; // 10 minutes
 	variables.VERSION = "3.1.2";
 	
 	/*
