@@ -19,7 +19,7 @@ Facebook CFML SDK - V3.1.2 (12/08/2014)
 * Some minor documentation fixes (links etc)
 * There are two working and correct examples of how to use the FB CFML SDK with a CFML-only login flow as well as a JS-Login-to-CFML flow: /examples/website/serversideflow.cfm and /examples/websites/j2serversideflow.cfm
 * Bugfix (879a1a5897378ca5edf21f96ba3ed1c220690613): Fixes an issue with the CSRF stake token to be regenerated wrongly
-* Improvement (83f67df61f34c0d772d9fe7d299807afacf8a79d): getUserAccessToken is now aligned with the latest version of the FB PHP SDK version 3 branch --- this involves taking care of a token exchange automatically (NOTE: might be breaking your app/site)
+* Improvement (83f67df61f34c0d772d9fe7d299807afacf8a79d): getUserAccessToken is now aligned with the latest version of the FB PHP SDK version 3 branch --- this involves not taking care of a token exchange automatically anymore (NOTE: might be breaking your app/site)
 * Improvement (83f67df61f34c0d772d9fe7d299807afacf8a79d): exchangeAccessToken sets the extended access token and its expiry time in the persistent scope automatically now so that it can be used as a stand-alone function from your app/site
 
 # Release notes for V3.1.1a (05/08/2014)
