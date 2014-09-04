@@ -115,7 +115,7 @@ component accessors="true" extends="FacebookBase" {
 	public string function exchangeAccessToken(required String accessToken) {
 		var result = {};
 		if (arguments.accessToken != "") {
-            var graphAPI = new FacebookGraphAPI(appId = getAppId());
+            var graphAPI = new FacebookGraphAPI(appId = getAppId(),apiVersion=getApiVersion());
             result = graphAPI.getOAuthAccessData(clientId = getAppId(), clientSecret = getSecretKey(), exchangeToken = arguments.accessToken);
 
             if (structKeyExists(result, "access_token") && structKeyExists(result, "expires")) {
@@ -151,7 +151,7 @@ component accessors="true" extends="FacebookBase" {
 	public String function getApplicationAccessToken(Boolean apiEnabled = false) {
 		var accessToken = "";
 		if (arguments.apiEnabled) {
-			var facebookGraphAPI = new FacebookGraphAPI();
+			var facebookGraphAPI = new FacebookGraphAPI(apiVersion=getApiVersion());
 			accessToken = facebookGraphAPI.getOAuthAccessToken(clientId=getAppId(), clientSecret=getSecretKey(), grantType="client_credentials");
 		} else {
 			accessToken = getAppId() & '|' & getSecretKey();
@@ -375,7 +375,7 @@ component accessors="true" extends="FacebookBase" {
 					// Use access_token to fetch user id if we have a user access_token, or if the cached access token has changed.
 					var accessToken = getAccessToken();
 					if (accessToken != "" && accessToken != getApplicationAccessToken() && !(userId > 0 && accessToken == getPersistentData("access_token"))) {
-						var graphAPI = new FacebookGraphAPI(accessToken);
+						var graphAPI = new FacebookGraphAPI(accessToken=accessToken, apiVersion=getApiVersion());
 						var userInfo = graphAPI.getObject(id="me", fields="id");
 						if (structKeyExists(userInfo, "id") && userInfo["id"] > 0) {
 							userId = userInfo["id"];
@@ -470,7 +470,7 @@ component accessors="true" extends="FacebookBase" {
 			}
 		}	
 	}
-	
+
 	// PRIVATE
 	
 	private String function createSignedRequest(required Struct parameters) {
@@ -496,7 +496,7 @@ component accessors="true" extends="FacebookBase" {
 			if (!structKeyExists(arguments, "redirectUri")) {
 				arguments.redirectUri = getCurrentUrl();
 			}
-			var graphAPI = new FacebookGraphAPI(appId=getAppId());
+			var graphAPI = new FacebookGraphAPI(appId=getAppId(),apiVersion=getApiVersion());
 			result = graphAPI.getOAuthAccessData(clientId=getAppId(), clientSecret=getSecretKey(), code=arguments.code, redirectUri=arguments.redirectUri);
 		}
 		return result;
