@@ -447,7 +447,86 @@ component extends="FacebookBase" {
 		}
 		return results;
 	}
-	
+
+	/*
+    * @description Advanced multiple graph objects in a single batched request.  This allow you to describe in detail a batch request.
+    * @hint There are two options available 'batchRequest' where you structural define a request and 'serializeBatchJSON' where you supply a static JSON string.
+    * batchRequest is an array of item request.
+    * item {
+    *      method: HTTP method (DELETE|GET|POST|PUT)
+    *      relative_url: the Facebook object or Facebook edge (me/feed)
+    *      name: the name of the operation.  This is used whe specifying dependencies between operations in the request.
+    *      body: a string.  Available only with POST and PUT operations.
+    *      omit_response_on_success: whether to include the result of this operation (true|false)
+    *      depends_on: specify dependencies between operations explicitly.
+    *      attached_files: the file location.
+    *  }
+    *
+    */
+    public Array function getObjectsBatchedAdvanced(Array batchRequest=[], string serializeBatchJSON="", Boolean headersEnabled = true) {
+        var httpService = new Http(url="https://graph.facebook.com/#getApiVersion()#/", method="POST", timeout=variables.TIMEOUT);
+        var response = {};
+        var result = {};
+        var results = [];
+        var batch = [];
+        var query = {};
+        var fileNumber = 0;
+
+        if (len(serializeBatchJSON)) {
+            batch = serializeBatchJSON;
+        } else {
+            for (var item in arguments.batchRequest) {
+                query = {};
+                query["method"] = item["method"];
+                if (isNumeric(item["relative_url"])) {
+                    query["relative_url"] = chr(2) & item["relative_url"];
+                } else {
+                    query["relative_url"] = item["relative_url"];
+                }
+                // Optional params
+                if (structKeyExists(item, "name")) {
+                    query["name"] = item["name"];
+                }
+                if (structKeyExists(item, "body")) {
+                    query["body"] = item["body"];
+                }
+                if (structKeyExists(item, "omit_response_on_success")) {
+                    query["omit_response_on_success"] = item["omit_response_on_success"];
+                }
+                if (structKeyExists(item, "depends_on")) {
+                    query["depends_on"] = item["depends_on"];
+                }
+                if (structKeyExists(item, "attached_files")) {
+                    fileNumber++;
+                    query["attached_files"] = 'file'&fileNumber;
+                    httpService.addParam(type="file", name="file#fileNumber#", file="#item["attached_files"]#");
+                }
+
+                arrayAppend(batch, query);
+            }
+            batch = replace(serializeJSON(batch),chr(2),"","all");
+        }
+
+        httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
+        httpService.addParam(type="url", name="batch", value=batch);
+
+        if (!arguments.headersEnabled) {
+            httpService.addParam(type="url", name="no_header", value="true");
+        }
+
+        result = callAPIService(httpService);
+        if (isArray(result)) {
+            for (response in result) {
+                if (isStruct(response) && structKeyExists(response, "code") && response["code"] == 200) {
+                    arrayAppend(results, deserializeJSON(response["body"]));
+                } else {
+                    arrayAppend(results, {});
+                }
+            }
+        }
+        return results;
+    }
+
 	/*
 	 * @description Get page access token from a user access token.
 	 * @hint User must have authorized manage_pages permission for the app and user must be an admin of the page
