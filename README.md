@@ -7,8 +7,15 @@ Please find the updated README content for Version 3.1.1a below - this will be l
 
 Kai (05/08/2014)
 
-Facebook CFML SDK - V3.2.0alpha (12/08/2014)
+
+Facebook CFML SDK - V3.2.0alpha2 (05/09/2014)
 ============================================
+
+# Release notes for V3.2.0alpha2 (05/09/2014)
+
+* Fixing an issue in which API versioning was incorrectly handled in internalised instances of the FacebookGraphAPI
+* Support for API versioning in the Facebook authentication dialog
+* New function getObjectsBatchedAdvanced in FacebookGraphAPI to improve the handling of API batch requests.
 
 # Release notes for V3.2.0alpha (12/08/2014)
 
