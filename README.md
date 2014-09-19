@@ -3,11 +3,6 @@
 Facebook CFML SDK - V4.0.0
 ================================
 
-# Todos
-
-1. Build support for Facebook API v1 and v2
-2. Code streamlining and potential retiring of support for not existing FB API features
-
 # Bugs
 
 To report any bug, please use the project [Issues](http://github.com/TheRealAgentK/facebook-cf-sdk/issues) section on GitHub.
@@ -25,5 +20,3 @@ It is being developed by [Kai Koenig](http://twitter.com/AgentK) and [Ross Phill
 Previous versions (V3.1.1 and up to mid-2013) were developped by [Affinitiz](http://poweredby.affinitiz.com), a french social media web agency.
 
 The Facebook CFML SDK is licensed under the [Apache Licence, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
-
-*Credits: logo based on ColdFusion Wallpaper - Revolution by [Angry Fly](http://angry-fly.com/).*
