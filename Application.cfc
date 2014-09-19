@@ -1,7 +1,6 @@
 ﻿component {
 	
-	this.name = "facebook-cf-sdk";
-	//this.mappings["/facebook"] = expandPath("/facebook-sdk");
+	this.name = "facebook-cf-sdk-v4";
 	this.sessionManagement = true;
 	
 }
