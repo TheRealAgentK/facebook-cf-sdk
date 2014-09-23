@@ -1,5 +1,17 @@
+/**
+* FacebookHelper
+*
+* Static component with helper functions
+*/
 component {
 
+    /**
+    * Takes a string and a secret key and returns the HmacSHA256-hashed value.
+    *
+    * @value.hint The input value to be hashed
+    * @secretKey.hint Secret key to be used
+    * @return Hashed value in ISO-8859-1 encoding
+    */
     public string function hashHmacSHA256(required string value, required string secretKey) {
         if (secretKey == "") {
             throw(errorcode="Invalid secretKey", message="Invalid secretKey (cannot be empty)", type=" Security");
@@ -11,6 +23,12 @@ component {
         return toString(mac.doFinal(arguments.value.getBytes()), "ISO-8859-1");
 	}
 
+    /**
+    * Takes a struct and converts it into a querystring-like format.
+    *
+    * @params.hint Input struct
+    * @return Querystring-formatted version of the struct's content
+    */
 	public string function structToQueryString(required struct params) {
         var queryString = "";
         var delim1 = "=";
@@ -23,6 +41,12 @@ component {
         return queryString;
     }
 
+    /**
+    * Takes a querystring and converts it into a struct
+    *
+    * @str.hint Input querystring - can contain elements such as ...&abc&def&efg=657...
+    * @return Struct
+    */
     public struct function parseString(required string str) {
         var parsedString = {};
         var delim1 = "=";
