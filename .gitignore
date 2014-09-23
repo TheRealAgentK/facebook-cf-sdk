@@ -4,6 +4,7 @@ settings.xml
 .DS_Store
 .DS_Store/settings.xml
 .idea
+atlassian-ide-plugin.xml
 
 Capfile
 facebook-cf-sdk.sublime-workspace
