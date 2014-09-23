@@ -10,3 +10,5 @@ facebook-cf-sdk.sublime-workspace
 facebook-cf-sdk.sublime-project
 *.iml
 
+docs/APIDocs
+tests/reports
