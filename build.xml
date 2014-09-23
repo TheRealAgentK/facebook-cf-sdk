@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+======================================================================
+     Facebook CFML SDK Build
+======================================================================
+-->
+<project name="facebook-cfml-sdk-build" default="build" basedir="../../">
+
+    <description>
+        Run unit tests and create docs for the Facebook CFML SDK.
+    </description>
+
+	<!-- Version: UPDATE ON EACH RELEASE AS NEEDED -->
+	<property name="facebook-cfml-sdk.version"	value="4.0.0alpha1"/>
+
+    <property name="dir.userlocation" value="/Applications/apache-tomcat-7.0.55/webapps/railo-4.2.1.000" />
+    <property name="dir.projectlocation" value="${dir.userlocation}/facebook" />
+    <property name="dir.colddocExport" value="${dir.projectlocation}/docs/APIDocs/" />
+    <property name="report.dir" value="${dir.projectlocation}/tests/reports" />
+    <property name="junitreport.dir" value="${report.dir}/junitreport" />
+
+    <property name="url.colddoc" value="http://localhost:8080/railo-4.2.1.000/facebook/docs/create.cfm" />
+    <property name="url.testrunner" value="http://localhost:8080/railo-4.2.1.000/facebook/tests/test-harness/antrunner.cfm?"/>
+
+    <property name="test.bundles" value="" />
+    <property name="test.directory" value="tests.facebook" />
+    <property name="test.recurse" value="true" />
+    <property name="test.labels" value="" />
+    <property name="test.reporter" value="simple" />
+
+	<!-- build -->
+	<target name="build" depends="docs,run" description="Build Facebook CFML SDK">
+    </target>
+
+    <!-- docs -->
+	<target name="docs" description="Create Documentation">
+		<!-- Execute ColdDoc -->
+		<get dest="${dir.projectlocation}/docs/APIDocs/facebook-cfml-sdk-doc.html" src="${url.colddoc}?version=${facebook-cfml-sdk.version}&amp;path=${dir.colddocExport}" verbose="true"/>
+
+		<delete file="${dir.projectlocation}/docs/APIDocs/facebook-cfml-sdk-doc.html" />
+    </target>
+
+    <target name="test-init" description="Init the tests">
+        <mkdir dir="${junitreport.dir}" />
+
+        <tstamp prefix="start">
+            <format property="TODAY" pattern="dd-mm-yy hh:mm:ss aa"/>
+        </tstamp>
+
+        <concat destfile="${report.dir}/latestrun.log">Tests ran at ${start.TODAY}</concat>
+    </target>
+
+    <target name="run" depends="test-init" description="Run our tests and produce awesome results">
+        <get dest="${report.dir}/results.html" src="${url.testrunner}directory=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=${test.reporter}&amp;labels=${test.labels}" verbose="true"/>
+    </target>
+
+    <target name="run-junit" depends="test-init" description="Run our tests and produce ANT JUnit reports">
+
+        <get dest="${report.dir}/results.xml" src="${url.testrunner}directory=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=ANTJunit&amp;labels=${test.labels}&amp;reportPath=${report.dir}" verbose="true"/>
+
+        <!-- Create fancy junit reports -->
+        <junitreport todir="${junitreport.dir}">
+            <fileset dir="${report.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junitreport.dir}">
+                <param name="TITLE" expression="Facebook CFML SDK ${facebook-cfml-sdk.version} Test Results"/>
+            </report>
+        </junitreport>
+
+    </target>
+
+</project>
