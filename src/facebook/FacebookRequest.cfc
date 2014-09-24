@@ -5,17 +5,14 @@ component name="FacebookRequest" accessors="false" {
 
     // ---- constants ----
 
-    //
     /**
 	* SDK Version
 	*/
 	variables.VERSION = "4.0.0alpha1";
-
     /**
 	* Graph API version
 	*/
 	variables.GRAPH_API_VERSION = "v2.0";
-
     /**
 	* Graph API entry point URL
 	*/
@@ -104,8 +101,7 @@ component name="FacebookRequest" accessors="false" {
     * @version.hint API version
     * @etag.hint eTag
     */
-    public void function init(required FacebookSession session, required string method, required string path, struct parameters = {}, string version = "", string etag = "")
-    {
+    public void function init(required FacebookSession session, required string method, required string path, struct parameters = {}, string version = "", string etag = "") {
         // CFC Metadata
         var metadata = getComponentMetadata("FacebookRequest");
         if (!StructKeyExists(metadata,"requestCount")) {
