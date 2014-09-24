@@ -1,39 +1,67 @@
+/**
+* FacebookRequest - Models a request to the Facebook APIs
+*/
 component name="FacebookRequest" accessors="false" {
 
     // ---- constants ----
 
-    // SDK version
-    variables.VERSION = "4.0.0alpha1";
-    // Graph API version
-    variables.GRAPH_API_VERSION = "v2.0";
-    // Graph API entry point URL
-    variables.BASE_GRAPH_URL = "https://graph.facebook.com";
+    //
+    /**
+	* SDK Version
+	*/
+	variables.VERSION = "4.0.0alpha1";
 
-    // ---- private ----
+    /**
+	* Graph API version
+	*/
+	variables.GRAPH_API_VERSION = "v2.0";
 
-    // The session used for this request
-    variables.session = "";
-    //The HTTP method for the request
+    /**
+	* Graph API entry point URL
+	*/
+	variables.BASE_GRAPH_URL = "https://graph.facebook.com";
+
+    // ---- properties ----
+
+    /**
+	* The session used for this request
+	*/
+    variables.fbsession = "";
+    /**
+	* The HTTP method for the request
+	*/
     variables.method = "";
-    // The path for the request
+    /**
+	* The path for the request
+	*/
     variables.path = "";
-    // The parameters for the request
+    /**
+	* The parameters for the request
+	*/
     variables.params = "";
-    // The Graph API version for the request
+    /**
+	* The session used for this request
+	*/
     variables.version = "";
-    // ETag sent with the request
+    /**
+	* The session used for this request
+	*/
     variables.etag = "";
 
 
     /**
 	* Returns the FacebookSession object
+	*
+	* @return FacebookSession object
 	*/
-    public FacebookSession function getSession() {
-        return variables.session;
+    public FacebookSession function getFBSession() {
+        return variables.fbsession;
     }
 
     /**
 	* Returns the path
+	*
+	* @return Path
 	*/
     public string function getPath() {
         return variables.path;
@@ -41,6 +69,8 @@ component name="FacebookRequest" accessors="false" {
 
     /**
 	* Returns the params struct
+	*
+	* @return Parameters struct
 	*/
     public struct function getParameters() {
         return variables.params;
@@ -48,29 +78,31 @@ component name="FacebookRequest" accessors="false" {
 
     /**
 	* Returns the associated method
+	*
+	* @return HTTP method
 	*/
     public string function getMethod() {
         return variables.method;
     }
 
     /**
-	* Returns the ETag sent with the request.
+	* Returns the ETag sent with the request
+	*
+	* @return eTag
 	*/
     public string function getETag() {
         return variables.etag;
     }
 
     /**
-    * FacebookRequest - Returns a new request using the given session. Optional
-    *   parameters hash will be sent with the request.  This object is
-    *   immutable.
+    * FacebookRequest - Returns a new request using the given session. Optional parameters hash will be sent with the request. This object is immutable.
     *
-    * @param FacebookSession $session
-    * @param string $method
-    * @param string $path
-    * @param array|null $parameters
-    * @param string|null $version
-    * @param string|null $etag
+    * @session.hint FacebookSession object
+    * @method.hint HTTP method
+    * @path.hint ?
+    * @parameters.hint Struct with request parameters
+    * @version.hint API version
+    * @etag.hint eTag
     */
     public void function init(required FacebookSession session, required string method, required string path, struct parameters = {}, string version = "", string etag = "")
     {
@@ -84,7 +116,7 @@ component name="FacebookRequest" accessors="false" {
 
         var params = arguments.parameters;
 
-        variables.session = arguments.session;
+        variables.fbsession = arguments.session;
         variables.method = arguments.method;
         variables.path = arguments.path;
 
@@ -98,7 +130,7 @@ component name="FacebookRequest" accessors="false" {
 
         // TODO: Implement getToken
         if (!StructKeyExists(params,"access_token")) {
-            params["access_token"] = variables.session.getToken();
+            params["access_token"] = variables.fbsession.getToken();
         }
 
         // TODO: Implement getUseAppSecretProof() --- is a static property in FacebookRequest
@@ -112,7 +144,7 @@ component name="FacebookRequest" accessors="false" {
     /**
     * Returns the base Graph URL.
     *
-    * @return string
+    * @return Base Graph URL.
     */
     package string function getRequestURL() {
         return variables.BASE_GRAPH_URL & "/" & variables.version & variables.path;
@@ -120,12 +152,9 @@ component name="FacebookRequest" accessors="false" {
 
 
     /**
-    * execute - Makes the request to Facebook and returns the result.
+    * Makes the request to Facebook and returns the result.
     *
-    * @return FacebookResponse
-    *
-    * @throws FacebookSDKException
-    * @throws FacebookRequestException
+    * @return FacebookResponse object
     */
     public FacebookResponse function execute() {
         var url = getRequestURL();
@@ -198,9 +227,9 @@ component name="FacebookRequest" accessors="false" {
     /**
     * Generate and return the appsecret_proof value for an access_token
     *
-    * @param string $token
+    * @token.hint access_token to be used
     *
-    * @return string
+    * @return appsecret_proof
     */
     public string function getAppSecretProof(required string token) {
         var facebookSession = new FacebookSession();
@@ -209,12 +238,12 @@ component name="FacebookRequest" accessors="false" {
     }
 
     /**
-    * appendParamsToUrl - Gracefully appends params to the URL.
+    * Gracefully appends params to the URL.
     *
-    * @param string $url
-    * @param array $params
+    * @url.hint URL
+    * @params.hint Struct with additional parameters
     *
-    * @return string
+    * @return Modified URL
     */
     public string function appendParamsToUrl(required string url, struct parameters = {}) {
         var facebookHelper = CreateObject("component","FacebookHelper");
