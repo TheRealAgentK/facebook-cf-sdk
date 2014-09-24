@@ -1,11 +1,19 @@
+/**
+* FacebookSession - Models a session/connection to the FB API
+*/
 component name="FacebookSession" accessors="false" {
 
     // ---- private ----
 
-    // The AccessToken entity for this connection.
-    variables.accessToken = "";
-    // The SignedRequest entity for this connection.
-    variables.signedRequest = "";
+    /**
+	* The AccessToken entity for this connection
+	*/
+	variables.accessToken = "";
+
+    /**
+	* The SignedRequest entity for this connection
+	*/
+	variables.signedRequest = "";
 
 
     /**
@@ -20,16 +28,28 @@ component name="FacebookSession" accessors="false" {
     public void function init(required AccessToken accessToken, SignedRequest signedRequest = "") {
         // CFC Metadata
         var metadata = getComponentMetadata("FacebookSession");
+
+        /**
+        * Default AppId
+        */
         if (!StructKeyExists(metadata,"defaultAppId")) {
             lock name="FacebookSession.metadata.defaultAppId" timeout="10" {
                 metadata["defaultAppId"] = "";
             }
         }
+
+        /**
+        * Default AppSecret
+        */
         if (!StructKeyExists(metadata,"defaultAppSecret")) {
             lock name="FacebookSession.metadata.defaultAppSecret" timeout="10" {
                 metadata["defaultAppSecret"] = "";
             }
         }
+
+        /**
+        * Flag if we use the AppSecret proof
+        */
         if (!StructKeyExists(metadata,"useAppSecretProof")) {
             lock name="FacebookSession.metadata.useAppSecretProof" timeout="10" {
                 metadata["useAppSecretProof"] = "";
@@ -51,51 +71,48 @@ component name="FacebookSession" accessors="false" {
         return variables.accessToken.accessToken;
     }
 
+    /**
+    * Returns the AccessToken (an entity)
+    *
+    * @return string
+    */
+    public string function getAccessToken() {
+        return variables.accessToken;
+    }
 
+    /**
+    * Returns the SignedRequest (an entity)
+    *
+    * @return string
+    */
+    public string function getSignedRequest() {
+        return variables.signedRequest;
+    }
 
+    /**
+    * Returns the signed request payload
+    *
+    * @return string
+    */
+
+    // TODO: Original PHP
+    // return $this->signedRequest ? $this->signedRequest->getPayload() : null;
+    public string function getSignedRequestData() {
+        return variables.signedRequest.getPayload;
+    }
+
+    /**
+    * Returns a property from the signed request data if available.
+    *
+    * @return string
+    */
+    public string function getSignedRequestProperty(required string key) {
+        return variables.signedRequest;
+    }
 
 
 }
- /*
-  /**
-   * Returns the access token.
-   *
-   * @return string
-   */
-  public function getToken()
-  {
-    return (string) $this->accessToken;
-  }
 
-  /**
-   * Returns the access token entity.
-   *
-   * @return AccessToken
-   */
-  public function getAccessToken()
-  {
-    return $this->accessToken;
-  }
-
-  /**
-   * Returns the SignedRequest entity.
-   *
-   * @return SignedRequest
-   */
-  public function getSignedRequest()
-  {
-    return $this->signedRequest;
-  }
-
-  /**
-   * Returns the signed request payload.
-   *
-   * @return null|array
-   */
-  public function getSignedRequestData()
-  {
-    return $this->signedRequest ? $this->signedRequest->getPayload() : null;
-  }
 
   /**
    * Returns a property from the signed request data if available.
