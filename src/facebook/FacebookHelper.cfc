@@ -95,12 +95,16 @@ component {
     }
 
     /**
-    * Base64 URL deconding
+    * Base64 decoding which replaces characters:
+    *   + instead of -
+    *   / instead of _
+    * @link http://en.wikipedia.org/wiki/Base64#URL_applications
     *
-    * @base64URLValue.hint base64-enoded value from URL
+    * @base64URLValue.hint base64-enoded value input
     * @return numeric ISO-8859-1-encoded decoded string
     */
     //TODO: Tests (this is from the v3.2 CFML SDK)
+    //TODO: PHP is not using ISO 8859-1 --- why was CFML doing that? Should it be UTF8?
     public string function base64UrlDecode(required string base64UrlValue) {
 		var base64Value = replaceList(arguments.base64UrlValue, "-,_", "+,/");
 		var paddingMissingCount = 0;
@@ -114,13 +118,16 @@ component {
 		return toString(toBinary(base64Value), "ISO-8859-1");
 	}
 
-    /**
-    * Base64 URL encoding
+    /** Base64 encoding which replaces characters:
+    *   + instead of -
+    *   / instead of _
+    * @link http://en.wikipedia.org/wiki/Base64#URL_applications
     *
     * @value input value to be encoded
-    * @return base64-encoded value
+    * @return base64-url-encoded value
     */
     // TODO: Tests (this is from the v3.2 CFML SDK)
+    //TODO: PHP is not using ISO 8859-1 --- why was CFML doing that? Should it be UTF8?
 	public String function base64UrlEncode(required string value) {
 		var base64Value = toBase64(arguments.value, "ISO-8859-1");
 		var base64UrlValue = replace(replaceList(base64Value, "+,/", "-,_"), "=", "", "ALL");
