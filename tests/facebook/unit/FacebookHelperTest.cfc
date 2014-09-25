@@ -69,6 +69,7 @@ component name="FacebookRequestHelper" extends="testbox.system.BaseSpec" {
         $assert.isEqual(result["efg"], "", "efg key isn't empty");
     }
 
+    // Test Time functions
     function testConvertEpochTimeValid() {
         var testSeconds = 20;
         var result = facebookHelper.convertEpochTime(testSeconds);
@@ -111,11 +112,25 @@ component name="FacebookRequestHelper" extends="testbox.system.BaseSpec" {
         $assert.isEqual(123456789, result, "Wrong Date");
     }
 
-     function testEpochTimeZero() {
+    function testEpochTimeZero() {
         var testTime = "{ts '1970-01-01 12:00:00'}";
         var result = facebookHelper.epochTime(testTime);
 
         $assert.isEqual(0, result, "Wrong Date");
     }
+
+    // Test Base 64 functions
+    function testBase64EncodingIsUrlSafe() {
+        var result = facebookHelper.base64UrlEncode('aijkoprstADIJKLOPQTUVX1256!)]-:;"<>?.|~');
+
+        $assert.isEqual(result,"YWlqa29wcnN0QURJSktMT1BRVFVWWDEyNTYhKV0tOjsiPD4_Lnx-");
+    }
+
+    function testAUrlSafeBase64EncodedStringCanBeDecoded() {
+        var result = facebookHelper.base64UrlDecode("YWlqa29wcnN0QURJSktMT1BRVFVWWDEyNTYhKV0tOjsiPD4/Lnx+");
+
+        $assert.isEqual(result,'aijkoprstADIJKLOPQTUVX1256!)]-:;"<>?.|~');
+    }
+
 
 }

@@ -103,7 +103,6 @@ component {
     * @base64URLValue.hint base64-enoded value input
     * @return numeric ISO-8859-1-encoded decoded string
     */
-    //TODO: Tests (this is from the v3.2 CFML SDK)
     //TODO: PHP is not using ISO 8859-1 --- why was CFML doing that? Should it be UTF8?
     public string function base64UrlDecode(required string base64UrlValue) {
 		var base64Value = replaceList(arguments.base64UrlValue, "-,_", "+,/");
@@ -126,7 +125,6 @@ component {
     * @value input value to be encoded
     * @return base64-url-encoded value
     */
-    // TODO: Tests (this is from the v3.2 CFML SDK)
     //TODO: PHP is not using ISO 8859-1 --- why was CFML doing that? Should it be UTF8?
 	public String function base64UrlEncode(required string value) {
 		var base64Value = toBase64(arguments.value, "ISO-8859-1");
