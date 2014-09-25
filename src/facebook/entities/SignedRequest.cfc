@@ -103,7 +103,7 @@ component name="SignedRequest" accessors="false" {
         hashedSig = hashSignature(encodedPayload, arguments.appSecret);
         encodedSig = facebookHelper.base64UrlEncode(hashedSig);
 
-        return encodedSig & "." encodedPayload;
+        return encodedSig & "." & encodedPayload;
 
     }
 
