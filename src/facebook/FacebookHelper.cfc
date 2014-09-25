@@ -94,5 +94,38 @@ component {
         return datediff('s', startdate, datetimeNow);
     }
 
+    /**
+    * Base64 URL deconding
+    *
+    * @base64URLValue.hint base64-enoded value from URL
+    * @return numeric ISO-8859-1-encoded decoded string
+    */
+    //TODO: Tests (this is from the v3.2 CFML SDK)
+    public string function base64UrlDecode(required string base64UrlValue) {
+		var base64Value = replaceList(arguments.base64UrlValue, "-,_", "+,/");
+		var paddingMissingCount = 0;
+		var modulo = len(base64Value) % 4;
+		if (modulo != 0) {
+			paddingMissingCount = 4 - modulo;
+		}
+		for (var i=0; i < paddingMissingCount; i++) {
+			base64Value = base64Value & "=";
+		}
+		return toString(toBinary(base64Value), "ISO-8859-1");
+	}
+
+    /**
+    * Base64 URL encoding
+    *
+    * @value input value to be encoded
+    * @return base64-encoded value
+    */
+    // TODO: Tests (this is from the v3.2 CFML SDK)
+	public String function base64UrlEncode(required string value) {
+		var base64Value = toBase64(arguments.value, "ISO-8859-1");
+		var base64UrlValue = replace(replaceList(base64Value, "+,/", "-,_"), "=", "", "ALL");
+		return base64UrlValue;
+	}
+
 
 }
