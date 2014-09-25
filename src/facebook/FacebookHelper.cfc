@@ -114,6 +114,9 @@ component {
 		for (var i=0; i < paddingMissingCount; i++) {
 			base64Value = base64Value & "=";
 		}
+
+		validateBase64(base64Value);
+
 		return toString(toBinary(base64Value), "ISO-8859-1");
 	}
 
@@ -132,5 +135,21 @@ component {
 		return base64UrlValue;
 	}
 
+    /** Validates a base64 string
+    *
+    * @value input value to be validated
+    *
+    * @return nothgin or FacebookSDKException
+    */
+	public void function validateBase64(required string input) {
+        var pattern = "^[a-zA-Z0-9\/\r\n+]*={0,2}$";
+        var test = REFindNoCase(pattern,arguments.input,1,true);
 
+        if (ArrayLen(test.len) == 1 && ArrayLen(test.pos) == 1 && test.len[1] == len(arguments.input) and test.pos[1] == 1 ) {
+            return;
+        }
+
+        throw(type="FacebookSDKException",message="Signed request contains malformed base64 encoding (608)");
+
+	}
 }
