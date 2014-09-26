@@ -120,7 +120,7 @@ component name="SignedRequest" accessors="false" {
     // NOTE: This used to be a static PHP function use of instnace variables
     public struct function parse(required string signedRequest, string state = "", string appSecret = "") {
         var encodedSig = ListGetAt(arguments.signedRequest,1,".");
-        var enocdedPayload = ListGetAt(arguments.signedRequest,2,".");
+        var encodedPayload = ListGetAt(arguments.signedRequest,2,".");
 
         // Signature validation
         var sig = decodeSignature(encodedSig);
