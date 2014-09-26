@@ -27,39 +27,39 @@ component name="FacebookSession" accessors="false" {
     */
     public void function init(required AccessToken accessToken, SignedRequest signedRequest = "") {
         // CFC Metadata
-        var metadata = getComponentMetadata("FacebookSession");
-
-        /**
-        * Default AppId
-        */
-        if (!StructKeyExists(metadata,"defaultAppId")) {
-            lock name="FacebookSession.metadata.defaultAppId" timeout="10" {
-                metadata["defaultAppId"] = "";
-            }
-        }
-
-        /**
-        * Default AppSecret
-        */
-        if (!StructKeyExists(metadata,"defaultAppSecret")) {
-            lock name="FacebookSession.metadata.defaultAppSecret" timeout="10" {
-                metadata["defaultAppSecret"] = "";
-            }
-        }
-
-        /**
-        * Flag if we use the AppSecret proof
-        */
-        if (!StructKeyExists(metadata,"useAppSecretProof")) {
-            lock name="FacebookSession.metadata.useAppSecretProof" timeout="10" {
-                metadata["useAppSecretProof"] = "";
-            }
-        }
+        setStaticMember("defaultAppId","");
+        setStaticMember("defaultAppSecret","");
+        setStaticMember("useAppSecretProof","");
 
         // TODO: This is the original PHP code --- look into
         // $this->accessToken = $accessToken instanceof AccessToken ? $accessToken : new AccessToken($accessToken);
         variables.accessToken = arguments.accessToken;
         variables.signedRequest = arguments.signedRequest;
+    }
+
+    private any function getStaticMember(required string fieldname) {
+        var metadata = getComponentMetadata("FacebookSession");
+
+        if (StructKeyExists(metadata,arguments.fieldname)) {
+            lock name="FacebookSession.metadata#arguments.fieldname#" timeout="10" {
+                return metadata[arguments.fieldname];
+            }
+        }
+
+        throw(type="FacebookSessionStaticReadException",message="Static field #arguments.fieldname# doesn't exist");
+
+    }
+
+    private void function setStaticMember(required string fieldname, required any value, overwrite boolean = false) {
+        var metadata = getComponentMetadata("FacebookSession");
+
+        if (!StructKeyExists(metadata,arguments.fieldname) || (StructKeyExists(metadata,arguments.fieldname) && arguments.overwrite)) {
+            lock name="FacebookSession.metadata#arguments.fieldname#" timeout="10" {
+                metadata[arguments.fieldname] = arguments.value;
+            }
+        }
+
+        throw(type="FacebookSessionStaticWriteException",message="Static field #arguments.fieldname# can't be overwritten/created");
     }
 
     /**
@@ -110,10 +110,34 @@ component name="FacebookSession" accessors="false" {
         return variables.signedRequest;
     }
 
+    /**
+    * getTargetAppSecret - Will return either the provided app secret or the default, throwing if neither are populated.
+    *
+    * @appSecret.hint provided app secret to be returned
+    *
+    * @return app secret or FacebookSDKException is neither provided nor default set.
+    *
+    * @throws FacebookSDKException
+    */
+    public string function getTargetAppSecret(string appSecret = "") {
+        var target = "";
 
+        if (Len(arguments.appSecret)) {
+            target = arguments.appSecret;
+        }
+        else if (Len(getStaticMember("defaultAppSecret"))) {
+            target = getStaticMember("defaultAppSecret");
+        }
+
+        if (Len(target)) {
+            return target;
+        }
+
+        throw(type="FacebookSDKException",message="You must provide or set a default application secret (701)");
+    }
 }
 
-
+   <!---
   /**
    * Returns a property from the signed request data if available.
    *
@@ -379,4 +403,4 @@ getter for:
 
 
 getToken function
-        */
+        */      --->
