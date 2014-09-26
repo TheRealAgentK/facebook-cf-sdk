@@ -132,5 +132,4 @@ component name="FacebookRequestHelper" extends="testbox.system.BaseSpec" {
         $assert.isEqual(result,'aijkoprstADIJKLOPQTUVX1256!)]-:;"<>?.|~');
     }
 
-
 }
