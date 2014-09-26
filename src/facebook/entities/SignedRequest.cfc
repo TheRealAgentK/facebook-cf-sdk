@@ -186,7 +186,7 @@ component name="SignedRequest" accessors="false" {
     *
     * @return string with decoded payload or FacebookSDKException
     */
-    public struct function decodePayload(required string $encodedPayload) {
+    public any function decodePayload(required string $encodedPayload) {
         var facebookHelper = CreateObject("component","FacebookHelper");
 
         var payload = facebookHelper.base64UrlDecode(arguments.$encodedPayload);
@@ -195,7 +195,7 @@ component name="SignedRequest" accessors="false" {
             payload = deserializeJSON(payload);
         }
 
-        if (isStruct(payload)) {
+        if (isStruct(payload) or isArray(payload)) {
             return payload;
         }
 
