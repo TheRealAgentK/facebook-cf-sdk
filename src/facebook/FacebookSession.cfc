@@ -26,6 +26,8 @@ component name="FacebookSession" accessors="false" {
     * @param SignedRequest $signedRequest The SignedRequest entity
     */
     public void function init(required AccessToken accessToken, SignedRequest signedRequest = "") {
+
+        // TODO: This needs to be refactored out of the constructor as otherwise they won't exist in the "CFC" but only in an instance.
         // CFC Metadata
         setStaticMember("defaultAppId","");
         setStaticMember("defaultAppSecret","");
