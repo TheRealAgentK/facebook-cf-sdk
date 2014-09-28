@@ -23,7 +23,7 @@
     <property name="url.testrunner" value="http://localhost:8080/railo-4.2.1.000/facebook/tests/test-harness/antrunner.cfm?"/>
 
     <property name="test.bundles" value="" />
-    <property name="test.directory" value="tests.facebook" />
+    <property name="test.directory" value="tests" />
     <property name="test.recurse" value="true" />
     <property name="test.labels" value="" />
     <property name="test.reporter" value="simple" />
