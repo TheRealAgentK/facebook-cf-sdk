@@ -118,8 +118,6 @@ component name="FacebookSession" accessors="false" {
     * @appSecret.hint provided app secret to be returned
     *
     * @return app secret or FacebookSDKException is neither provided nor default set.
-    *
-    * @throws FacebookSDKException
     */
     public string function getTargetAppSecret(string appSecret = "") {
         var target = "";
@@ -137,7 +135,34 @@ component name="FacebookSession" accessors="false" {
 
         throw(type="FacebookSDKException",message="You must provide or set a default application secret (701)");
     }
+
+    /**
+    * getTargetAppId - Will return either the provided app Id or the default, throwing if neither are populated.
+    *
+    * @$appId.hint provided app id to be returned
+    *
+    * @return app id or FacebookSDKException is neither provided nor default set.
+    */
+    public string function getTargetAppId(string appId = "") {
+        var target = "";
+
+        if (Len(arguments.appId)) {
+            target = arguments.appId;
+        }
+        else if (Len(getStaticMember("defaultAppId"))) {
+            target = getStaticMember("defaultAppId");
+        }
+
+        if (Len(target)) {
+            return target;
+        }
+
+        throw(type="FacebookSDKException",message="You must provide or set a default application id (700)");
+    }
 }
+
+
+
 
    <!---
   /**
