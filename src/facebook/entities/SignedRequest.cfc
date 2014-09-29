@@ -147,6 +147,7 @@ component name="SignedRequest" accessors="false" {
     *
     * @return string with hashed signature or FacebookSDKException
     */
+    // TODO: getTargetAppSecret is a static function - investigate
     public string function hashSignature(required string encodedData, string appSecret = "") {
         var facebookHelper = CreateObject("component","FacebookHelper");
         var facebookSession = CreateObject("component","FacebookSession");
