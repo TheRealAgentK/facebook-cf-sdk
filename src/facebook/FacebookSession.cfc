@@ -26,10 +26,6 @@ component name="facebook.FacebookSession" accessors="false" {
     */
     public void function init(required AccessToken accessToken, SignedRequest signedRequest = "") {
 
-       // setStaticMember("defaultAppId","");
-       // setStaticMember("defaultAppSecret","");
-       // setStaticMember("useAppSecretProof","");
-
         // TODO: This is the original PHP code --- look into
         // $this->accessToken = $accessToken instanceof AccessToken ? $accessToken : new AccessToken($accessToken);
         variables.accessToken = arguments.accessToken;
@@ -38,30 +34,46 @@ component name="facebook.FacebookSession" accessors="false" {
 
     private any function getStaticMember(required string fieldname) {
         var metadata = getComponentMetadata("facebook.FacebookSession");
+        var fullFieldname = "_" & arguments.fieldname;
 
-        if (StructKeyExists(metadata,arguments.fieldname)) {
-            lock name="facebook.FacebookSession.metadata#arguments.fieldname#" timeout="10" {
-                return metadata[arguments.fieldname];
+        if (StructKeyExists(metadata,fullFieldname)) {
+            lock name="facebook.FacebookSession.metadata#fullFieldname#" timeout="10" type="readonly" {
+                return metadata[fullFieldname];
             }
         }
 
         throw(type="FacebookSessionStaticReadException",message="Static field #arguments.fieldname# doesn't exist");
-
     }
 
     private void function setStaticMember(required string fieldname, required any value, boolean overwrite = true) {
         var metadata = getComponentMetadata("facebook.FacebookSession");
+        var fullFieldname = "_" & arguments.fieldname;
 
         try {
-            if (!StructKeyExists(metadata,arguments.fieldname) || (StructKeyExists(metadata,arguments.fieldname) && arguments.overwrite)) {
-                lock name="facebook.FacebookSession.metadata#arguments.fieldname#" timeout="10" {
-                    metadata[arguments.fieldname] = arguments.value;
+            if (!StructKeyExists(metadata,fullFieldname) || (StructKeyExists(metadata,fullFieldname) && arguments.overwrite)) {
+                lock name="facebook.FacebookSession.metadata#fullFieldname#" timeout="10" {
+                    metadata[fullFieldname] = arguments.value;
                 }
             }
         }
         catch (any e) {
-            throw(type="FacebookSessionStaticWriteException",message="Static field #arguments.fieldname# can't be overwritten/created");
+            throw(type="FacebookSessionStaticWriteException",message="Static field #fullFieldname# can't be overwritten/created");
         }
+    }
+
+    public void function dumpStaticScope() {
+        var metadata = getComponentMetadata("facebook.FacebookSession");
+        var prefix = "_";
+        var result = {};
+
+        for (var key in metadata) {
+            if (Left(key,1) == prefix) {
+                lock name="facebook.FacebookSession.metadata#key#" timeout="10" type="readonly" {
+                    result[key] = metadata[key];
+                }
+            }
+        }
+        WriteDump(result);
     }
 
     /**
