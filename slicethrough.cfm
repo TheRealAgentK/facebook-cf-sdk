@@ -1,6 +1,5 @@
 <cfscript>
-    fbSession = CreateObject("facebook.FacebookSession")
-    fbSession.setDefaultApplication('YOUR_APP_ID','YOUR_APP_SECRET');
+    fbSession = CreateObject("facebook.FacebookSession").setDefaultApplication('YOUR_APP_ID','YOUR_APP_SECRET');
 
     // Use one of the helper classes to get a FacebookSession object.
     //   FacebookRedirectLoginHelper
