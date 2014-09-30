@@ -1,7 +1,7 @@
 /**
 * FacebookSession - Models a session/connection to the FB API
 */
-component name="FacebookSession" accessors="false" {
+component name="facebook.FacebookSession" accessors="false" {
 
     // ---- private ----
 
@@ -37,10 +37,10 @@ component name="FacebookSession" accessors="false" {
     }
 
     private any function getStaticMember(required string fieldname) {
-        var metadata = getComponentMetadata("FacebookSession");
+        var metadata = getComponentMetadata("facebook.FacebookSession");
 
         if (StructKeyExists(metadata,arguments.fieldname)) {
-            lock name="FacebookSession.metadata#arguments.fieldname#" timeout="10" {
+            lock name="facebook.FacebookSession.metadata#arguments.fieldname#" timeout="10" {
                 return metadata[arguments.fieldname];
             }
         }
@@ -49,12 +49,12 @@ component name="FacebookSession" accessors="false" {
 
     }
 
-    private void function setStaticMember(required string fieldname, required any value, boolean overwrite = false) {
-        var metadata = getComponentMetadata("FacebookSession");
+    private void function setStaticMember(required string fieldname, required any value, boolean overwrite = true) {
+        var metadata = getComponentMetadata("facebook.FacebookSession");
 
         try {
             if (!StructKeyExists(metadata,arguments.fieldname) || (StructKeyExists(metadata,arguments.fieldname) && arguments.overwrite)) {
-                lock name="FacebookSession.metadata#arguments.fieldname#" timeout="10" {
+                lock name="facebook.FacebookSession.metadata#arguments.fieldname#" timeout="10" {
                     metadata[arguments.fieldname] = arguments.value;
                 }
             }
@@ -62,8 +62,6 @@ component name="FacebookSession" accessors="false" {
         catch (any e) {
             throw(type="FacebookSessionStaticWriteException",message="Static field #arguments.fieldname# can't be overwritten/created");
         }
-
-        WriteDump(metadata);
     }
 
     /**
@@ -171,8 +169,8 @@ component name="FacebookSession" accessors="false" {
     * @appSecret.hint App secret value to use by default
     */
     public function setDefaultApplication(appId, appSecret) {
-        setStaticMember("defaultAppId", arguments.appId, true);
-        setStaticMember("defaultAppSecret", arguments.appSecret, true);
+        setStaticMember("defaultAppId", arguments.appId);
+        setStaticMember("defaultAppSecret", arguments.appSecret);
     }
 }
 
@@ -356,18 +354,6 @@ component name="FacebookSession" accessors="false" {
     );
   }
 
-  /**
-   * setDefaultApplication - Will set the static default appId and appSecret
-   *   to be used for API requests.
-   *
-   * @param string $appId Application ID to use by default
-   * @param string $appSecret App secret value to use by default
-   */
-  public static function setDefaultApplication($appId, $appSecret)
-  {
-    self::$defaultAppId = $appId;
-    self::$defaultAppSecret = $appSecret;
-  }
 
 
 
