@@ -1,7 +1,7 @@
 ﻿<cfsetting showDebugOutput="false">
 
 <cfparam name="url.reporter" 		default="simple">
-<cfparam name="url.directory" 		default="tests.facebook">
+<cfparam name="url.directory" 		default="tests">
 <cfparam name="url.recurse" 		default="true" type="boolean">
 <cfparam name="url.bundles" 		default="">
 <cfparam name="url.labels" 			default="">
