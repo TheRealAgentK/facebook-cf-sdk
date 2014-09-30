@@ -15,10 +15,9 @@ component name="FacebookSession" accessors="false" {
 	*/
 	variables.signedRequest = "";
 
-
     /**
     * When creating a Session from an access_token, use:
-    *   var $session = new FacebookSession($accessToken);
+    *   var thesession = new FacebookSession(accessToken);
     * This will validate the token and provide a Session object ready for use.
     * It will throw a SessionException in case of error.
     *
@@ -27,11 +26,9 @@ component name="FacebookSession" accessors="false" {
     */
     public void function init(required AccessToken accessToken, SignedRequest signedRequest = "") {
 
-        // TODO: This needs to be refactored out of the constructor as otherwise they won't exist in the "CFC" but only in an instance.
-        // CFC Metadata
-        setStaticMember("defaultAppId","");
-        setStaticMember("defaultAppSecret","");
-        setStaticMember("useAppSecretProof","");
+       // setStaticMember("defaultAppId","");
+       // setStaticMember("defaultAppSecret","");
+       // setStaticMember("useAppSecretProof","");
 
         // TODO: This is the original PHP code --- look into
         // $this->accessToken = $accessToken instanceof AccessToken ? $accessToken : new AccessToken($accessToken);
@@ -52,16 +49,21 @@ component name="FacebookSession" accessors="false" {
 
     }
 
-    private void function setStaticMember(required string fieldname, required any value, overwrite boolean = false) {
+    private void function setStaticMember(required string fieldname, required any value, boolean overwrite = false) {
         var metadata = getComponentMetadata("FacebookSession");
 
-        if (!StructKeyExists(metadata,arguments.fieldname) || (StructKeyExists(metadata,arguments.fieldname) && arguments.overwrite)) {
-            lock name="FacebookSession.metadata#arguments.fieldname#" timeout="10" {
-                metadata[arguments.fieldname] = arguments.value;
+        try {
+            if (!StructKeyExists(metadata,arguments.fieldname) || (StructKeyExists(metadata,arguments.fieldname) && arguments.overwrite)) {
+                lock name="FacebookSession.metadata#arguments.fieldname#" timeout="10" {
+                    metadata[arguments.fieldname] = arguments.value;
+                }
             }
         }
+        catch (any e) {
+            throw(type="FacebookSessionStaticWriteException",message="Static field #arguments.fieldname# can't be overwritten/created");
+        }
 
-        throw(type="FacebookSessionStaticWriteException",message="Static field #arguments.fieldname# can't be overwritten/created");
+        WriteDump(metadata);
     }
 
     /**
@@ -158,6 +160,19 @@ component name="FacebookSession" accessors="false" {
         }
 
         throw(type="FacebookSDKException",message="You must provide or set a default application id (700)");
+    }
+
+    /**
+    * setDefaultApplication - Will set the static default appId and appSecret to be used for API requests.
+    *
+    * To be used as a static function
+    *
+    * @appId.hint Application ID to use by default
+    * @appSecret.hint App secret value to use by default
+    */
+    public function setDefaultApplication(appId, appSecret) {
+        setStaticMember("defaultAppId", arguments.appId, true);
+        setStaticMember("defaultAppSecret", arguments.appSecret, true);
     }
 }
 
@@ -354,45 +369,7 @@ component name="FacebookSession" accessors="false" {
     self::$defaultAppSecret = $appSecret;
   }
 
-  /**
-   * _getTargetAppId - Will return either the provided app Id or the default,
-   *   throwing if neither are populated.
-   *
-   * @param string $appId
-   *
-   * @return string
-   *
-   * @throws FacebookSDKException
-   */
-  public static function _getTargetAppId($appId = null) {
-    $target = ($appId ?: self::$defaultAppId);
-    if (!$target) {
-      throw new FacebookSDKException(
-        'You must provide or set a default application id.', 700
-      );
-    }
-    return $target;
-  }
 
-  /**
-   * _getTargetAppSecret - Will return either the provided app secret or the
-   *   default, throwing if neither are populated.
-   *
-   * @param string $appSecret
-   *
-   * @return string
-   *
-   * @throws FacebookSDKException
-   */
-  public static function _getTargetAppSecret($appSecret = null) {
-    $target = ($appSecret ?: self::$defaultAppSecret);
-    if (!$target) {
-      throw new FacebookSDKException(
-        'You must provide or set a default application secret.', 701
-      );
-    }
-    return $target;
-  }
 
   /**
    * Enable or disable sending the appsecret_proof with requests.
