@@ -24,12 +24,18 @@ component name="facebook.FacebookSession" accessors="false" {
     * @param AccessToken|string $accessToken
     * @param SignedRequest $signedRequest The SignedRequest entity
     */
-    public void function init(required AccessToken accessToken, SignedRequest signedRequest = "") {
+    public void function init(required any accessToken, SignedRequest signedRequest) {
 
         // TODO: This is the original PHP code --- look into
         // $this->accessToken = $accessToken instanceof AccessToken ? $accessToken : new AccessToken($accessToken);
-        variables.accessToken = arguments.accessToken;
-        variables.signedRequest = arguments.signedRequest;
+        if (isInstanceOf(arguments.accessToken,"facebook.entities.AccessToken")) {
+            variables.accessToken = arguments.accessToken;
+        } else {
+            variables.accessToken = new facebook.entities.AccessToken(arguments.accessToken);
+        }
+        if (StructKeyExists(variables,"signedRequest")) {
+            variables.signedRequest = arguments.signedRequest;
+        }
     }
 
     private any function getStaticMember(required string fieldname) {
@@ -90,7 +96,7 @@ component name="facebook.FacebookSession" accessors="false" {
     *
     * @return string
     */
-    public string function getAccessToken() {
+    public AccessToken function getAccessToken() {
         return variables.accessToken;
     }
 
