@@ -9,7 +9,7 @@ component name="FacebookSessionTest" extends="testbox.system.BaseSpec" {
     }
 
     function beforeTests() {
-        facebookSession = CreateObject("component","FacebookSession");
+        facebookSession = CreateObject("component","facebook.FacebookSession");
     }
 
     function afterTests() {
@@ -28,6 +28,21 @@ component name="FacebookSessionTest" extends="testbox.system.BaseSpec" {
         $assert.isEqual("FOOBAR_APP_SECRET",facebookSession.getTargetAppSecret(),"Static App Secret seems to be wrong");
     }
 
+    function testConstructor() {
+        var fbS1 = new facebook.FacebookSession("54785487543875843");
+
+        $assert.instanceOf(fbS1.getAccessToken(),"AccessToken","Access Token not the right type");
+        $assert.instanceOf(fbS1.getAccessToken(),"facebook.entities.AccessToken","Access Token not the right type");
+        $assert.instanceOf(fbS1.getAccessToken(),"facebook.entities.AccessToken","Access Token not the right type");
+
+    }
+
+    function testAccessTokenProperlySetInConstructor() {
+        var fbS1 = new facebook.FacebookSession("547854875438758455454");
+
+        $assert.isEqual("547854875438758455454",fbS1.getAccessToken()._toString(),"Access Token not the right type");
+
+    }
 
 }
 
