@@ -103,12 +103,8 @@ component name="FacebookRequest" accessors="false" {
     */
     public void function init(required FacebookSession session, required string method, required string path, struct parameters = {}, string version = "", string etag = "") {
         // CFC Metadata
-        var metadata = getComponentMetadata("FacebookRequest");
-        if (!StructKeyExists(metadata,"requestCount")) {
-            lock name="FacebookRequest.metadata.requestCount" timeout="10" {
-                metadata["requestCount"] = 0;
-            }
-        }
+        // TODO: Look into this
+        setStaticMember("requestCount",0);
 
         var params = arguments.parameters;
 
@@ -130,11 +126,55 @@ component name="FacebookRequest" accessors="false" {
         }
 
         // TODO: Implement getUseAppSecretProof() --- is a static property in FacebookRequest
-        if (variables.session.getUseAppSecretProof() && !StructKeyExists(params,"appsecret_proof")) {
+        if (variables.fbsession.getUseAppSecretProof() && !StructKeyExists(params,"appsecret_proof")) {
             params["appsecret_proof"] = getAppSecretProof(params["access_token"]);
         }
 
         variables.params = params;
+    }
+
+    private any function getStaticMember(required string fieldname) {
+        var metadata = getComponentMetadata("facebook.FacebookRequest");
+        var fullFieldname = "_" & arguments.fieldname;
+
+        if (StructKeyExists(metadata,fullFieldname)) {
+            lock name="facebook.FacebookRequest.metadata#fullFieldname#" timeout="10" type="readonly" {
+                return metadata[fullFieldname];
+            }
+        }
+
+        throw(type="FacebookRequestStaticReadException",message="Static field #arguments.fieldname# doesn't exist");
+    }
+
+    private void function setStaticMember(required string fieldname, required any value, boolean overwrite = true) {
+        var metadata = getComponentMetadata("facebook.FacebookRequest");
+        var fullFieldname = "_" & arguments.fieldname;
+
+        try {
+            if (!StructKeyExists(metadata,fullFieldname) || (StructKeyExists(metadata,fullFieldname) && arguments.overwrite)) {
+                lock name="facebook.FacebookRequest.metadata#fullFieldname#" timeout="10" {
+                    metadata[fullFieldname] = arguments.value;
+                }
+            }
+        }
+        catch (any e) {
+            throw(type="FacebookRequestStaticWriteException",message="Static field #fullFieldname# can't be overwritten/created");
+        }
+    }
+
+    public void function dumpStaticScope() {
+        var metadata = getComponentMetadata("facebook.FacebookRequest");
+        var prefix = "_";
+        var result = {};
+
+        for (var key in metadata) {
+            if (Left(key,1) == prefix) {
+                lock name="facebook.FacebookRequest.metadata#key#" timeout="10" type="readonly" {
+                    result[key] = metadata[key];
+                }
+            }
+        }
+        WriteDump(result);
     }
 
     /**
