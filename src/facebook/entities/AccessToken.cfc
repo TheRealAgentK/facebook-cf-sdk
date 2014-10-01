@@ -6,9 +6,9 @@ component name="AccessToken" accessors="false" {
     // ---- properties ----
 
     /**
-	* The access token.
+	* The raw access token.
 	*/
-    variables.accessToken = "";
+    variables.rawAccessToken = "";
     /**
 	* A unique ID to identify a client.
 	*/
@@ -27,7 +27,7 @@ component name="AccessToken" accessors="false" {
     */
     public void function init(required string accessToken, numeric expiresAt = 0, required string machineId = "") {
 
-        variables.accessToken = arguments.accessToken;
+        variables.rawAccessToken = arguments.accessToken;
         if (arguments.expiresAt) {
             setExpiresAtFromTimeStamp(arguments.expiresAt);
         }
@@ -41,7 +41,7 @@ component name="AccessToken" accessors="false" {
 	*/
     public void function setExpiresAtFromTimeStamp(required numeric timestamp) {
 
-        var facebookHelper = CreateObject("component","FacebookHelper");
+        var facebookHelper = CreateObject("component","facebook.FacebookHelper");
 
         variables.expiresAt = facebookHelper.convertEpochTime(arguments.timestamp);
     }
@@ -73,7 +73,7 @@ component name="AccessToken" accessors="false" {
 	*/
     public boolean function isLongLived() {
 
-        var facebookHelper = CreateObject("component","FacebookHelper");
+        var facebookHelper = CreateObject("component","facebook.FacebookHelper");
 
         if (Len(variables.expiresAt)) {
             if (facebookHelper.epochTime(variables.expiresAt) > facebookHelper.epochTime() + 60 * 60 * 2) {
@@ -120,8 +120,8 @@ component name="AccessToken" accessors="false" {
     // TODO: This was a static function in PHP, investigate
     public boolean function validateAccessToken(required GraphSessionInfo tokenInfo, string appId = "", required string machineId = "") {
 
-        var facebookHelper = CreateObject("component","FacebookHelper");
-        var facebookSession = CreateObject("component","FacebookSession");
+        var facebookHelper = CreateObject("component","facebook.FacebookHelper");
+        var facebookSession = CreateObject("component","facebook.FacebookSession");
         var targetAppId = facebookSession.getTargetAppId(arguments.appId);
         var appIdIsValid = (arguments.tokenInfo.getAppId() == targetAppId);
         var machineIdIsValid = (arguments.tokenInfo.getProperty("machine_id") == arguments.machineId);
@@ -170,11 +170,11 @@ component name="AccessToken" accessors="false" {
     * @return string with code
     */
     // TODO: This was a static function in PHP, investigate -- also: does this really return an AccessToken?
-    public string function getCodeFromAccessToken(required AccessToken accessToken, string appID = "", string appSecret = "") {
+    public string function getCodeFromAccessToken(required facebook.entities.AccessToken accessToken, string appID = "", string appSecret = "") {
 
-        var accessToken = accessToken._toString();
+        var rawAccessToken = arguments.accessToken._toString();
 
-        var params = {"access_token":accessToken,"redirect_uri":""};
+        var params = {"access_token":rawAccessToken,"redirect_uri":""};
 
         return requestCode(params, arguments.appId, arguments.appSecret);
     }
@@ -187,9 +187,9 @@ component name="AccessToken" accessors="false" {
     *
     * @return AccessToken
     */
-    public AccessToken function extend(string appId = "", string appSecret = "") {
+    public facebook.entities.AccessToken function extend(string appId = "", string appSecret = "") {
 
-        var params = {"grant_type":"fb_exchange_token","fb_exchange_token":variables.accessToken};
+        var params = {"grant_type":"fb_exchange_token","fb_exchange_token":variables.rawAccessToken};
 
         return requestAccessToken(params, arguments.appId, arguments.appSecret);
     }
@@ -204,9 +204,9 @@ component name="AccessToken" accessors="false" {
     * @return AccessToken
     */
     // TODO: This was a static function in PHP, investigate -- also: does this really return an AccessToken?
-    public AccessToken function requestAccessToken(required struct params, string appId = "", string appSecret = "") {
+    public facebook.entities.AccessToken function requestAccessToken(required struct params, string appId = "", string appSecret = "") {
 
-        var facebookHelper = CreateObject("component","FacebookHelper");
+        var facebookHelper = CreateObject("component","facebook.FacebookHelper");
         var response = request("/oauth/access_token", arguments.params, arguments.appId, arguments.appSecret);
         var data = response.getResponse();
         var expiresAt = "";
@@ -276,9 +276,9 @@ component name="AccessToken" accessors="false" {
     * @throws FacebookRequestException
     */
     // TODO: This was a static function in PHP, investigate -- also: does this really return an AccessToken?
-    public FacebookResponse function request(required string endpoint, required struct parameters, string appId = "", string appSecret = "") {
+    public facebook.FacebookResponse function request(required string endpoint, required struct parameters, string appId = "", string appSecret = "") {
 
-        var facebookSession = CreateObject("component","FacebookSession");
+        var facebookSession = CreateObject("component","facebook.FacebookSession");
         var params = arguments.parameters;
         var targetAppId = facebookSession.getTargetAppId(arguments.appId);
         var targetAppSecret = facebookSession.getTargetAppSecret(arguments.appSecret);
@@ -292,7 +292,7 @@ component name="AccessToken" accessors="false" {
         }
 
         // The response for this endpoint is not JSON, so it must be handled differently, not as a GraphObject.
-        request = new FacebookRequest(facebookSession.newAppSession(targetAppId,targetAppSecret),"GET",arguments.endpoint,params);
+        request = new facebook.FacebookRequest(facebookSession.newAppSession(targetAppId,targetAppSecret),"GET",arguments.endpoint,params);
 
         return request.execute();
     }
@@ -305,11 +305,11 @@ component name="AccessToken" accessors="false" {
     *
     * @return GraphSessionInfo
     */
-    public FacebookResponse function getInfo(string appId = "", string appSecret = "") {
+    public facebook.FacebookResponse function getInfo(string appId = "", string appSecret = "") {
 
-        var params = {"input_token":variables.accessToken};
-        var request = new FacebookRequest(facebookSession.newAppSession(arguments.appId,arguments.appSecret),"GET","/debug_token",params);
-        var response = request.execute()
+        var params = {"input_token":variables.rawAccessToken};
+        var request = new facebook.FacebookRequest(facebookSession.newAppSession(arguments.appId,arguments.appSecret),"GET","/debug_token",params);
+        var response = request.execute();
         //TODO Really: $response = $request->execute()->getGraphObject(GraphSessionInfo::className());
 
         // Update the data on this token
@@ -327,7 +327,7 @@ component name="AccessToken" accessors="false" {
     */
     public string function _toString()
     {
-        return variables.accessToken;
+        return variables.rawAccessToken;
     }
 
 
