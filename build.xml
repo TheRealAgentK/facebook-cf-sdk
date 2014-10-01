@@ -13,8 +13,10 @@
 	<!-- Version: UPDATE ON EACH RELEASE AS NEEDED -->
 	<property name="facebook-cfml-sdk.version"	value="4.0.0alpha1"/>
 
-    <property name="dir.userlocation" value="/Applications/apache-tomcat-7.0.55/webapps/railo-4.2.1.000" />
-    <property name="dir.projectlocation" value="${dir.userlocation}/facebook" />
+    <property name="dir.userlocationRailo" value="/Applications/apache-tomcat-7.0.55/webapps/railo-4.2.1.000" />
+    <property name="dir.userlocationACF" value="/Applications/ColdFusion11/cfusion/wwwroot" />
+    <property name="dir.codelocation" value="//Users/kai/Documents/Code/fb-cf-sdk4" />
+    <property name="dir.projectlocation" value="${dir.userlocationRailo}/facebook" />
     <property name="dir.colddocExport" value="${dir.projectlocation}/docs/APIDocs/" />
     <property name="report.dir" value="${dir.projectlocation}/tests/reports" />
     <property name="junitreport.dir" value="${report.dir}/junitreport" />
@@ -67,6 +69,20 @@
                 <param name="TITLE" expression="Facebook CFML SDK ${facebook-cfml-sdk.version} Test Results"/>
             </report>
         </junitreport>
+
+    </target>
+
+    <target name="deploy-web-root-files" description="Deploy some files needed in the web root from dev base to webroots of R and ACF">
+        <copy file="${dir.codelocation}/facebook/Application.cfc" tofile="${dir.userlocationRailo}/facebook/Application.cfc" overwrite="true" />
+        <copy file="${dir.codelocation}/facebook/Application.cfc" tofile="${dir.userlocationACF}/facebook/Application.cfc" overwrite="true" />
+        <copy file="${dir.codelocation}/facebook/slicethrough.cfm" tofile="${dir.userlocationRailo}/facebook/slicethrough.cfm" overwrite="true" />
+        <copy file="${dir.codelocation}/facebook/slicethrough.cfm" tofile="${dir.userlocationACF}/facebook/slicethrough.cfm" overwrite="true" />
+        <copy file="${dir.codelocation}/facebook/docs/create.cfm" tofile="${dir.userlocationRailo}/facebook/docs/create.cfm" overwrite="true" />
+        <copy file="${dir.codelocation}/facebook/tests/test-harness/antrunner.cfm" tofile="${dir.userlocationRailo}/facebook/tests/test-harness/antrunner.cfm" overwrite="true" />
+        <copy file="${dir.codelocation}/facebook/tests/test-harness/runner.cfm" tofile="${dir.userlocationRailo}/facebook/tests/test-harness/runner.cfm" overwrite="true" />
+        <copy file="${dir.codelocation}/facebook/docs/create.cfm" tofile="${dir.userlocationACF}/facebook/docs/create.cfm" overwrite="true" />
+        <copy file="${dir.codelocation}/facebook/tests/test-harness/antrunner.cfm" tofile="${dir.userlocationACF}/facebook/tests/test-harness/antrunner.cfm" overwrite="true" />
+        <copy file="${dir.codelocation}/facebook/tests/test-harness/runner.cfm" tofile="${dir.userlocationACF}/facebook/tests/test-harness/runner.cfm" overwrite="true" />
 
     </target>
 
