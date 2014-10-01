@@ -5,7 +5,7 @@
     docName = "APIDocs";
     base = expandPath( "/facebook" );
 
-    colddoc = new ColdDoc();
+    colddoc = new ColdDoc.ColdDoc();
 
     strategy = new colddoc.strategy.api.HTMLAPIStrategy(url.path,"Facebook CFML SDK v#url.version#");
     colddoc.setStrategy(strategy);
