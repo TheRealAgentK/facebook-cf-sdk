@@ -88,7 +88,7 @@ component name="facebook.FacebookSession" accessors="false" {
     * @return string
     */
     public string function getToken() {
-        return variables.accessToken.accessToken;
+        return variables.accessToken._toString();
     }
 
     /**

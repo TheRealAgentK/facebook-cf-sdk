@@ -44,5 +44,12 @@ component name="FacebookSessionTest" extends="testbox.system.BaseSpec" {
 
     }
 
+    function testAccessTokenProperlySetInConstructorViaGetToken() {
+        var fbS1 = new facebook.FacebookSession("547854875438758455454");
+
+        $assert.isEqual("547854875438758455454",fbS1.getToken(),"Access Token value not properly set in AccessToken inside FB Session");
+
+    }
+
 }
 
