@@ -208,13 +208,13 @@ component name="FacebookRequest" accessors="false" {
         }
 
         // TODO: make timeout configurable, also look into refactoring this into a http class analogues to PHP. Not sure if that's needed for CFML though.
-        httpService = newHttp(url=url,method=variables.method,timeout=60);
-        httpService.addParams(type="header",name="User-Agent",value="fb-cfml-#variables.version#");
-        httpService.addParams(type="header",name="Accept-Encoding",value="*"); // let's support all available encodings
+        httpService = new Http(url=url,method=variables.method,timeout=60);
+        httpService.addParam(type="header",name="User-Agent",value="fb-cfml-#variables.version#");
+        httpService.addParam(type="header",name="Accept-Encoding",value="*"); // let's support all available encodings
 
         // ETag
         if (Len(variables.etag)) {
-            httpService.addParams(type="header",name="If-None-Match",value=variables.etag);
+            httpService.addParam(type="header",name="If-None-Match",value=variables.etag);
         }
 
         // The actual params struct needs to potentiall be passed in here?
