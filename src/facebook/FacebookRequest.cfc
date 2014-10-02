@@ -12,7 +12,7 @@ component name="FacebookRequest" accessors="false" {
     /**
 	* Graph API version
 	*/
-	variables.GRAPH_API_VERSION = "v2.0";
+	variables.GRAPH_API_VERSION = "v2.1";
     /**
 	* Graph API entry point URL
 	*/
@@ -91,6 +91,8 @@ component name="FacebookRequest" accessors="false" {
         return variables.etag;
     }
 
+    setStaticMember("requestCount",0);
+
     /**
     * FacebookRequest - Returns a new request using the given session. Optional parameters hash will be sent with the request. This object is immutable.
     *
@@ -102,9 +104,6 @@ component name="FacebookRequest" accessors="false" {
     * @etag.hint eTag
     */
     public void function init(required facebook.FacebookSession session, required string method, required string path, struct parameters = {}, string version = "", string etag = "") {
-        // CFC Metadata
-        // TODO: Look into this
-        setStaticMember("requestCount",0);
 
         var params = arguments.parameters;
         variables.fbsession = arguments.session;
@@ -119,16 +118,14 @@ component name="FacebookRequest" accessors="false" {
 
         variables.etag = arguments.etag;
 
-        // TODO: Implement getToken
         if (!StructKeyExists(params,"access_token")) {
             params["access_token"] = variables.fbsession.getToken();
         }
-        WriteDump(params);
-        // TODO: Implement getUseAppSecretProof() --- is a static property in FacebookRequest
+
         if (variables.fbsession.useAppSecretProof() && !StructKeyExists(params,"appsecret_proof")) {
             params["appsecret_proof"] = getAppSecretProof(params["access_token"]);
         }
-        WriteDump(params);
+
         variables.params = params;
     }
 
@@ -138,6 +135,11 @@ component name="FacebookRequest" accessors="false" {
 
         if (StructKeyExists(metadata,fullFieldname)) {
             lock name="facebook.FacebookRequest.metadata#fullFieldname#" timeout="10" type="readonly" {
+                return metadata[fullFieldname];
+            }
+        } else if (!(StructKeyExists(metadata,fullFieldname)) && arguments.createIfNotExists && StructKeyExists(arguments,"value") && Len(arguments.value)) {
+            lock name="facebook.FacebookRequest.metadata#fullFieldname#" timeout="10" {
+                metadata[fullFieldname] = arguments.value;
                 return metadata[fullFieldname];
             }
         }
@@ -201,6 +203,7 @@ component name="FacebookRequest" accessors="false" {
         var eTagReceived = "";
         var decodedResult = "";
         var out = {};
+        var prevRequestCount = getStaticMember("requestCount");
 
         if (variables.method == "GET") {
             url = appendParamsToURL(url,params);
@@ -220,12 +223,7 @@ component name="FacebookRequest" accessors="false" {
         // The actual params struct needs to potentiall be passed in here?
         response = httpService.send().getPrefix();
 
-        lock name="FacebookRequest.metadata.requestCount" timeout="10" {
-            metadata["requestCount"]++;
-        }
-
-        // TODO: see top - maybe app scoped variable?
-        variables.requestCount++;
+        setStaticMember("requestCount",prevRequestCount+1);
 
         eTagHit = iif(response.statusCode == 304,true,false);
 
@@ -242,7 +240,7 @@ component name="FacebookRequest" accessors="false" {
 
             return new FacebookResponse(this,out,response.fileContent,eTagHit,eTagReceived);
         }
-
+        WriteDump(decodedResult);
         if (StructKeyExists(decodedResult,"error")) {
             throw(type="FacebookRequestException",message="Something went wrong in the request execution");
         /*
