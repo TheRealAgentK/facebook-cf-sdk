@@ -33,17 +33,22 @@ component name="facebook.FacebookSession" accessors="false" {
         } else {
             variables.accessToken = new facebook.entities.AccessToken(arguments.accessToken);
         }
-        if (StructKeyExists(variables,"signedRequest")) {
+        if (StructKeyExists(arguments,"signedRequest")) {
             variables.signedRequest = arguments.signedRequest;
         }
     }
 
-    private any function getStaticMember(required string fieldname) {
+    private any function getStaticMember(required string fieldname, boolean createIfNotExists = false, any value) {
         var metadata = getComponentMetadata("facebook.FacebookSession");
         var fullFieldname = "_" & arguments.fieldname;
 
         if (StructKeyExists(metadata,fullFieldname)) {
-            lock name="facebook.FacebookSession.metadata#fullFieldname#" timeout="10" type="readonly" {
+            lock name ="facebook.FacebookSession.metadata#fullFieldname#" timeout="10" type="readonly" {
+                return metadata[fullFieldname];
+            }
+        } else if (!(StructKeyExists(metadata,fullFieldname)) && arguments.createIfNotExists && StructKeyExists(arguments,"value") && Len(arguments.value)) {
+            lock name="facebook.FacebookSession.metadata#fullFieldname#" timeout="10" {
+                metadata[fullFieldname] = arguments.value;
                 return metadata[fullFieldname];
             }
         }
@@ -190,225 +195,17 @@ component name="facebook.FacebookSession" accessors="false" {
         setStaticMember("defaultAppId", arguments.appId);
         setStaticMember("defaultAppSecret", arguments.appSecret);
     }
+
+    /**
+    * Get whether or not appsecret_proof should be sent with requests.
+    *
+    * To be used as a static function
+    *
+    * @return boolean response
+    */
+    public boolean function useAppSecretProof()
+    {
+        return getStaticMember("useAppSecretProof",true,true);
+    }
 }
 
-
-
-
-   <!---
-  /**
-   * Returns a property from the signed request data if available.
-   *
-   * @param string $key
-   *
-   * @return null|mixed
-   */
-  public function getSignedRequestProperty($key)
-  {
-    return $this->signedRequest ? $this->signedRequest->get($key) : null;
-  }
-
-  /**
-   * Returns user_id from signed request data if available.
-   *
-   * @return null|string
-   */
-  public function getUserId()
-  {
-    return $this->signedRequest ? $this->signedRequest->getUserId() : null;
-  }
-
-  // @TODO Remove getSessionInfo() in 4.1: can be accessed from AccessToken directly
-  /**
-   * getSessionInfo - Makes a request to /debug_token with the appropriate
-   *   arguments to get debug information about the sessions token.
-   *
-   * @param string|null $appId
-   * @param string|null $appSecret
-   *
-   * @return GraphSessionInfo
-   */
-  public function getSessionInfo($appId = null, $appSecret = null)
-  {
-    return $this->accessToken->getInfo($appId, $appSecret);
-  }
-
-  // @TODO Remove getLongLivedSession() in 4.1: can be accessed from AccessToken directly
-  /**
-   * getLongLivedSession - Returns a new Facebook session resulting from
-   *   extending a short-lived access token.  If this session is not
-   *   short-lived, returns $this.
-   *
-   * @param string|null $appId
-   * @param string|null $appSecret
-   *
-   * @return FacebookSession
-   */
-  public function getLongLivedSession($appId = null, $appSecret = null)
-  {
-    $longLivedAccessToken = $this->accessToken->extend($appId, $appSecret);
-    return new static($longLivedAccessToken, $this->signedRequest);
-  }
-
-  // @TODO Remove getExchangeToken() in 4.1: can be accessed from AccessToken directly
-  /**
-   * getExchangeToken - Returns an exchange token string which can be sent
-   *   back to clients and exchanged for a device-linked access token.
-   *
-   * @param string|null $appId
-   * @param string|null $appSecret
-   *
-   * @return string
-   */
-  public function getExchangeToken($appId = null, $appSecret = null)
-  {
-    return AccessToken::getCodeFromAccessToken($this->accessToken, $appId, $appSecret);
-  }
-
-  // @TODO Remove validate() in 4.1: can be accessed from AccessToken directly
-  /**
-   * validate - Ensures the current session is valid, throwing an exception if
-   *   not.  Fetches token info from Facebook.
-   *
-   * @param string|null $appId Application ID to use
-   * @param string|null $appSecret App secret value to use
-   * @param string|null $machineId
-   *
-   * @return boolean
-   *
-   * @throws FacebookSDKException
-   */
-  public function validate($appId = null, $appSecret = null, $machineId = null)
-  {
-    if ($this->accessToken->isValid($appId, $appSecret, $machineId)) {
-      return true;
-    }
-
-    // @TODO For v4.1 this should not throw an exception, but just return false.
-    throw new FacebookSDKException(
-      'Session has expired, or is not valid for this app.', 601
-    );
-  }
-
-  // @TODO Remove validateSessionInfo() in 4.1: can be accessed from AccessToken directly
-  /**
-   * validateTokenInfo - Ensures the provided GraphSessionInfo object is valid,
-   *   throwing an exception if not.  Ensures the appId matches,
-   *   that the token is valid and has not expired.
-   *
-   * @param GraphSessionInfo $tokenInfo
-   * @param string|null $appId Application ID to use
-   * @param string|null $machineId
-   *
-   * @return boolean
-   *
-   * @throws FacebookSDKException
-   */
-  public static function validateSessionInfo(GraphSessionInfo $tokenInfo,
-                                           $appId = null,
-                                           $machineId = null)
-  {
-    if (AccessToken::validateAccessToken($tokenInfo, $appId, $machineId)) {
-      return true;
-    }
-
-    // @TODO For v4.1 this should not throw an exception, but just return false.
-    throw new FacebookSDKException(
-      'Session has expired, or is not valid for this app.', 601
-    );
-  }
-
-  /**
-   * newSessionFromSignedRequest - Returns a FacebookSession for a
-   *   given signed request.
-   *
-   * @param SignedRequest $signedRequest
-   *
-   * @return FacebookSession
-   */
-  public static function newSessionFromSignedRequest(SignedRequest $signedRequest)
-  {
-    if ($signedRequest->get('code')
-      && !$signedRequest->get('oauth_token')) {
-      return self::newSessionAfterValidation($signedRequest);
-    }
-    $accessToken = $signedRequest->get('oauth_token');
-    $expiresAt = $signedRequest->get('expires', 0);
-    $accessToken = new AccessToken($accessToken, $expiresAt);
-    return new static($accessToken, $signedRequest);
-  }
-
-  /**
-   * newSessionAfterValidation - Returns a FacebookSession for a
-   *   validated & parsed signed request.
-   *
-   * @param SignedRequest $signedRequest
-   *
-   * @return FacebookSession
-   */
-  protected static function newSessionAfterValidation(SignedRequest $signedRequest)
-  {
-    $code = $signedRequest->get('code');
-    $accessToken = AccessToken::getAccessTokenFromCode($code);
-    return new static($accessToken, $signedRequest);
-  }
-
-  /**
-   * newAppSession - Returns a FacebookSession configured with a token for the
-   *   application which can be used for publishing and requesting app-level
-   *   information.
-   *
-   * @param string|null $appId Application ID to use
-   * @param string|null $appSecret App secret value to use
-   *
-   * @return FacebookSession
-   */
-  public static function newAppSession($appId = null, $appSecret = null)
-  {
-    $targetAppId = static::_getTargetAppId($appId);
-    $targetAppSecret = static::_getTargetAppSecret($appSecret);
-    return new FacebookSession(
-      $targetAppId . '|' . $targetAppSecret
-    );
-  }
-
-
-
-
-  /**
-   * Enable or disable sending the appsecret_proof with requests.
-   *
-   * @param bool $on
-   */
-  public static function enableAppSecretProof($on = true)
-  {
-    static::$useAppSecretProof = ($on ? true : false);
-  }
-
-  /**
-   * Get whether or not appsecret_proof should be sent with requests.
-   *
-   * @return bool
-   */
-  public static function useAppSecretProof()
-  {
-    return static::$useAppSecretProof;
-  }
-
-}
-
-
-   */
-
-
-
-/*
-getter for:
-
-
-  protected static $useAppSecretProof = true;
-
-
-
-getToken function
-        */      --->
