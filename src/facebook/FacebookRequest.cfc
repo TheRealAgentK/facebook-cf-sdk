@@ -51,7 +51,7 @@ component name="FacebookRequest" accessors="false" {
 	*
 	* @return FacebookSession object
 	*/
-    public FacebookSession function getFBSession() {
+    public facebook.FacebookSession function getFBSession() {
         return variables.fbsession;
     }
 
@@ -101,13 +101,12 @@ component name="FacebookRequest" accessors="false" {
     * @version.hint API version
     * @etag.hint eTag
     */
-    public void function init(required FacebookSession session, required string method, required string path, struct parameters = {}, string version = "", string etag = "") {
+    public void function init(required facebook.FacebookSession session, required string method, required string path, struct parameters = {}, string version = "", string etag = "") {
         // CFC Metadata
         // TODO: Look into this
         setStaticMember("requestCount",0);
 
         var params = arguments.parameters;
-
         variables.fbsession = arguments.session;
         variables.method = arguments.method;
         variables.path = arguments.path;
@@ -124,12 +123,12 @@ component name="FacebookRequest" accessors="false" {
         if (!StructKeyExists(params,"access_token")) {
             params["access_token"] = variables.fbsession.getToken();
         }
-
+        WriteDump(params);
         // TODO: Implement getUseAppSecretProof() --- is a static property in FacebookRequest
-        if (variables.fbsession.getUseAppSecretProof() && !StructKeyExists(params,"appsecret_proof")) {
+        if (variables.fbsession.useAppSecretProof() && !StructKeyExists(params,"appsecret_proof")) {
             params["appsecret_proof"] = getAppSecretProof(params["access_token"]);
         }
-
+        WriteDump(params);
         variables.params = params;
     }
 
@@ -209,7 +208,7 @@ component name="FacebookRequest" accessors="false" {
         }
 
         // TODO: make timeout configurable, also look into refactoring this into a http class analogues to PHP. Not sure if that's needed for CFML though.
-        httpService = newHttp(url=url,method=variables.method,timeout=60)
+        httpService = newHttp(url=url,method=variables.method,timeout=60);
         httpService.addParams(type="header",name="User-Agent",value="fb-cfml-#variables.version#");
         httpService.addParams(type="header",name="Accept-Encoding",value="*"); // let's support all available encodings
 
@@ -228,7 +227,7 @@ component name="FacebookRequest" accessors="false" {
         // TODO: see top - maybe app scoped variable?
         variables.requestCount++;
 
-        eTagHit = iif(response.statusCode == 304,true,false)
+        eTagHit = iif(response.statusCode == 304,true,false);
 
         headers = response.responseHeader;
 
@@ -239,7 +238,7 @@ component name="FacebookRequest" accessors="false" {
         decodedResult = deserializeJSON(response.fileContent);
 
         if (!isArray(decodedResult) && !isStruct(decodedResult)) {
-            out = CreateObject("component","FacebookHelper").parseString(result.fileContent)
+            out = CreateObject("component","FacebookHelper").parseString(result.fileContent);
 
             return new FacebookResponse(this,out,response.fileContent,eTagHit,eTagReceived);
         }
@@ -268,9 +267,7 @@ component name="FacebookRequest" accessors="false" {
     * @return appsecret_proof
     */
     public string function getAppSecretProof(required string token) {
-        var facebookSession = new FacebookSession();
-
-        return new FacebookHelper.hashHmacSHA256(token, facebookSession.getTargetAppSecret());
+        return CreateObject("component","FacebookHelper").hashHmacSHA256(token, variables.fbSession.getTargetAppSecret());
     }
 
     /**
@@ -299,7 +296,7 @@ component name="FacebookRequest" accessors="false" {
         path = ListGetAt(arguments.url,1,"?");
         queryString = ListGetAt(arguments.url,2,"?");
 
-        queryStruct = facebookHelper.parseString(queryString)
+        queryStruct = facebookHelper.parseString(queryString);
 
         // Favour params from the original URL over params
         StructAppend(params,queryStruct);
