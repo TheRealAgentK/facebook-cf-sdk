@@ -31,10 +31,7 @@ component name="FacebookSessionTest" extends="testbox.system.BaseSpec" {
     function testConstructor() {
         var fbS1 = new facebook.FacebookSession("54785487543875843");
 
-        $assert.instanceOf(fbS1.getAccessToken(),"AccessToken","Access Token not the right type");
         $assert.instanceOf(fbS1.getAccessToken(),"facebook.entities.AccessToken","Access Token not the right type");
-        $assert.instanceOf(fbS1.getAccessToken(),"facebook.entities.AccessToken","Access Token not the right type");
-
     }
 
     function testAccessTokenProperlySetInConstructor() {

@@ -101,7 +101,7 @@ component name="facebook.FacebookSession" accessors="false" {
     *
     * @return string
     */
-    public AccessToken function getAccessToken() {
+    public facebook.entities.AccessToken function getAccessToken() {
         return variables.accessToken;
     }
 
