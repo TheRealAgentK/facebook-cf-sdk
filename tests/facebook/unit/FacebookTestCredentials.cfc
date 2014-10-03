@@ -1,7 +1,7 @@
 /**
 * FacebookTestCredentials - These must be filled out with valid Facebook app details for the tests to run.
 */
-component name="AccessToken" accessors="false" {
+component name="FacebookTestCredentials" accessors="false" {
 
     // ---- properties ----
 
