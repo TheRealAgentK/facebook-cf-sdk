@@ -58,13 +58,13 @@ component name="SignedRequestTest" extends="testbox.system.BaseSpec" {
 
     function testASignatureHashCanBeGeneratedFromBase64EncodedData() {
         var hashedSig = signedRequest.hashSignature("WyJwYXlsb2FkIl0=", appSecret);
-        var expectedSig = charsetEncode("bFofyO2sERX73y8uvuX26SLodv0mZ+Zk18d8b3zhD+s=","ISO-8859-1");
+        var expectedSig = tostring(toBinary("bFofyO2sERX73y8uvuX26SLodv0mZ+Zk18d8b3zhD+s="),"ISO-8859-1");
 
         $assert.isEqual(hashedSig,expectedSig);
     }
 
     function testTwoBinaryStringsCanBeComparedForSignatureValidation() {
-        var hashedSig = charsetEncode("bFofyO2sERX73y8uvuX26SLodv0mZ+Zk18d8b3zhD+s=","ISO-8859-1");
+        var hashedSig = tostring(toBinary("bFofyO2sERX73y8uvuX26SLodv0mZ+Zk18d8b3zhD+s="),"ISO-8859-1");
         signedRequest.validateSignature(hashedSig,hashedSig);
 
         // This is supposed to fail, not implemented yet.
@@ -73,8 +73,8 @@ component name="SignedRequestTest" extends="testbox.system.BaseSpec" {
 
     function testNonSameBinaryStringsWillThrowAnExceptionForSignatureValidation() {
         //expectedException("FacebookSDKException");
-        var hashedSig1 = charsetEncode("bFofyO2sERX73y8uvuX26SLodv0mZ+Zk18d8b3zhD+s=","ISO-8859-1");
-        var hashedSig2 = charsetEncode("GJy4HzkRtCeZA0cJjdZJtGfovcdxgl/AERI20S4MY7c=","ISO-8859-1");
+        var hashedSig1 = tostring(toBinary("bFofyO2sERX73y8uvuX26SLodv0mZ+Zk18d8b3zhD+s="),"ISO-8859-1");
+        var hashedSig2 = tostring(toBinary("GJy4HzkRtCeZA0cJjdZJtGfovcdxgl/AERI20S4MY7c="),"ISO-8859-1");
 
         signedRequest.validateSignature(hashedSig1,hashedSig2);
 
