@@ -91,7 +91,7 @@ component name="SignedRequest" accessors="false" {
 	*/
 	// NOTE: This used to be a static PHP function, check payload vs. variables.payload
     public string function make(required struct payload, string appSecret = "") {
-        var facebookHelper = CreateObject("component","FacebookHelper");
+        var facebookHelper = CreateObject("component","facebook.FacebookHelper");
         var encodedPayload = "";
         var hashedSig = "";
         var encodedSig = "";
@@ -149,8 +149,8 @@ component name="SignedRequest" accessors="false" {
     */
     // TODO: getTargetAppSecret is a static function - investigate
     public string function hashSignature(required string encodedData, string appSecret = "") {
-        var facebookHelper = CreateObject("component","FacebookHelper");
-        var facebookSession = CreateObject("component","FacebookSession");
+        var facebookHelper = CreateObject("component","facebook.FacebookHelper");
+        var facebookSession = CreateObject("component","facebook.FacebookSession");
 
         var hashedSig = facebookHelper.hashHmacSHA256(arguments.encodedData, facebookSession.getTargetAppSecret(arguments.appSecret));
 
@@ -169,7 +169,7 @@ component name="SignedRequest" accessors="false" {
     * @return string with decoded signature or FacebookSDKException
     */
     public string function decodeSignature(required string encodedSig) {
-        var facebookHelper = CreateObject("component","FacebookHelper");
+        var facebookHelper = CreateObject("component","facebook.FacebookHelper");
 
         var sig = facebookHelper.base64UrlDecode(arguments.encodedSig);
 
@@ -188,7 +188,7 @@ component name="SignedRequest" accessors="false" {
     * @return string with decoded payload or FacebookSDKException
     */
     public any function decodePayload(required string $encodedPayload) {
-        var facebookHelper = CreateObject("component","FacebookHelper");
+        var facebookHelper = CreateObject("component","facebook.FacebookHelper");
 
         var payload = facebookHelper.base64UrlDecode(arguments.$encodedPayload);
 

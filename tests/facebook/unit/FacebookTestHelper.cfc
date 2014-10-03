@@ -10,7 +10,7 @@ component name="FacebookTestHelper" accessors="false" {
     variables.testUserAccessToken = "";
     variables.testUserPermissions = ["read_stream","user_photos"];
 
-    variables.testCredentials = CreateObject("FacebookTestCredentials");
+    variables.testCredentials = CreateObject("tests.unit.FacebookTestCredentials");
 
     public function initialize() {
 
@@ -25,11 +25,3 @@ component name="FacebookTestHelper" accessors="false" {
 
 
 }
-   <!---
-            FacebookSession::setDefaultApplication(
-              FacebookTestCredentials::$appId, FacebookTestCredentials::$appSecret
-            );
-            if (!static::$testSession instanceof FacebookSession) {
-              static::$testSession = static::createTestSession();
-            }
---->

@@ -9,8 +9,8 @@ component name="SignedRequestTest" extends="testbox.system.BaseSpec" {
     }
 
     function beforeTests() {
-        signedRequest = CreateObject("component","SignedRequest");
-        facebookHelper = CreateObject("component","FacebookHelper");
+        signedRequest = CreateObject("component","facebook.entities.SignedRequest");
+        facebookHelper = CreateObject("component","facebook.FacebookHelper");
 
         appSecret = "foo_app_secret";
         rawSignedRequest = "U0_O1MqqNKUt32633zAkdd2Ce-jGVgRgJeRauyx_zC8=.eyJvYXV0aF90b2tlbiI6ImZvb190b2tlbiIsImFsZ29yaXRobSI6IkhNQUMtU0hBMjU2IiwiaXNzdWVkX2F0IjozMjEsImNvZGUiOiJmb29fY29kZSIsInN0YXRlIjoiZm9vX3N0YXRlIiwidXNlcl9pZCI6MTIzLCJmb28iOiJiYXIifQ==";
@@ -98,13 +98,13 @@ component name="SignedRequestTest" extends="testbox.system.BaseSpec" {
     }
 
     function testARawSignedRequestCanBeInjectedIntoTheConstructorToInstantiateANewEntity() {
-        var signedRequestLocal = new SignedRequest(rawSignedRequest, "foo_state", appSecret);
+        var signedRequestLocal = new facebook.entities.SignedRequest(rawSignedRequest, "foo_state", appSecret);
         var rawSignedRequestLocal = signedRequestLocal.getRawSignedRequest();
         var payloadDataLocal = signedRequestLocal.getPayload();
         var userIdLocal = signedRequestLocal.getUserId();
         var hasOAuthDataLocal = signedRequestLocal.hasOAuthData();
 
-        $assert.instanceOf(signedRequestLocal,"SignedRequest","Not the right type");
+        $assert.instanceOf(signedRequestLocal,"facebook.entities.SignedRequest","Not the right type");
         $assert.isEqual(rawSignedRequest,rawSignedRequestLocal,"Wrong rawSignedRequest");
         $assert.isEqual(payloadData,payloadDataLocal,"Wrong payloadData");
         $assert.isEqual(123,userIdLocal,"Wrong userId");
