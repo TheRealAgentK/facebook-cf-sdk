@@ -12,7 +12,7 @@ component {
     * @secretKey.hint Secret key to be used
     * @return Hashed value in ISO-8859-1 encoding
     */
-    public string function hashHmacSHA256(required string value, required string secretKey) {
+    public string function hashHmacSHA256(required string value, required string secretKey, boolean returnHex = true) {
         if (secretKey == "") {
             throw(errorcode="Invalid secretKey", message="Invalid secretKey (cannot be empty)", type=" Security");
         }
@@ -20,7 +20,11 @@ component {
         var mac = createObject("java", "javax.crypto.Mac").getInstance(secretKeySpec.getAlgorithm());
         mac.init(secretKeySpec);
 
-        return toString(mac.doFinal(arguments.value.getBytes()), "ISO-8859-1");
+        if (arguments.returnHex) {
+            return LCase(binaryEncode(mac.doFinal(arguments.value.getBytes()), "Hex"));
+        } else {
+            return toString(mac.doFinal(arguments.value.getBytes()), "ISO-8859-1");
+        }
 	}
 
     /**
