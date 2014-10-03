@@ -152,7 +152,7 @@ component name="SignedRequest" accessors="false" {
         var facebookHelper = CreateObject("component","facebook.FacebookHelper");
         var facebookSession = CreateObject("component","facebook.FacebookSession");
 
-        var hashedSig = facebookHelper.hashHmacSHA256(arguments.encodedData, facebookSession.getTargetAppSecret(arguments.appSecret));
+        var hashedSig = facebookHelper.hashHmacSHA256(arguments.encodedData, facebookSession.getTargetAppSecret(arguments.appSecret), false);
 
         if (Len(hashedSig)) {
             return hashedSig;
