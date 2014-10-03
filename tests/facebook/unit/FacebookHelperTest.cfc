@@ -9,7 +9,7 @@ component name="FacebookRequestHelper" extends="testbox.system.BaseSpec" {
     }
 
     function beforeTests() {
-        facebookHelper = CreateObject("component","FacebookHelper");
+        facebookHelper = CreateObject("component","facebook.FacebookHelper");
     }
 
     function afterTests() {
@@ -67,56 +67,6 @@ component name="FacebookRequestHelper" extends="testbox.system.BaseSpec" {
         $assert.isEqual(StructKeyExists(result,"def"), true, "def key doesn't exist");
         $assert.isEqual(StructKeyExists(result,"efg"), true, "efg key doesn't exist");
         $assert.isEqual(result["efg"], "", "efg key isn't empty");
-    }
-
-    // Test Time functions
-    function testConvertEpochTimeValid() {
-        var testSeconds = 20;
-        var result = facebookHelper.convertEpochTime(testSeconds);
-
-        $assert.isEqual("{ts '1970-01-01 12:00:20'}", result, "Wrong Date");
-    }
-
-    function testConvertEpochTimeValidZero() {
-        var testSeconds = 0;
-        var result = facebookHelper.convertEpochTime(testSeconds);
-
-        $assert.isEqual("{ts '1970-01-01 12:00:00'}", result, "Wrong Date");
-    }
-
-    function testConvertEpochTimeValidNegative() {
-        var testSeconds = -10;
-        var result = facebookHelper.convertEpochTime(testSeconds);
-
-        $assert.isEqual("{ts '1970-01-01 11:59:50'}", result, "Wrong Date");
-    }
-
-    function testConvertEpochTimeValid1973() {
-        var testSeconds = 123456789;
-        var result = facebookHelper.convertEpochTime(testSeconds);
-
-        $assert.isEqual("{ts '1973-11-30 09:33:09'}", result, "Wrong Date");
-    }
-
-    function testConvertEpochTimeValidString() {
-        var testSeconds = "1234";
-        var result = facebookHelper.convertEpochTime(testSeconds);
-
-        $assert.isEqual("{ts '1970-01-01 12:20:34'}", result, "Wrong Date");
-    }
-
-    function testEpochTime1973() {
-        var testTime = "{ts '1973-11-30 09:33:09'}";
-        var result = facebookHelper.epochTime(testTime);
-
-        $assert.isEqual(123456789, result, "Wrong Date");
-    }
-
-    function testEpochTimeZero() {
-        var testTime = "{ts '1970-01-01 12:00:00'}";
-        var result = facebookHelper.epochTime(testTime);
-
-        $assert.isEqual(0, result, "Wrong Date");
     }
 
     // Test Base 64 functions

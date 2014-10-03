@@ -67,31 +67,12 @@ component {
     }
 
     /**
-    * Converts Epoch time (Unix) into local Date object
-    *
-    * @dateSeconds.hint Epoch (Unix) seconds
-    * @return DateTime String
-    */
-    public string function convertEpochTime(required numeric dateSeconds) {
-        var startDate = createdatetime('1970','01','01','00','00','00');
-
-        if (!IsNumeric(arguments.dateSeconds)) {
-            return "";
-        }
-
-        return dateConvert("utc2Local", dateadd('s', arguments.dateSeconds, startDate));
-    }
-
-    /**
     * Converts now() into Epoch time (Unix)
     *
     * @return numeric Epoch seconds
     */
-    public numeric function epochTime(date dati = now()) {
-        var startDate = createdatetime('1970','01','01','00','00','00');
-        var datetimeNow = dateConvert("local2Utc",arguments.dati);
-
-        return datediff('s', startdate, datetimeNow);
+    public numeric function epochTime() {
+        return ListGetAt(CreateObject("java","java.lang.System").currentTimeMillis()/1000,1,".");
     }
 
     /**

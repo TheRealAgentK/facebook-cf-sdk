@@ -14,7 +14,7 @@ component name="AccessToken" accessors="false" {
 	*/
     variables.machineId = "";
     /**
-	* Date when token expires.
+	* timestamp when token expires.
 	*/
     variables.expiresAt = "";
 
@@ -22,7 +22,7 @@ component name="AccessToken" accessors="false" {
     * Create a new access token entity.
     *
     * @accessToken.hint access token
-    * @expiresAt.hint expiry date
+    * @expiresAt.hint expiry date timestamp
     * @machineId.hint unique machine id to identify client
     */
     public void function init(required string accessToken, numeric expiresAt = 0, required string machineId = "") {
@@ -40,10 +40,7 @@ component name="AccessToken" accessors="false" {
 	* @timestamp.hint epoch timestamp
 	*/
     public void function setExpiresAtFromTimeStamp(required numeric timestamp) {
-
-        var facebookHelper = CreateObject("component","facebook.FacebookHelper");
-
-        variables.expiresAt = facebookHelper.convertEpochTime(arguments.timestamp);
+        variables.expiresAt = arguments.timestamp;
     }
 
     /**
@@ -76,7 +73,7 @@ component name="AccessToken" accessors="false" {
         var facebookHelper = CreateObject("component","facebook.FacebookHelper");
 
         if (Len(variables.expiresAt)) {
-            if (facebookHelper.epochTime(variables.expiresAt) > facebookHelper.epochTime() + 60 * 60 * 2) {
+            if (variables.expiresAt > facebookHelper.epochTime() + 60 * 60 * 2) {
                 return true;
             } else {
                 return false;
@@ -129,8 +126,8 @@ component name="AccessToken" accessors="false" {
         var accessTokenIsStillAlive = "";
 
         // Not all access tokens return an expiration. E.g. an app access token.
-        if (IsDate(arguments.tokenInfo.getExpiresAt())) {
-            accessTokenIsStillAlive = (facebookHelper.epochTime(arguments.tokenInfo.getExpiresAt()) >= facebookHelper.epochTime());
+        if (Len(arguments.tokenInfo.getExpiresAt())) {
+            accessTokenIsStillAlive = (arguments.tokenInfo.getExpiresAt() >= facebookHelper.epochTime());
         } else {
             accessTokenIsStillAlive = true;
         }
