@@ -193,7 +193,7 @@ component name="FacebookRequest" accessors="false" {
     *
     * @return FacebookResponse object
     */
-    public FacebookResponse function execute() {
+    public facebook.FacebookResponse function execute() {
         var url = getRequestURL();
         var params = getParameters();
         var httpService = "";
