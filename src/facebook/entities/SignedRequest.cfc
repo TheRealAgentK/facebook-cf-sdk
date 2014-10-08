@@ -158,7 +158,7 @@ component name="SignedRequest" accessors="false" {
             return hashedSig;
         }
 
-        throw(type="FacebookSDKException",message="Unable to hash signature from encoded payload data (602)");
+        throw(type="facebook.FacebookSDKException",message="Unable to hash signature from encoded payload data",errorCode=602);
     }
 
     /**
@@ -177,7 +177,7 @@ component name="SignedRequest" accessors="false" {
             return sig;
         }
 
-        throw(type="FacebookSDKException",message="Signed request has malformed encoded signature data (607)");
+        throw(type="facebook.FacebookSDKException",message="Signed request has malformed encoded signature data",errorCode=607);
     }
 
     /**
@@ -200,7 +200,7 @@ component name="SignedRequest" accessors="false" {
             return payload;
         }
 
-        throw(type="FacebookSDKException",message="Signed request has malformed encoded payload data (607)");
+        throw(type="facebook.FacebookSDKException",message="Signed request has malformed encoded payload data",errorCode=607);
     }
 
     /**
@@ -215,7 +215,7 @@ component name="SignedRequest" accessors="false" {
             return;
         }
 
-        throw(type="FacebookSDKException",message="Signed request is using the wrong algorithm (605)");
+        throw(type="facebook.FacebookSDKException",message="Signed request is using the wrong algorithm",errorCode=605);
     }
 
     /**
@@ -243,7 +243,7 @@ component name="SignedRequest" accessors="false" {
             return;
         }
 
-        throw(type="FacebookSDKException",message="Signed request did not pass CSRF validation (604)");
+        throw(type="facebook.FacebookSDKException",message="Signed request did not pass CSRF validation",errorCode=604);
     }
 
 }

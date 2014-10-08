@@ -134,7 +134,12 @@ component {
             return;
         }
 
-        throw(type="FacebookSDKException",message="Signed request contains malformed base64 encoding (608)");
+        throw(
+            type="facebook.FacebookSDKException",
+            message="Signed request contains malformed base64 encoding",
+            errorCode=608);
+
+
 
 	}
 }

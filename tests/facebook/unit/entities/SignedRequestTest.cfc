@@ -29,7 +29,7 @@ component name="SignedRequestTest" extends="testbox.system.BaseSpec" {
     }
 
     function testAnImproperlyEncodedSignatureWillThrowAnException() {
-        expectedException("FacebookSDKException");
+        expectedException("facebook.FacebookSDKException");
         var result = signedRequest.decodeSignature("foo!");
     }
 
@@ -40,7 +40,7 @@ component name="SignedRequestTest" extends="testbox.system.BaseSpec" {
     }
 
     function testAnImproperlyEncodedPayloadWillThrowAnException() {
-        expectedException("FacebookSDKException");
+        expectedException("facebook.FacebookSDKException");
         var result = signedRequest.decodePayload("foo!");
     }
 
@@ -49,7 +49,7 @@ component name="SignedRequestTest" extends="testbox.system.BaseSpec" {
     }
 
     function testNonApprovedAlgorithmsWillThrowAnException() {
-        expectedException("FacebookSDKException");
+        expectedException("facebook.FacebookSDKException");
         var signedRequestData = Duplicate(payloadData);
         signedRequestData["algorithm"] = "FOO-ALGORITHM";
 
@@ -87,7 +87,7 @@ component name="SignedRequestTest" extends="testbox.system.BaseSpec" {
     }
 
     function testASignedRequestWithIncorrectCsrfDataWillThrowAnException() {
-        expectedException("FacebookSDKException");
+        expectedException("facebook.FacebookSDKException");
         signedRequest.validateCsrf(payloadData, "invalid_foo_state");
     }
 
