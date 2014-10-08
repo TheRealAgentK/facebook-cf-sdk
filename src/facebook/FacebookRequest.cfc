@@ -222,7 +222,6 @@ component name="FacebookRequest" accessors="false" {
 
         // The actual params struct needs to potentiall be passed in here?
         response = httpService.send().getPrefix();
-
         setStaticMember("requestCount",prevRequestCount+1);
 
         eTagHit = iif(response.statusCode == 304,true,false);
@@ -241,17 +240,9 @@ component name="FacebookRequest" accessors="false" {
             return new FacebookResponse(this,out,response.fileContent,eTagHit,eTagReceived);
         }
         WriteDump(decodedResult);
+
         if (StructKeyExists(decodedResult,"error")) {
-            throw(type="FacebookRequestException",message="Something went wrong in the request execution");
-        /*
-        if (isset($decodedResult->error)) {
-            throw FacebookRequestException::create(
-            $result,
-            $decodedResult->error,
-            $connection->getResponseHttpStatusCode()
-            );
-        }
-        */
+            var sdkException = new facebook.FacebookRequestException(response.fileContent,decodedResult,response.statusCode);
         }
 
         return new FacebookResponse(this,decodedResult,response.fileContent,eTagHit,eTagReceived);
