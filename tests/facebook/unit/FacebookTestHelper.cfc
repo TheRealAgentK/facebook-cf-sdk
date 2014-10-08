@@ -15,7 +15,7 @@ component name="FacebookTestHelper" accessors="false" {
     public function initialize() {
 
         if (!Len(testCredentials.appId) || !Len(testCredentials.appSecret)) {
-            throw(type="FacebookSDKException",message="You must fill out FacebookTestCredentials.php");
+            throw(type="facebook.FacebookSDKException",message="You must fill out FacebookTestCredentials.php");
         }
 
 
