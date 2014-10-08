@@ -136,4 +136,63 @@ component name="FacebookRequestException" accessors="false" extends="facebook.Fa
 
     }
 
+    /**
+    * Checks a value and returns that or a default value.
+    *
+    * @key.hint key
+    * @default.hint potential default value
+    *
+    * @return vlaue or default
+    */
+    private any function get(required string key, any default = "") {
+        if (StructKeyExists(variables.responseData.error,arguments.key)) {
+            return variables.responseData.error[arguments.key];
+        }
+        return arguments.default;
+    }
+
+    /**
+    * Returns the HTTP status code
+    *
+    * @return string
+    */
+    public string function getHttpStatusCode() {
+        return variables.statusCode;
+    }
+
+    /**
+    * Returns the sub-error code
+    *
+    * @return int
+    */
+    public numeric function getSubErrorCode() {
+        return get("error_subcode", -1);
+    }
+
+    /**
+    * Returns the error type
+    *
+    * @return string
+    */
+    public numeric function getErrorType() {
+        return get("type");
+    }
+
+    /**
+    * Returns the raw response used to create the exception.
+    *
+    * @return string
+    */
+    public string function getRawResponse() {
+        return variables.rawResponse;
+    }
+
+    /**
+    * Returns the decoded response used to create the exception.
+    *
+    * @return struct
+    */
+    public struct function getResponse() {
+        return variables.responseData;
+    }
 }
