@@ -357,6 +357,7 @@ component name="FacebookRequestExceptionTest" extends="testbox.system.BaseSpec" 
 
     public function testValidateThrowsException()
     {
+        $assert.fail("Needs proper AppID and AppSecret");
         // Enter real AppId and AppSecret here
         CreateObject("facebook.FacebookSession").setDefaultApplication('---','---');
 
@@ -376,6 +377,7 @@ component name="FacebookRequestExceptionTest" extends="testbox.system.BaseSpec" 
 
     public function testValidateThrowsRealException()
     {
+        $assert.fail("Needs proper AppID and AppSecret");
         expectedException("facebook.FacebookSDKException");
         // Enter real AppId and AppSecret here
         CreateObject("facebook.FacebookSession").setDefaultApplication('---','---');
