@@ -224,6 +224,8 @@ component name="FacebookRequest" accessors="false" {
         response = httpService.send().getPrefix();
         setStaticMember("requestCount",prevRequestCount+1);
 
+        //WriteDump(httpService);
+
         eTagHit = iif(response.statusCode == 304,true,false);
 
         headers = response.responseHeader;
@@ -239,7 +241,8 @@ component name="FacebookRequest" accessors="false" {
 
             return new FacebookResponse(this,out,response.fileContent,eTagHit,eTagReceived);
         }
-        WriteDump(decodedResult);
+
+        //WriteDump(decodedResult);
 
         if (StructKeyExists(decodedResult,"error")) {
             var sdkException = new facebook.FacebookRequestException(response.fileContent,decodedResult,response.statusCode);

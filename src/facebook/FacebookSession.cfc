@@ -156,7 +156,7 @@ component name="facebook.FacebookSession" accessors="false" {
             return target;
         }
 
-        throw(type="FacebookSDKException",message="You must provide or set a default application secret (701)");
+        throw(type="facebook.FacebookSDKException",message="You must provide or set a default application secret",errorCode=701);
     }
 
     /**
@@ -179,9 +179,24 @@ component name="facebook.FacebookSession" accessors="false" {
         if (Len(target)) {
             return target;
         }
-
-        throw(type="FacebookSDKException",message="You must provide or set a default application id (700)");
+        throw(type="facebook.FacebookSDKException",message="You must provide or set a default application id",errorCode=700);
     }
+
+    /**
+    * newAppSession - Returns a FacebookSession configured with a token for the application which can be used for publishing and requesting app-level information.
+    *
+    * @appId.hint Application ID to use
+    * @appSecret.int App secret value to use
+    *
+    * @return FacebookSession
+    */
+    public facebook.FacebookSession function newAppSession(string appId = "", string appSecret = "") {
+        var targetAppId = getTargetAppId(arguments.appId);
+        var targetAppSecret = getTargetAppSecret(arguments.appSecret);
+
+        return new facebook.FacebookSession(targetAppId & "|" & targetAppSecret);
+    }
+
 
     /**
     * setDefaultApplication - Will set the static default appId and appSecret to be used for API requests.
@@ -191,7 +206,7 @@ component name="facebook.FacebookSession" accessors="false" {
     * @appId.hint Application ID to use by default
     * @appSecret.hint App secret value to use by default
     */
-    public function setDefaultApplication(appId, appSecret) {
+    public function setDefaultApplication(required string appId, required string appSecret) {
         setStaticMember("defaultAppId", arguments.appId);
         setStaticMember("defaultAppSecret", arguments.appSecret);
     }
@@ -206,6 +221,30 @@ component name="facebook.FacebookSession" accessors="false" {
     public boolean function useAppSecretProof()
     {
         return getStaticMember("useAppSecretProof",true,true);
+    }
+
+    // TODO Remove validate() in 4.1: can be accessed from AccessToken directly
+    /**
+    * validate - Ensures the current session is valid, throwing an exception if not.  Fetches token info from Facebook.
+    *
+    * @param string|null $appId Application ID to use
+    * @param string|null $appSecret App secret value to use
+    * @param string|null $machineId
+    *
+    * @return boolean
+    *
+    * @throws FacebookSDKException
+    */
+    public boolean function validate(string appId = "", string appSecret = "", string machineId = "") {
+
+        if (variables.accessToken.isValid(arguments.appId,arguments.appSecret,arguments.machineId)) {
+            return true;
+        }
+
+        throw(
+            type="facebook.FacebookSDKException",
+            message="Session has expired, or is not valid for this app.",
+            errorCode=601);
     }
 }
 

@@ -94,7 +94,7 @@ component name="AccessToken" accessors="false" {
     */
     public boolean function isValid(string appID = "", string appSecret = "", string machineId = "") {
 
-        var accessTokenInfo = getInfo(argumnets.appId, arguments.appSecret);
+        var accessTokenInfo = getInfo(arguments.appId, arguments.appSecret);
         var mid = "";
         if (Len(arguments.machineId)) {
             mid = arguments.machineId;
@@ -115,7 +115,7 @@ component name="AccessToken" accessors="false" {
     * @return boolean
     */
     // TODO: This was a static function in PHP, investigate
-    public boolean function validateAccessToken(required GraphSessionInfo tokenInfo, string appId = "", required string machineId = "") {
+    public boolean function validateAccessToken(required facebook.GraphSessionInfo tokenInfo, string appId = "", required string machineId = "") {
 
         var facebookHelper = CreateObject("component","facebook.FacebookHelper");
         var facebookSession = CreateObject("component","facebook.FacebookSession");
@@ -302,19 +302,19 @@ component name="AccessToken" accessors="false" {
     *
     * @return GraphSessionInfo
     */
-    public facebook.FacebookResponse function getInfo(string appId = "", string appSecret = "") {
+    public facebook.GraphSessionInfo function getInfo(string appId = "", string appSecret = "") {
 
         var params = {"input_token":variables.rawAccessToken};
-        var request = new facebook.FacebookRequest(facebookSession.newAppSession(arguments.appId,arguments.appSecret),"GET","/debug_token",params);
-        var response = request.execute();
-        //TODO Really: $response = $request->execute()->getGraphObject(GraphSessionInfo::className());
+        var fbRequest = new facebook.FacebookRequest(CreateObject("component","facebook.FacebookSession").newAppSession(arguments.appId,arguments.appSecret),"GET","/debug_token",params);
+        var response = fbRequest.execute();
+        var graphSession = response.getGraphObject("GraphSessionInfo");
 
         // Update the data on this token
-        if (response.getExpiresAt()) {
-            variables.expiresAt = response.getExpiresAt();
+        if (Len(graphSession.getExpiresAt())) {
+            variables.expiresAt = graphSession.getExpiresAt();
         }
 
-        return response;
+        return graphSession;
     }
 
     /**
