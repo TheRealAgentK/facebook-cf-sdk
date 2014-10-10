@@ -8,15 +8,15 @@ component name="FacebookRequest" accessors="false" {
     /**
 	* SDK Version
 	*/
-	variables.VERSION = "4.0.0alpha1";
+	this.VERSION = "4.0.0alpha1";
     /**
 	* Graph API version
 	*/
-	variables.GRAPH_API_VERSION = "v2.1";
+	this.GRAPH_API_VERSION = "v2.1";
     /**
 	* Graph API entry point URL
 	*/
-	variables.BASE_GRAPH_URL = "https://graph.facebook.com";
+	this.BASE_GRAPH_URL = "https://graph.facebook.com";
 
     // ---- properties ----
 
